@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "a random reader extension",
   "scripts": {
-    "dev": "webpack -w --config config/webpack.prod.js"
+    "dev": "webpack -w --config config/webpack.dev.js",
+    "prod": "webpack --config config/webpack.prod.js"
   },
   "author": "tomasy",
   "license": "MIT",
