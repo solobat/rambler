@@ -1,0 +1,39 @@
+{
+    "manifest_version": 2,
+
+    "name": "Rambler",
+    "description":
+        "a random reader extension",
+    "version": "1.0.0",
+
+    "chrome_url_overrides" : {
+        "newtab": "newtab.html"
+    },
+
+    "browser_action": {
+        "default_icon": "img/icon/icon16.png",
+        "default_popup": "popup.html"
+    },
+
+    "background": {
+        "scripts": ["js/eventPage.js"],
+        "persistent": true
+    },
+
+    "icons": {
+        "16": "img/icon/icon16.png",
+        "48": "img/icon/icon48.png",
+        "128": "img/icon/icon128.png"
+    },
+
+    "web_accessible_resources": [
+        "img/*",
+        "newtab.html",
+        "popup.html"
+    ],
+
+    "permissions": [
+        "storage",
+        "unlimitedStorage"
+    ]
+}

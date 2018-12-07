@@ -1,0 +1,31 @@
+import Dexie from 'dexie';
+
+export class RamblerDatabase extends Dexie {
+    books: Dexie.Table<IBook, number>;
+    paragraphs: Dexie.Table<IParagraph, number>;
+
+    constructor() {
+        super("RamblerDatabase");
+
+        this.version(1).stores({
+            books: '++id, name, size, createTime',
+            paragraphs: '++id, bookId, text, index'
+        });
+    }
+}
+
+export interface IBook {
+    id?: number,
+    name: string,
+    size: number,
+    createTime?: number
+}
+
+export interface IParagraph {
+    id?: number,
+    bookId: number,
+    text: string,
+    index: number
+}
+
+export var db = new RamblerDatabase();
