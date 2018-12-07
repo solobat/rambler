@@ -21,4 +21,4 @@
 
 
 ### Note
-Currently only **utf-8** file format is supported.
+Now only **utf-8** file format is supported.
