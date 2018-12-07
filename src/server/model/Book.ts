@@ -1,14 +1,17 @@
 import { IBook, db } from '../db/database'
 
-export class Book implements IBook {
+export default class Book implements IBook {
     id: number;
     name: string; 
     size: number;
     createTime: number;
+    paragraphCount: number;
 
-    constructor(name: string, size: number, createTime?: number, id?: number) {
+    constructor(name: string, size: number, paragraphCount: number, createTime?: number, id?: number) {
         this.name = name;
         this.size = size;
+        this.paragraphCount = paragraphCount;
+        
         if (createTime) {
             this.createTime = createTime;
         } else {
@@ -19,10 +22,6 @@ export class Book implements IBook {
             this.id = id;
         }
     }
-
-    save() {
-        return db.transaction('rw', db.books, db.paragraphs, async() => {
-            this.id = await db.books.put(this);
-        });
-    }
 }
+
+db.books.mapToClass(Book);

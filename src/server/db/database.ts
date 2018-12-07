@@ -18,6 +18,7 @@ export interface IBook {
     id?: number,
     name: string,
     size: number,
+    paragraphCount: number,
     createTime?: number
 }
 
@@ -25,7 +26,8 @@ export interface IParagraph {
     id?: number,
     bookId: number,
     text: string,
-    index: number
+    index: number,
+    likeCount?: number;
 }
 
 export var db = new RamblerDatabase();
