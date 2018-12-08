@@ -71,6 +71,8 @@ export function updateBook() {
 
 }
 
-export function getList() {
+export async function getList() {
+    const result = await bookService.getAll();
 
+    return Response.ok(result);
 }

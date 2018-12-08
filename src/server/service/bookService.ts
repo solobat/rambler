@@ -17,3 +17,7 @@ export function save(file: File, paragraphCount: number) {
 export function selectOne(id: number) {
     return db.books.get(id);
 }
+
+export function getAll() {
+    return db.books.toArray();
+}
