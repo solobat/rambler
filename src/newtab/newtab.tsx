@@ -98,7 +98,8 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                     <a>{i18nMsg.uploadTxt}</a>
                 </Upload>
                 <div className="paragrap-container">
-                    { this.state.paragraph ? this.state.paragraph.text : '' }
+                    <p>{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
+                    <p className="book-name">{ this.state.currentBook ? `-- ${this.state.currentBook.name.split('.')[0]}` : '' }</p>
                 </div>
                 <ToastContainer autoClose={3000} hideProgressBar={true}/>
             </div>
