@@ -1,9 +1,7 @@
 import * as React from 'react';
-import * as browser from 'webextension-polyfill';
 import './Popup.scss';
 import { IBook } from '../server/db/database';
 import * as bookController from '../server/controller/bookController';
-import { STORAGE_LOCAL } from '../common/constant';
 import * as Code from '../server/common/code';
 
 interface AppProps {}
