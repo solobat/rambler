@@ -1,5 +1,7 @@
 import * as bookService from '../service/bookService';
 import * as paragraphService from '../service/paragraphService';
+import * as browser from 'webextension-polyfill';
+import { STORAGE_LOCAL } from '../../common/constant';
 import Response from '../common/response';
 import * as Code from '../common/code';
 import { IBook, IParagraph } from '../db/database';
@@ -75,4 +77,16 @@ export async function getList() {
     const result = await bookService.getAll();
 
     return Response.ok(result);
+}
+
+export function setCurrentBook(bookId: number) {
+    return browser.storage.local.set({
+        [STORAGE_LOCAL.CURRENT_BOOK_ID]: bookId
+    });
+}
+
+export function getCurrentBook(): Promise<number> {
+    return browser.storage.local.get(STORAGE_LOCAL.CURRENT_BOOK_ID).then(resp => {
+        return resp[STORAGE_LOCAL.CURRENT_BOOK_ID];
+    });
 }

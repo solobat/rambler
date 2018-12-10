@@ -4,15 +4,31 @@ $background-color: #fff;
 // Chrome applies an 8px margin by default (gross).
 body {
     margin: 0px;
+    box-sizing: border-box;
+
+    * {
+        box-sizing: inherit;
+    }
 }
 
 .popupContainer {
-    align-items: center;
     background-color: $background-color;
     color: $primary-color;
-    display: flex;
-    font-size: 20px;
-    height: 75px;
+    min-height: 100px;
     justify-content: center;
-    width: 150px;
+    width: 300px;
+    padding: 20px;
+}
+
+.book-item {
+    padding: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.selected {
+        background: #ece7df;
+    }
 }

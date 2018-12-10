@@ -2,10 +2,7 @@ import * as React from 'react';
 import './newtab.scss';
 import Upload from 'rc-upload';
 import * as bookController from '../server/controller/bookController';
-import * as paragraphController from '../server/controller/paragraphController';
 import { sliceFileToParagraphs } from '../util/file';
-import * as browser from 'webextension-polyfill';
-import { STORAGE_LOCAL } from '../common/constant';
 import { IBook, IParagraph } from '../server/db/database';
 import * as Code from '../server/common/code';
 import { ToastContainer, toast } from 'react-toastify';
@@ -21,6 +18,7 @@ interface AppState {
 const style = `
         .rc-upload-disabled {
            opacity:0.5;
+        }
         `;
 
 const i18nMsg = {
@@ -43,7 +41,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 if (resp.code === 0) {
                     const bookId: number = resp.data;
 
-                    browser.storage.local.set({ [STORAGE_LOCAL.CURRENT_BOOK_ID]: bookId });
+                    bookController.setCurrentBook(bookId);
                     this.parent.loadBook(bookId);
 
                     toast.success(i18nMsg.uploadDone);
@@ -85,10 +83,8 @@ export default class NewTab extends React.Component<AppProps, AppState> {
     }
 
     componentDidMount() {
-        browser.storage.local.get(STORAGE_LOCAL.CURRENT_BOOK_ID).then(resp => {
-            const bookId: number = resp[STORAGE_LOCAL.CURRENT_BOOK_ID];
-
-            this.loadBook(bookId);
+        bookController.getCurrentBook().then(id => {
+            this.loadBook(id);
         });
     }
 
