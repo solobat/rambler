@@ -30,6 +30,7 @@
     "rc-upload": "^2.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-toastify": "^4.4.3",
     "webextension-polyfill": "^0.3.1"
   }
 }

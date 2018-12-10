@@ -1,4 +1,3 @@
-
 body {
     background-color: #5b7e91;
     font-family: "Microsoft Yahei", Avenir, "Segoe UI", "Hiragino Sans GB", STHeiti, "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif;
@@ -11,6 +10,7 @@ body {
     border: 1px solid #ccc;
     padding: 2px 5px;
     color: #ddd;
+    cursor: pointer;
 }
 
 .paragrap-container {
@@ -19,6 +19,6 @@ body {
     text-align: left;
     font-size: 14px;
     color: #fff;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     line-height: 1.5;
 }
