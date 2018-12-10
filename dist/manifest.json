@@ -5,7 +5,7 @@
     "description":
         "a random reader extension",
     "version": "1.0.0",
-
+    "default_locale": "en",
     "chrome_url_overrides" : {
         "newtab": "newtab.html"
     },
