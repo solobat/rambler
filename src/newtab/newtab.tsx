@@ -7,11 +7,13 @@ import { IBook, IParagraph } from '../server/db/database';
 import * as Code from '../server/common/code';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import { number } from 'prop-types';
 
 interface AppProps {}
 
 interface AppState {
     currentBook: IBook,
+    currentBookId: number,
     paragraph: IParagraph
 }
 
@@ -26,9 +28,12 @@ const i18nMsg = {
     uploadDone: chrome.i18n.getMessage('upload_ok')
 }
 
+const REFRESH_KEY = 'r';
+
 export default class NewTab extends React.Component<AppProps, AppState> {
     state = {
         currentBook: null,
+        currentBookId: number,
         paragraph: null
     }
 
@@ -72,19 +77,29 @@ export default class NewTab extends React.Component<AppProps, AppState> {
     }
 
     loadBook(bookId) {
-        bookController.getRandomParagraph(bookId).then(resp => {
-            if (resp.code === Code.OK.code) {
-                this.setState({
-                    currentBook: resp.data.book,
-                    paragraph: resp.data.paragraph
-                });
-            }
-        });
+        if (bookId) {
+            bookController.getRandomParagraph(bookId).then(resp => {
+                if (resp.code === Code.OK.code) {
+                    this.setState({
+                        currentBookId: bookId,
+                        currentBook: resp.data.book,
+                        paragraph: resp.data.paragraph
+                    });
+                }
+            });
+        }
+    }
+
+    handleKeyDown(event) {
+        if (event.key === REFRESH_KEY) {
+            this.loadBook(this.state.currentBookId);
+        }
     }
 
     componentDidMount() {
         bookController.getCurrentBook().then(id => {
             this.loadBook(id);
+            document.addEventListener("keydown", this.handleKeyDown.bind(this));
         });
     }
 
