@@ -33,7 +33,7 @@ const REFRESH_KEY = 'r';
 export default class NewTab extends React.Component<AppProps, AppState> {
     state = {
         currentBook: null,
-        currentBookId: number,
+        currentBookId: 0,
         paragraph: null
     }
 
