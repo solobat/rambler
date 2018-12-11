@@ -1,6 +1,6 @@
 {
   "name": "rambler",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "a random reader extension",
   "scripts": {
     "dev": "webpack -w --config config/webpack.dev.js",

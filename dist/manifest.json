@@ -1,10 +1,9 @@
 {
     "manifest_version": 2,
 
-    "name": "Rambler",
-    "description":
-        "a random reader extension",
-    "version": "1.0.1",
+    "name": "__MSG_extName__",
+    "description": "__MSG_extDesc__",
+    "version": "1.0.2",
     "default_locale": "en",
     "chrome_url_overrides" : {
         "newtab": "newtab.html"
