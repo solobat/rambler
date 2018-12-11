@@ -3,6 +3,7 @@ import './Popup.scss';
 import { IBook } from '../server/db/database';
 import * as bookController from '../server/controller/bookController';
 import * as Code from '../server/common/code';
+import Book from '../server/model/Book';
 
 interface AppProps {}
 
@@ -47,11 +48,21 @@ export default class Popup extends React.Component<AppProps, AppState> {
         });
     }
 
+    onBookDeleteClick(event, book: Book) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        bookController.deleteBook(book.id).then(resp => {
+            this.loadBook(this.state.currentBookId);
+        });
+    }
+
     render() {
         return (
             <div className="popupContainer">
                 <BookList currentId={this.state.currentBookId}
-                    list={this.state.bookList} onBookClick={this.onBookClick.bind(this)}></BookList>
+                    list={this.state.bookList} onBookClick={this.onBookClick.bind(this)}
+                    onBookDeleteClick={this.onBookDeleteClick.bind(this)}></BookList>
             </div>
         )
     }
@@ -61,7 +72,8 @@ export default class Popup extends React.Component<AppProps, AppState> {
 interface BookListProps {
     list: IBook[],
     currentId: number,
-    onBookClick: Function
+    onBookClick: Function,
+    onBookDeleteClick: Function
 }
 
 class BookList extends React.Component<BookListProps> {
@@ -75,6 +87,8 @@ class BookList extends React.Component<BookListProps> {
                         <div className={className} key={index}
                             onClick={() => this.props.onBookClick(book)}>
                             { book.name.split('.')[0] }
+                            <img className="icon icon-close" src="img/icon/delete.svg" alt=""
+                                onClick={(event) => this.props.onBookDeleteClick(event, book)}/>
                         </div>
                     )
                 }) }

@@ -21,3 +21,7 @@ export function queryByIndex(bookId: number, index: number) {
         index
     });
 }
+
+export function deleteByBookId(bookId: number) {
+    return db.paragraphs.where('bookId').equals(bookId).delete();
+}

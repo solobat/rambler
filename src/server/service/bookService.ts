@@ -21,3 +21,7 @@ export function selectOne(id: number) {
 export function getAll() {
     return db.books.toArray();
 }
+
+export function deleteBook(bookId: number) {
+    return db.books.delete(bookId);
+}

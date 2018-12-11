@@ -65,8 +65,15 @@ export async function getRandomParagraph(bookId: number): Promise<Response> {
     }
 }
 
-export function deleteBook() {
+export async function deleteBook(bookId: number) {
+    if (bookId) {
+        await bookService.deleteBook(bookId);
+        await paragraphService.deleteByBookId(bookId);
 
+        return Response.ok(true);
+    } else {
+        return Response.error(Code.PARAMS_ERROR);
+    }
 }
 
 export function updateBook() {

@@ -21,6 +21,7 @@ body {
 }
 
 .book-item {
+    position: relative;
     padding: 5px 10px;
     font-size: 14px;
     cursor: pointer;
@@ -28,7 +29,27 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
 
+    &:hover {
+        .icon-close {
+            display: block;
+        }
+    }
+
+    .icon {
+        display: none;
+        position: absolute;
+        z-index: 1;
+        width: 16px;
+        height: 16px;
+        top: 6px;
+        right: 0;
+    }
+
     &.selected {
         background: #ece7df;
+
+        .icon-close {
+            display: none;
+        }
     }
 }
