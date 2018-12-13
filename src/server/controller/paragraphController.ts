@@ -14,12 +14,12 @@ export function queryByBook() {
     
 }
 
-export async function queryByIndex(bookId: number, index: number) {
+export async function queryByIndex(bookId: number, index: number): Promise<Response> {
     if (bookId && typeof index === 'number') {
         const result = await paragraphService.queryByIndex(bookId, index);
 
-        console.log(result);
+        return Response.ok(result);
     } else {
-        return Response.error(Code.PARAMS_ERROR);
+        return Promise.resolve(Response.error(Code.PARAMS_ERROR));
     }
 } 

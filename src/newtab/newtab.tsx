@@ -2,6 +2,7 @@ import * as React from 'react';
 import './newtab.scss';
 import Upload from 'rc-upload';
 import * as bookController from '../server/controller/bookController';
+import * as paragraphController from '../server/controller/paragraphController';
 import { sliceFileToParagraphs } from '../util/file';
 import { IBook, IParagraph } from '../server/db/database';
 import * as Code from '../server/common/code';
@@ -28,7 +29,15 @@ const i18nMsg = {
     uploadDone: chrome.i18n.getMessage('upload_ok')
 }
 
-const REFRESH_KEY = 'r';
+interface KEYCODE {
+    [propName: string]: number[]
+}
+
+const KEY_CODE: KEYCODE = {
+    REFRESH: [82],
+    PREV: [37, 38],
+    NEXT: [39, 40]
+}
 
 export default class NewTab extends React.Component<AppProps, AppState> {
     state = {
@@ -90,9 +99,50 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         }
     }
 
+    getFixedParagraphIndex(index: number): number {
+        let fixedIndex = index;
+        const count = this.state.currentBook.paragraphCount;
+
+        if (index < 0) {
+            fixedIndex = count - 1;
+        } else if (index >= count) {
+            fixedIndex = 0;
+        }
+
+        return fixedIndex;
+    }
+
+    loadParagraphByIndex(index) {
+        const fixedIndex = this.getFixedParagraphIndex(index);
+
+        paragraphController.queryByIndex(this.state.currentBookId, fixedIndex).then(resp => {
+            if (resp.code === Code.OK.code) {
+                this.setState({
+                    paragraph: resp.data
+                });
+            } else {
+                toast.error(resp.message);
+            }
+        });
+    }
+
+    showPrevParagraph() {
+        this.loadParagraphByIndex(this.state.paragraph.index - 1); 
+    }
+
+    showNextParagraph() {
+        this.loadParagraphByIndex(this.state.paragraph.index + 1); 
+    }
+
     handleKeyDown(event) {
-        if (event.key === REFRESH_KEY) {
+        const keyCode = event.keyCode;
+
+        if (KEY_CODE.REFRESH.indexOf(keyCode) !== -1) {
             this.loadBook(this.state.currentBookId);
+        } else if (KEY_CODE.PREV.indexOf(keyCode) !== -1) {
+            this.showPrevParagraph();
+        } else if (KEY_CODE.NEXT.indexOf(keyCode) !== -1) {
+            this.showNextParagraph();
         }
     }
 
