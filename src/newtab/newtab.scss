@@ -1,5 +1,5 @@
 body {
-    background-color: #5b7e91;
+    background-color: var(--newtab-background-color);
     font-family: "Microsoft Yahei", Avenir, "Segoe UI", "Hiragino Sans GB", STHeiti, "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif;
 }
 
@@ -28,4 +28,28 @@ body {
     font-style: italic;
     margin-right: 2em;
     opacity: .5;
+}
+
+.color-selector {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    width: 50px;
+
+    &:hover {
+        .color-list {
+            display: block;
+        }
+    }
+
+    .color-box {
+        border: 1px solid #ccc;
+        height: 20px;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    .color-list {
+        display: none;
+    }
 }

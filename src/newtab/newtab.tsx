@@ -8,14 +8,19 @@ import { IBook, IParagraph } from '../server/db/database';
 import * as Code from '../server/common/code';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import { number } from 'prop-types';
+import { SOLID_COLORS } from '../common/constant';
 
 interface AppProps {}
 
 interface AppState {
     currentBook: IBook,
     currentBookId: number,
+    currentBg: string,
     paragraph: IParagraph
+}
+
+declare global {
+    interface Window { ramblerApi: any; }
 }
 
 const style = `
@@ -43,6 +48,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
     state = {
         currentBook: null,
         currentBookId: 0,
+        currentBg: window.localStorage.getItem('wallpaper') || '#5b7e91',
         paragraph: null
     }
 
@@ -153,6 +159,14 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         });
     }
 
+    onColorBoxClick(color) {
+        window.localStorage.setItem('wallpaper', color);
+        this.setState({
+            currentBg: color
+        });
+        window.ramblerApi.initTheme();
+    }
+
     render() {
         return (
             <div className="newtab-container">
@@ -162,6 +176,20 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 <Upload {...this.uploaderProps} className="file-uploader">
                     <a>{i18nMsg.uploadTxt}</a>
                 </Upload>
+                <div className="color-selector">
+                    <div className="current-color color-box" style={{
+                        background: this.state.currentBg
+                    }}></div>
+                    <div className="color-list">
+                        { SOLID_COLORS.map((color, index) => {
+                            return (
+                                <div className="color-box" style={{
+                                    background: color
+                                }} key={index} onClick={() => this.onColorBoxClick(color)}></div>
+                            )
+                        }) }
+                    </div>
+                </div>
                 <div className="paragrap-container">
                     <p>{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
                     <p className="book-name">{ this.state.currentBook ? `-- ${this.state.currentBook.name.split('.')[0]}` : '' }</p>
