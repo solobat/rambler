@@ -1,6 +1,6 @@
 (function() {
     function getBg() {
-        return localStorage.getItem('wallpaper');
+        return localStorage.getItem('wallpaper') || '#5b7e91';
     }
 
     const defaultTheme = {
@@ -29,6 +29,8 @@
             }
         } else {
             window.localStorage.setItem('themes', JSON.stringify(defaultTheme));
+            window.localStorage.setItem('wallpaper', '#5b7e91');
+
             applyTheme(defaultTheme);
         }
     }
