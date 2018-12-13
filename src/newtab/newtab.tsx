@@ -132,12 +132,20 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         });
     }
 
-    showPrevParagraph() {
-        this.loadParagraphByIndex(this.state.paragraph.index - 1); 
+    showPrevParagraph(toHead) {
+        if (toHead) {
+            this.loadParagraphByIndex(0);
+        } else {
+            this.loadParagraphByIndex(this.state.paragraph.index - 1); 
+        }
     }
 
-    showNextParagraph() {
-        this.loadParagraphByIndex(this.state.paragraph.index + 1); 
+    showNextParagraph(toTail) {
+        if (toTail) {
+            this.loadParagraphByIndex(this.state.currentBook.paragraphCount - 1);
+        } else {
+            this.loadParagraphByIndex(this.state.paragraph.index + 1); 
+        }
     }
 
     handleKeyDown(event) {
@@ -146,9 +154,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         if (KEY_CODE.REFRESH.indexOf(keyCode) !== -1) {
             this.loadBook(this.state.currentBookId);
         } else if (KEY_CODE.PREV.indexOf(keyCode) !== -1) {
-            this.showPrevParagraph();
+            this.showPrevParagraph(event.metaKey);
         } else if (KEY_CODE.NEXT.indexOf(keyCode) !== -1) {
-            this.showNextParagraph();
+            this.showNextParagraph(event.metaKey);
         }
     }
 
