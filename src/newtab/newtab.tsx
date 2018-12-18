@@ -283,9 +283,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                             onKeyPress={(event) => this.onCommentInputKeyPress(event)}/>
                     </div>
                     <div className="comments">
-                        { this.state.comments.map(comment => {
+                        { this.state.comments.map((comment, index) => {
                             return (
-                                <div className="comment-item">{ comment.text }</div>
+                                <div className="comment-item" key={index}>{ comment.text }</div>
                             )
                         }) }
                     </div>
