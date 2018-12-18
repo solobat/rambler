@@ -7,3 +7,10 @@ export function save(text: string, bookId: number, paragraphId: number) {
 
     return db.comments.put(comment);
 }
+
+export function queryByParagraph(bookId: number, paragraphId: number) {
+    return db.comments.where({
+        bookId,
+        paragraphId
+    }).toArray();
+}

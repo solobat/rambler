@@ -5,7 +5,7 @@ import * as bookController from '../server/controller/bookController';
 import * as paragraphController from '../server/controller/paragraphController';
 import * as commentController from '../server/controller/commentController';
 import { sliceFileToParagraphs } from '../util/file';
-import { IBook, IParagraph } from '../server/db/database';
+import { IBook, IParagraph, IComment } from '../server/db/database';
 import * as Code from '../server/common/code';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
@@ -18,7 +18,8 @@ interface AppState {
     currentBookId: number,
     currentBg: string,
     paragraph: IParagraph,
-    commentText: string
+    commentText: string,
+    comments: IComment[]
 }
 
 declare global {
@@ -52,7 +53,8 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         currentBookId: 0,
         currentBg: window.localStorage.getItem('wallpaper') || '#5b7e91',
         paragraph: null,
-        commentText: ''
+        commentText: '',
+        comments: []
     }
 
     uploaderProps = {
@@ -106,6 +108,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                         currentBook: resp.data.book,
                         paragraph: resp.data.paragraph
                     });
+                    this.loadComments();
                 }
             });
         }
@@ -132,6 +135,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 this.setState({
                     paragraph: resp.data
                 });
+                this.loadComments();
             } else {
                 toast.error(resp.message);
             }
@@ -152,6 +156,22 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         } else {
             this.loadParagraphByIndex(this.state.paragraph.index + 1); 
         }
+    }
+
+    loadComments() {
+        commentController.queryByParagraph(this.state.currentBookId,
+            this.state.paragraph.id).then(resp => {
+            if (resp.code === Code.OK.code) {
+                console.log(resp.data);
+                if (resp.data) {
+                    this.setState({
+                        comments: resp.data
+                    });
+                }
+            } else {
+                toast.error(resp.message);
+            }
+        });
     }
 
     isKeyValid(target) {
@@ -221,6 +241,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 this.setState({
                     commentText: ''
                 });
+                this.loadComments();
             }
         }
     }
@@ -260,6 +281,13 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                             ref={this.commentIptRef}
                             onChange={(event) => this.onCommentInput(event)}
                             onKeyPress={(event) => this.onCommentInputKeyPress(event)}/>
+                    </div>
+                    <div className="comments">
+                        { this.state.comments.map(comment => {
+                            return (
+                                <div className="comment-item">{ comment.text }</div>
+                            )
+                        }) }
                     </div>
                 </div>
                 <ToastContainer autoClose={3000} hideProgressBar={true}/>

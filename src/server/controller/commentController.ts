@@ -16,3 +16,13 @@ export async function saveComment(text: string, bookId: number, paragraphId: num
         return Response.error(Code.PARAMS_ERROR);
     }
 }
+
+export async function queryByParagraph(bookId: number, paragraphId: number): Promise<Response> {
+    if (bookId && paragraphId) {
+        const result = await commentService.queryByParagraph(bookId, paragraphId);
+
+        return Response.ok(result);
+    } else {
+        return Response.error(Code.PARAMS_ERROR);
+    }
+}
