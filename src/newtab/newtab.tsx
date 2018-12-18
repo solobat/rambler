@@ -10,6 +10,7 @@ import * as Code from '../server/common/code';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { SOLID_COLORS } from '../common/constant';
+import * as reactComposition from 'react-composition';
 
 interface AppProps {}
 
@@ -219,10 +220,10 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         this.commentIptRef.current.blur();
     }
 
-    onCommentInput(event) {
-        this.setState({
-            commentText: event.target.value
-        });
+    onCommentChange(event) {
+        const value = event.target.value;
+
+        this.setState({ commentText: value });
     }
 
     onCommentInputKeyPress(event) {
@@ -279,7 +280,8 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                     <div className="comment-input-box">
                         <input type="text" value={this.state.commentText}
                             ref={this.commentIptRef}
-                            onChange={(event) => this.onCommentInput(event)}
+                            {...reactComposition({
+                                onChange: this.onCommentChange.bind(this)})}
                             onKeyPress={(event) => this.onCommentInputKeyPress(event)}/>
                     </div>
                     <div className="comments">

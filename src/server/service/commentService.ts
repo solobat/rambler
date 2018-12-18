@@ -12,5 +12,5 @@ export function queryByParagraph(bookId: number, paragraphId: number) {
     return db.comments.where({
         bookId,
         paragraphId
-    }).toArray();
+    }).reverse().sortBy('createTime');
 }
