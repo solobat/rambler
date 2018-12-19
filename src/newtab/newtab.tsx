@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { SOLID_COLORS } from '../common/constant';
 import * as reactComposition from 'react-composition';
+import * as WebRTC from '../temp/webrtc';
 
 interface AppProps {}
 
@@ -297,3 +298,10 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         )
     }
 }
+
+
+WebRTC.createConnection();
+
+setTimeout(function() {
+    WebRTC.sendData();
+}, 2000);
