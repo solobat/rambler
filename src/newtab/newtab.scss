@@ -17,6 +17,12 @@ body {
     color: #ddd;
     cursor: pointer;
     font-size: 12px;
+    opacity: .3;
+    transition: all 200ms ease-in;
+
+    &:hover {
+        opacity: 1;
+    }
 }
 
 .paragrap-container {
@@ -41,8 +47,11 @@ body {
     right: 10px;
     top: 10px;
     width: 50px;
+    opacity: .3;
+    transition: all 200ms ease-in;
 
     &:hover {
+        opacity: 1;
         .color-list {
             display: block;
         }
