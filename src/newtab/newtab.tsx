@@ -12,7 +12,9 @@ import 'react-toastify/dist/ReactToastify.css'
 import { SOLID_COLORS } from '../common/constant';
 import * as reactComposition from 'react-composition';
 import { BookMode } from '../server/enum/Book';
+import * as browser from 'webextension-polyfill';
 import { getRandomIndex } from '../util/common';
+import { getValidNetworks, Network, generateUrl, NetworkOption } from '../common/socialShare';
 
 interface AppProps {}
 
@@ -22,7 +24,9 @@ interface AppState {
     currentBg: string,
     paragraph: IParagraph,
     commentText: string,
-    comments: IComment[]
+    comments: IComment[],
+    networks: Network[],
+    selectedText: string
 }
 
 declare global {
@@ -57,7 +61,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         currentBg: window.localStorage.getItem('wallpaper') || '#5b7e91',
         paragraph: null,
         commentText: '',
-        comments: []
+        comments: [],
+        networks: getValidNetworks(),
+        selectedText: ''
     }
 
     uploaderProps = {
@@ -187,7 +193,6 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         commentController.queryByParagraph(this.state.currentBookId,
             this.state.paragraph.id).then(resp => {
             if (resp.code === Code.OK.code) {
-                console.log(resp.data);
                 if (resp.data) {
                     this.setState({
                         comments: resp.data
@@ -271,6 +276,43 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         }
     }
 
+    getPureBookName() {
+        const fixedName: string = this.state.currentBook.name.replace(/[《》]/g, '');
+
+        return fixedName.split('.')[0];
+    }
+
+    getToShareText() {
+        if (this.state.selectedText) {
+            return this.state.selectedText;
+        } else {
+            return this.state.paragraph.text;
+        }
+    }
+
+    onShareHover() {
+        const selection = window.getSelection();
+
+        if (selection && selection.toString()) {
+            this.setState({
+                selectedText: selection.toString()
+            });
+        } else {
+            this.setState({ selectedText: '' });
+        }
+    }
+
+    onShareClick(network: Network) {
+        const config: NetworkOption = {
+            title: `${this.getToShareText()} #${this.getPureBookName()}#`
+        };
+        const url: string = generateUrl(network.url, config);
+
+        browser.tabs.create({
+            url
+        });
+    }
+
     render() {
         return (
             <div className="newtab-container">
@@ -297,6 +339,17 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 <div className="paragrap-container">
                     <p>{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
                     <p className="book-name">{ this.state.currentBook ? `-- ${this.state.currentBook.name.split('.')[0]}` : '' }</p>
+                    <div className="share-icons">
+                        { this.state.networks.map((network, index) => {
+                            const className: string = ['icon-share', `icon-share-${network.className}`].join(' ');
+
+                            return (
+                                <i className={className} key={index}
+                                    onMouseEnter={() => this.onShareHover()}
+                                    onClick={() => this.onShareClick(network)}></i>
+                            )
+                        }) }
+                    </div>
                 </div>
                 <div className="comment-container"
                     onMouseEnter={() => this.onCommentBoxMouseEnter()}

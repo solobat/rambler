@@ -30,6 +30,11 @@ module.exports = {
       },
       {
         exclude: /node_modules/,
+        test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+        loader: 'file-loader?name=[name].[ext]&outputPath=iconfont/&publicPath=./'
+      },
+      {
+        exclude: /node_modules/,
         test: /\.scss$/,
         use: [
           {
