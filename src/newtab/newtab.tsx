@@ -15,6 +15,8 @@ import { BookMode } from '../server/enum/Book';
 import * as browser from 'webextension-polyfill';
 import { getRandomIndex } from '../util/common';
 import { getValidNetworks, Network, generateUrl, NetworkOption } from '../common/socialShare';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 interface AppProps {}
 
@@ -313,6 +315,10 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         });
     }
 
+    onSlideChange(newIndex) {
+        this.loadParagraphByIndex(newIndex, true);
+    }
+
     render() {
         return (
             <div className="newtab-container">
@@ -336,39 +342,59 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                         }) }
                     </div>
                 </div>
-                <div className="paragrap-container">
-                    <p>{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
-                    <p className="book-name">{ this.state.currentBook ? `-- ${this.state.currentBook.name.split('.')[0]}` : '' }</p>
-                    <div className="share-icons">
-                        { this.state.networks.map((network, index) => {
-                            const className: string = ['icon-share', `icon-share-${network.className}`].join(' ');
+                { this.state.paragraph && (
+                    <div className="paragrap-container">
+                        <div className="process">
+                            <Slider defaultValue={this.state.paragraph.index}
+                                min={0} max={this.state.currentBook.paragraphCount}
+                                onAfterChange={this.onSlideChange.bind(this)}
+                                railStyle={{
+                                    height: '2px',
+                                    borderRadius: '0'
+                                }}
+                                trackStyle={{
+                                    height:'2px',
+                                    borderRadius: '0'
+                                }}
+                                handleStyle={{
+                                    borderRadius: '0'
+                                }}/>
+                        </div>
+                        <p>{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
+                        <p className="book-name">{ this.state.currentBook ? `-- ${this.state.currentBook.name.split('.')[0]}` : '' }</p>
+                        <div className="share-icons">
+                            { this.state.networks.map((network, index) => {
+                                const className: string = ['icon-share', `icon-share-${network.className}`].join(' ');
 
-                            return (
-                                <i className={className} key={index}
-                                    onMouseEnter={() => this.onShareHover()}
-                                    onClick={() => this.onShareClick(network)}></i>
-                            )
-                        }) }
+                                return (
+                                    <i className={className} key={index}
+                                        onMouseEnter={() => this.onShareHover()}
+                                        onClick={() => this.onShareClick(network)}></i>
+                                )
+                            }) }
+                        </div>
                     </div>
-                </div>
-                <div className="comment-container"
-                    onMouseEnter={() => this.onCommentBoxMouseEnter()}
-                    onMouseLeave={() => this.onCommentBoxMouseLeave()}>
-                    <div className="comment-input-box">
-                        <input type="text" value={this.state.commentText}
-                            ref={this.commentIptRef}
-                            {...reactComposition({
-                                onChange: this.onCommentChange.bind(this)})}
-                            onKeyPress={(event) => this.onCommentInputKeyPress(event)}/>
+                )}
+                { this.state.paragraph && (
+                    <div className="comment-container"
+                        onMouseEnter={() => this.onCommentBoxMouseEnter()}
+                        onMouseLeave={() => this.onCommentBoxMouseLeave()}>
+                        <div className="comment-input-box">
+                            <input type="text" value={this.state.commentText}
+                                ref={this.commentIptRef}
+                                {...reactComposition({
+                                    onChange: this.onCommentChange.bind(this)})}
+                                onKeyPress={(event) => this.onCommentInputKeyPress(event)}/>
+                        </div>
+                        <div className="comments">
+                            { this.state.comments.map((comment, index) => {
+                                return (
+                                    <div className="comment-item" key={index}>{ comment.text }</div>
+                                )
+                            }) }
+                        </div>
                     </div>
-                    <div className="comments">
-                        { this.state.comments.map((comment, index) => {
-                            return (
-                                <div className="comment-item" key={index}>{ comment.text }</div>
-                            )
-                        }) }
-                    </div>
-                </div>
+                ) }
                 <ToastContainer autoClose={3000} hideProgressBar={true}/>
             </div>
         )

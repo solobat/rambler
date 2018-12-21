@@ -28,6 +28,7 @@
   "dependencies": {
     "antd": "^3.11.0",
     "dexie": "^2.0.4",
+    "rc-slider": "^8.6.4",
     "rc-upload": "^2.6.0",
     "react": "^16.2.0",
     "react-composition": "^0.2.2",
