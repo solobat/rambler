@@ -4,6 +4,7 @@ import { IBook } from '../server/db/database';
 import * as bookController from '../server/controller/bookController';
 import * as Code from '../server/common/code';
 import Book from '../server/model/Book';
+import { BookMode } from '../server/enum/Book';
 
 interface AppProps {}
 
@@ -57,12 +58,23 @@ export default class Popup extends React.Component<AppProps, AppState> {
         });
     }
 
+    onBookOrderClick(event, book: Book, mode: number) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        bookController.updateBook(book.id, { mode }).then(resp => {
+            this.loadBook(this.state.currentBookId);
+            console.log(resp);
+        });
+    }
+
     render() {
         return (
             <div className="popupContainer">
                 <BookList currentId={this.state.currentBookId}
                     list={this.state.bookList} onBookClick={this.onBookClick.bind(this)}
-                    onBookDeleteClick={this.onBookDeleteClick.bind(this)}></BookList>
+                    onBookDeleteClick={this.onBookDeleteClick.bind(this)}
+                    onBookOrderClick={this.onBookOrderClick.bind(this)}></BookList>
             </div>
         )
     }
@@ -73,7 +85,8 @@ interface BookListProps {
     list: IBook[],
     currentId: number,
     onBookClick: Function,
-    onBookDeleteClick: Function
+    onBookDeleteClick: Function,
+    onBookOrderClick: Function
 }
 
 class BookList extends React.Component<BookListProps> {
@@ -87,8 +100,17 @@ class BookList extends React.Component<BookListProps> {
                         <div className={className} key={index}
                             onClick={() => this.props.onBookClick(book)}>
                             { book.name.split('.')[0] }
-                            <img className="icon icon-close" src="img/icon/delete.svg" alt=""
-                                onClick={(event) => this.props.onBookDeleteClick(event, book)}/>
+                            <div className="icons">
+                                {
+                                    book.mode === BookMode.INORDER ? 
+                                        <img className="icon icon-order" src="img/icon/inorder.svg" alt=""
+                                            onClick={(event) => this.props.onBookOrderClick(event, book, 0)}/>
+                                        : <img className="icon icon-order" src="img/icon/shuffle.svg" alt=""
+                                            onClick={(event) => this.props.onBookOrderClick(event, book, 1)}/>
+                                }
+                                <img className="icon icon-close" src="img/icon/delete.svg" alt=""
+                                    onClick={(event) => this.props.onBookDeleteClick(event, book)}/> 
+                            </div>
                         </div>
                     )
                 }) }

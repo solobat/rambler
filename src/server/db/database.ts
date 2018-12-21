@@ -9,7 +9,7 @@ export class RamblerDatabase extends Dexie {
         super("RamblerDatabase");
 
         this.version(1).stores({
-            books: '++id, name, size, createTime, paragraphCount',
+            books: '++id, name, size, createTime, paragraphCount, mode, cursor',
             paragraphs: '++id, bookId, text, index, likeCount',
             comments: '++id, bookId, paragraphId, text, createTime'
         });
@@ -21,7 +21,9 @@ export interface IBook {
     name: string,
     size: number,
     paragraphCount: number,
-    createTime?: number
+    createTime?: number,
+    mode?: number,
+    cursor?: number
 }
 
 export interface IParagraph {

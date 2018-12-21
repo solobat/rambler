@@ -11,6 +11,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { SOLID_COLORS } from '../common/constant';
 import * as reactComposition from 'react-composition';
+import { BookMode } from '../server/enum/Book';
+import { getRandomIndex } from '../util/common';
 
 interface AppProps {}
 
@@ -102,14 +104,24 @@ export default class NewTab extends React.Component<AppProps, AppState> {
 
     loadBook(bookId) {
         if (bookId) {
-            bookController.getRandomParagraph(bookId).then(resp => {
+            bookController.info(bookId).then(resp => {
                 if (resp.code === Code.OK.code) {
+                    const book: IBook = resp.data;
+                    let cursor: number;
+
+                    if (book.mode === BookMode.INORDER) {
+                        cursor = book.cursor || 0;
+                    } else {
+                        cursor = getRandomIndex(book.paragraphCount);
+                    }
+
                     this.setState({
-                        currentBookId: bookId,
-                        currentBook: resp.data.book,
-                        paragraph: resp.data.paragraph
+                        currentBook: book,
+                        currentBookId: bookId
                     });
-                    this.loadComments();
+                    this.loadParagraphByIndex(cursor, false);
+                } else {
+                    toast.error(resp.message);
                 }
             });
         }
@@ -128,8 +140,20 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         return fixedIndex;
     }
 
-    loadParagraphByIndex(index) {
+    recordCursor(newCursor: number) {
+        bookController.updateBook(this.state.currentBookId, {
+            cursor: newCursor
+        }).then(resp => {
+            console.log(resp);
+        });
+    }
+
+    loadParagraphByIndex(index: number, shouldRecord: boolean) {
         const fixedIndex = this.getFixedParagraphIndex(index);
+
+        if (shouldRecord && this.state.currentBook.mode === BookMode.INORDER) {
+            this.recordCursor(fixedIndex);
+        }
 
         paragraphController.queryByIndex(this.state.currentBookId, fixedIndex).then(resp => {
             if (resp.code === Code.OK.code) {
@@ -143,19 +167,19 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         });
     }
 
-    showPrevParagraph(toHead) {
+    showPrevParagraph(toHead: boolean) {
         if (toHead) {
-            this.loadParagraphByIndex(0);
+            this.loadParagraphByIndex(0, true);
         } else {
-            this.loadParagraphByIndex(this.state.paragraph.index - 1); 
+            this.loadParagraphByIndex(this.state.paragraph.index - 1, true); 
         }
     }
 
-    showNextParagraph(toTail) {
+    showNextParagraph(toTail: boolean) {
         if (toTail) {
-            this.loadParagraphByIndex(this.state.currentBook.paragraphCount - 1);
+            this.loadParagraphByIndex(this.state.currentBook.paragraphCount - 1, true);
         } else {
-            this.loadParagraphByIndex(this.state.paragraph.index + 1); 
+            this.loadParagraphByIndex(this.state.paragraph.index + 1, true); 
         }
     }
 

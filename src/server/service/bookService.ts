@@ -22,6 +22,10 @@ export function getAll() {
     return db.books.toArray();
 }
 
+export function update(key, changes) {
+    return db.books.update(key, changes);
+}
+
 export function deleteBook(bookId: number) {
     return db.books.delete(bookId);
 }

@@ -22,7 +22,7 @@ body {
 
 .book-item {
     position: relative;
-    padding: 5px 10px;
+    padding: 5px 55px 5px 5px;
     font-size: 14px;
     cursor: pointer;
     overflow: hidden;
@@ -30,19 +30,26 @@ body {
     white-space: nowrap;
 
     &:hover {
-        .icon-close {
+        .icon {
             display: block;
         }
     }
 
-    .icon {
-        display: none;
+    .icons {
+        display: flex;
+        background-color: inherit;
         position: absolute;
         z-index: 1;
-        width: 16px;
-        height: 16px;
         top: 6px;
         right: 0;
+        cursor: pointer;
+    }
+
+    .icon {
+        display: none;
+        margin: 0 5px;
+        width: 16px;
+        height: 16px;
     }
 
     &.selected {

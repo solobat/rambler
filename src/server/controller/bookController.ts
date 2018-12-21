@@ -4,8 +4,7 @@ import * as browser from 'webextension-polyfill';
 import { STORAGE_LOCAL } from '../../common/constant';
 import Response from '../common/response';
 import * as Code from '../common/code';
-import { IBook, IParagraph } from '../db/database';
-import { getRandomIndex } from '../../util/common';
+import { IBook, IParagraph, db } from '../db/database';
 
 export async function saveBook(file: File, paragraphs: string[]): Promise<Response> {
     if (file && paragraphs && paragraphs.length > 0) {
@@ -41,30 +40,6 @@ export async function info(id: number): Promise<Response> {
     }
 }
 
-export async function getRandomParagraph(bookId: number): Promise<Response> {
-    if (bookId) {
-        const book: IBook = await bookService.selectOne(bookId);
-
-        if (book) {
-            const paragraph: IParagraph = await paragraphService.queryByIndex(bookId, 
-                getRandomIndex(book.paragraphCount));
-
-            if (paragraph) {
-                return Response.ok({
-                    book,
-                    paragraph
-                });
-            } else {
-                return Response.error(Code.NOT_EXISTS);
-            }
-        } else {
-            return Response.error(Code.NOT_EXISTS);
-        }
-    } else {
-        return Response.error(Code.PARAMS_ERROR);
-    }
-}
-
 export async function deleteBook(bookId: number) {
     if (bookId) {
         await bookService.deleteBook(bookId);
@@ -76,8 +51,14 @@ export async function deleteBook(bookId: number) {
     }
 }
 
-export function updateBook() {
+export async function updateBook(bookId: number, changes: object) {
+    if (bookId) {
+        const result = await bookService.update(bookId, changes);
 
+        return Response.ok(result);
+    } else {
+        return Response.error(Code.PARAMS_ERROR);
+    }
 }
 
 export async function getList() {
