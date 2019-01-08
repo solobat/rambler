@@ -1,7 +1,7 @@
 <h1 align="center">Rambler</h1>
 <p align="center">A random reader for Chrome/Firefox</p>
 <p align="center">
-   <a href="https://github.com/solobat/rambler/releases"><img src="https://img.shields.io/badge/lastest_version-1.1.4-blue.svg"></a>
+   <a href="https://github.com/solobat/rambler/releases"><img src="https://img.shields.io/badge/lastest_version-1.1.5-blue.svg"></a>
    <a target="_blank" href="https://chrome.google.com/webstore/detail/rambler/oamcmbjempabepcfnnioodcffeejkhjn"><img src="https://img.shields.io/badge/download-_chrome_webstore-brightgreen.svg"></a>
 
 </p>
