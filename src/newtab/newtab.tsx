@@ -278,10 +278,24 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         }
     }
 
-    getPureBookName() {
-        const fixedName: string = this.state.currentBook.name.replace(/[《》]/g, '');
+    getPureBookName(fix: boolean) {
+        let fixedName: string;
+        
+        if (fix) {
+           fixedName = this.state.currentBook.name.replace(/[《》]/g, '');
+        } else {
+            fixedName = this.state.currentBook.name;
+        }
 
-        return fixedName.split('.')[0];
+        const arr = fixedName.split('.');
+
+        if (arr.length > 1) {
+            arr.pop();
+
+            return arr.join('.');
+        } else {
+            return arr[0];
+        }
     }
 
     getToShareText() {
@@ -306,7 +320,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
 
     onShareClick(network: Network) {
         const config: NetworkOption = {
-            title: `${this.getToShareText()} #${this.getPureBookName()}#`
+            title: `${this.getToShareText()} #${this.getPureBookName(true)}#`
         };
         const url: string = generateUrl(network.url, config);
 
@@ -343,7 +357,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                     </div>
                 </div>
                 { this.state.paragraph && (
-                    <div className="paragrap-container">
+                    <div className="paragraph-container">
                         <div className="process">
                             <Slider defaultValue={this.state.paragraph.index}
                                 min={0} max={this.state.currentBook.paragraphCount}
@@ -360,8 +374,8 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                                     borderRadius: '0'
                                 }}/>
                         </div>
-                        <p className="paragrap-text">{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
-                        <p className="book-name">{ this.state.currentBook ? `-- ${this.state.currentBook.name.split('.')[0]}` : '' }</p>
+                        <p className="paragraph-text">{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
+                        <p className="book-name">{ this.state.currentBook ? `-- ${this.getPureBookName(false)}` : '' }</p>
                         <div className="share-icons">
                             { this.state.networks.map((network, index) => {
                                 const className: string = ['icon-share', `icon-share-${network.className}`].join(' ');
