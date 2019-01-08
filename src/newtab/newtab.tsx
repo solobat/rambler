@@ -360,7 +360,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                                     borderRadius: '0'
                                 }}/>
                         </div>
-                        <p>{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
+                        <p className="paragrap-text">{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
                         <p className="book-name">{ this.state.currentBook ? `-- ${this.state.currentBook.name.split('.')[0]}` : '' }</p>
                         <div className="share-icons">
                             { this.state.networks.map((network, index) => {
