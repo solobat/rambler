@@ -1,7 +1,8 @@
 body {
     background-color: var(--newtab-background-color);
-    font-family: "Microsoft Yahei", Avenir, "Segoe UI", "Hiragino Sans GB", STHeiti, "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif;
+    font-family: "PingFang SC","Helvetica Neue","Helvetica","Arial",sans-serif;
     box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
 
     * {
         box-sizing: inherit;
@@ -32,7 +33,6 @@ body {
     text-align: left;
     font-size: 14px;
     color: #fff;
-    letter-spacing: 1px;
     line-height: 1.5;
 }
 
