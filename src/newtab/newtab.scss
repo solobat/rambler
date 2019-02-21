@@ -27,9 +27,25 @@ body {
 }
 
 .top-right-tools {
+    display: flex;
     position: fixed;
     right: 10px;
     top: 10px;
+}
+
+.search-btn {
+    margin-right: 10px;
+
+    .icon-search {
+        display: block;
+        width: 20px;
+        height: 20px;
+        background: url(/img/icon/search.svg) no-repeat center center;
+        background-size: 20px 20px;
+        cursor: pointer;
+        color: #fff;
+        opacity: .3;
+    }
 }
 
 .color-selector {
@@ -49,6 +65,10 @@ body {
         height: 20px;
         cursor: pointer;
         margin-top: 5px;
+
+        &:first-of-type {
+            margin-top: 0;
+        }
     }
 
     .color-list {
