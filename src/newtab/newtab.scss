@@ -25,6 +25,36 @@ body {
     }
 }
 
+.top-right-tools {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+}
+
+.color-selector {
+    width: 50px;
+    opacity: .3;
+    transition: all 200ms ease-in;
+
+    &:hover {
+        opacity: 1;
+        .color-list {
+            display: block;
+        }
+    }
+
+    .color-box {
+        border: 1px solid #ccc;
+        height: 20px;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    .color-list {
+        display: none;
+    }
+}
+
 .paragraph-container {
     position: relative;
     width: 60vw;
@@ -92,33 +122,6 @@ body {
     font-style: italic;
     margin-right: 2em;
     opacity: .5;
-}
-
-.color-selector {
-    position: fixed;
-    right: 10px;
-    top: 10px;
-    width: 50px;
-    opacity: .3;
-    transition: all 200ms ease-in;
-
-    &:hover {
-        opacity: 1;
-        .color-list {
-            display: block;
-        }
-    }
-
-    .color-box {
-        border: 1px solid #ccc;
-        height: 20px;
-        cursor: pointer;
-        margin-top: 5px;
-    }
-
-    .color-list {
-        display: none;
-    }
 }
 
 .comment-container {

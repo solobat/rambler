@@ -342,19 +342,24 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 <Upload {...this.uploaderProps} className="file-uploader">
                     <a>{i18nMsg.uploadTxt}</a>
                 </Upload>
-                <div className="color-selector">
-                    <div className="current-color color-box" style={{
-                        background: this.state.currentBg
-                    }}></div>
-                    <div className="color-list">
-                        { SOLID_COLORS.map((color, index) => {
-                            return (
-                                <div className="color-box" style={{
-                                    background: color
-                                }} key={index} onClick={() => this.onColorBoxClick(color)}></div>
-                            )
-                        }) }
+                <div className="top-right-tools">
+                    <div className="search-btn">
+                        <i className="icon-search"></i>
                     </div>
+                    <div className="color-selector">
+                        <div className="current-color color-box" style={{
+                            background: this.state.currentBg
+                        }}></div>
+                        <div className="color-list">
+                            { SOLID_COLORS.map((color, index) => {
+                                return (
+                                    <div className="color-box" style={{
+                                        background: color
+                                    }} key={index} onClick={() => this.onColorBoxClick(color)}></div>
+                                )
+                            }) }
+                        </div>
+                    </div>                
                 </div>
                 { this.state.paragraph && (
                     <div className="paragraph-container">
