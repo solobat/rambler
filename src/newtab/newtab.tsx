@@ -28,7 +28,8 @@ interface AppState {
     commentText: string,
     comments: IComment[],
     networks: Network[],
-    selectedText: string
+    selectedText: string,
+    locked: boolean
 }
 
 declare global {
@@ -65,7 +66,8 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         commentText: '',
         comments: [],
         networks: getValidNetworks(),
-        selectedText: ''
+        selectedText: '',
+        locked: false
     }
 
     uploaderProps = {
@@ -333,6 +335,20 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         this.loadParagraphByIndex(newIndex, true);
     }
 
+    onLockClick() {
+        const locked = !this.state.locked;
+
+        this.setState({ locked });
+
+        if (locked) {
+            window.onbeforeunload = () => {
+                return 'locked by rambler';
+            };
+        } else {
+            window.onbeforeunload = null;
+        }
+    }
+
     render() {
         return (
             <div className="newtab-container">
@@ -415,6 +431,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                     </div>
                 ) }
                 <ToastContainer autoClose={3000} hideProgressBar={true}/>
+                <div className="lock-btn" onClick={() => this.onLockClick()}>
+                    { this.state.locked ? <i className="locked" /> : <i className="unlock" /> }
+                </div>
             </div>
         )
     }
