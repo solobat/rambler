@@ -22,4 +22,14 @@ export async function queryByIndex(bookId: number, index: number): Promise<Respo
     } else {
         return Promise.resolve(Response.error(Code.PARAMS_ERROR));
     }
-} 
+}
+
+export async function search(bookId: number,text: string): Promise<Response> {
+    if (bookId && text) {
+        const result = await paragraphService.search(bookId, text);
+
+        return Response.ok(result);
+    } else {
+        return Response.error(Code.PARAMS_ERROR);
+    }
+}

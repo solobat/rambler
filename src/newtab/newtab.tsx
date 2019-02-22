@@ -29,6 +29,9 @@ interface AppState {
     comments: IComment[],
     networks: Network[],
     selectedText: string,
+    searchBoxVisible: boolean,
+    searchText: string,
+    searchResults: IParagraph[],
     locked: boolean
 }
 
@@ -57,6 +60,8 @@ const KEY_CODE: KEYCODE = {
     NEXT: [39, 40]
 }
 
+let searchTimer;
+
 export default class NewTab extends React.Component<AppProps, AppState> {
     state = {
         currentBook: null,
@@ -67,6 +72,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         comments: [],
         networks: getValidNetworks(),
         selectedText: '',
+        searchBoxVisible: false,
+        searchText: '',
+        searchResults: [],
         locked: false
     }
 
@@ -105,10 +113,13 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         }
     }
 
+    searchIptRef = null
+
     commentIptRef = null
 
     constructor(props: AppProps, state: AppState) {
         super(props, state);
+        this.searchIptRef = React.createRef();
         this.commentIptRef = React.createRef();
     }
 
@@ -335,6 +346,48 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         this.loadParagraphByIndex(newIndex, true);
     }
 
+    onSearchBtnClick() {
+        const searchBoxVisible = !this.state.searchBoxVisible;
+
+        this.setState({
+            searchBoxVisible
+        });
+
+        requestAnimationFrame(() => {
+            if (searchBoxVisible) {
+                this.searchIptRef.current.focus();
+            }
+        });
+    }
+
+    onSearchBoxInput(event) {
+        clearTimeout(searchTimer);
+        const text = event.target.value;
+
+        searchTimer = setTimeout(() => {
+            paragraphController.search(this.state.currentBookId, text).then(resp => {
+                if (resp.code === Code.OK.code) {
+                    this.setState({
+                        searchResults: resp.data
+                    });
+                } else {
+                    this.setState({
+                        searchResults: []
+                    });
+                }
+            });
+        }, 300);
+    }
+
+    onSearchResultClick(result) {
+        this.setState({
+            paragraph: result,
+            searchBoxVisible: false,
+            searchText: '',
+            searchResults: []
+        });
+    }
+
     onLockClick() {
         const locked = !this.state.locked;
 
@@ -359,7 +412,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                     <a>{i18nMsg.uploadTxt}</a>
                 </Upload>
                 <div className="top-right-tools">
-                    <div className="search-btn">
+                    <div className="search-btn" onClick={() => this.onSearchBtnClick()}>
                         <i className="icon-search"></i>
                     </div>
                     <div className="color-selector">
@@ -377,6 +430,22 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                         </div>
                     </div>                
                 </div>
+                {
+                    this.state.searchBoxVisible ? (
+                        <div className="search-box">
+                            <input type="text" defaultValue={this.state.searchText} ref={this.searchIptRef}
+                                onInput={(event) => this.onSearchBoxInput(event) } />
+                            <div className="search-results">
+                                { this.state.searchResults.map((result, index) => {
+                                    return (
+                                        <div className="result-item" key={index}
+                                            onClick={() => this.onSearchResultClick(result)}>{ result.text }</div>
+                                    )
+                                }) }
+                            </div>
+                        </div>
+                    ) : ''
+                }
                 { this.state.paragraph && (
                     <div className="paragraph-container">
                         <div className="process">

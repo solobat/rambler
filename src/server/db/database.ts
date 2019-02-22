@@ -10,7 +10,7 @@ export class RamblerDatabase extends Dexie {
 
         this.version(1).stores({
             books: '++id, name, size, createTime, paragraphCount, mode, cursor',
-            paragraphs: '++id, [bookId+index], text, likeCount',
+            paragraphs: '++id, bookId, [bookId+index], text, likeCount',
             comments: '++id, [bookId+paragraphId], text, createTime'
         });
     }

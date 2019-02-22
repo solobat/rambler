@@ -22,6 +22,12 @@ export function queryByIndex(bookId: number, index: number) {
     });
 }
 
+export function search(bookId: number, text: string) {
+    return db.paragraphs.where({ bookId }).filter(paragraph => {
+        return paragraph.text.indexOf(text) !== -1;
+    }).toArray();
+}
+
 export function deleteByBookId(bookId: number) {
     return db.paragraphs.where('bookId').equals(bookId).delete();
 }
