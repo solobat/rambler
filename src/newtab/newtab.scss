@@ -222,10 +222,39 @@ body {
     }
 }
 
-.lock-btn {
+.bottom-right-tools {
+    display: flex;
     position: fixed;
     right: 10px;
     bottom: 10px;
+}
+
+.comment-btn {
+    opacity: .5;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    i {
+        display: block;
+        width: 30px;
+        height: 30px;
+        background: () no-repeat center center;
+        background-size: 30px 30px;
+        cursor: pointer;
+    }
+
+    .comment-enable {
+        background-image: url(/img/icon/comment.svg);
+    }
+
+    .comment-disable {
+        background-image: url(/img/icon/comment-disable.svg);
+    }
+}
+
+.lock-btn {
     opacity: .5;
 
     &:hover {
