@@ -10,7 +10,6 @@ import * as Code from '../server/common/code';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { SOLID_COLORS } from '../common/constant';
-import * as reactComposition from 'react-composition';
 import { BookMode } from '../server/enum/Book';
 import * as browser from 'webextension-polyfill';
 import { getRandomIndex } from '../util/common';
@@ -25,7 +24,6 @@ interface AppState {
     currentBookId: number,
     currentBg: string,
     paragraph: IParagraph,
-    commentText: string,
     comments: IComment[],
     networks: Network[],
     selectedText: string,
@@ -70,7 +68,6 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         currentBookId: 0,
         currentBg: window.localStorage.getItem('wallpaper') || '#5b7e91',
         paragraph: null,
-        commentText: '',
         comments: [],
         networks: getValidNetworks(),
         selectedText: '',
@@ -270,17 +267,12 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         this.commentIptRef.current.blur();
     }
 
-    onCommentChange(event) {
-        const value = event.target.value;
-
-        this.setState({ commentText: value });
-    }
-
     onCommentInputKeyPress(event) {
         if (event.key === 'Enter') {
-            const trimedCommentText = this.state.commentText.trim();
+            const trimedCommentText = event.target.value.trim();
 
             if (trimedCommentText) {
+                event.target.value = '';
                 commentController.saveComment(trimedCommentText, 
                     this.state.currentBookId, this.state.paragraph.id).then(resp => {
                         if (resp.code === Code.OK.code) {
@@ -289,9 +281,6 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                             toast.error(resp.message);
                         }
                     });
-                this.setState({
-                    commentText: ''
-                });
                 this.loadComments();
             }
         }
@@ -503,10 +492,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                         onMouseEnter={() => this.onCommentBoxMouseEnter()}
                         onMouseLeave={() => this.onCommentBoxMouseLeave()}>
                         <div className="comment-input-box">
-                            <input type="text" value={this.state.commentText}
-                                ref={this.commentIptRef}
-                                {...reactComposition({
-                                    onChange: this.onCommentChange.bind(this)})}
+                            <input type="text" ref={this.commentIptRef}
                                 onKeyPress={(event) => this.onCommentInputKeyPress(event)}/>
                         </div>
                         <div className="comments">
