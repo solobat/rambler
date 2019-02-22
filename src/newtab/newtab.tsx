@@ -57,7 +57,9 @@ interface KEYCODE {
 const KEY_CODE: KEYCODE = {
     REFRESH: [82],
     PREV: [37, 38],
-    NEXT: [39, 40]
+    NEXT: [39, 40],
+    OPEN_SEARCH_BOX: [70],
+    CLOSE_SEARCH_BOX: [27]
 }
 
 let searchTimer;
@@ -237,6 +239,10 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 this.showPrevParagraph(event.metaKey);
             } else if (KEY_CODE.NEXT.indexOf(keyCode) !== -1) {
                 this.showNextParagraph(event.metaKey);
+            } else if (KEY_CODE.OPEN_SEARCH_BOX.indexOf(keyCode) !== -1) {
+                this.openSearchBox();
+            } else if (KEY_CODE.CLOSE_SEARCH_BOX.indexOf(keyCode) !== -1) {
+                this.closeSearchBox();
             }
         }
     }
@@ -349,14 +355,28 @@ export default class NewTab extends React.Component<AppProps, AppState> {
     onSearchBtnClick() {
         const searchBoxVisible = !this.state.searchBoxVisible;
 
+        if (searchBoxVisible) {
+            this.openSearchBox();
+        } else {
+            this.closeSearchBox();
+        }
+    }
+
+    openSearchBox() {
         this.setState({
-            searchBoxVisible
+            searchBoxVisible: true
         });
 
         requestAnimationFrame(() => {
-            if (searchBoxVisible) {
-                this.searchIptRef.current.focus();
-            }
+            this.searchIptRef.current.focus();
+        });
+    }
+
+    closeSearchBox() {
+        this.setState({
+            searchBoxVisible: false,
+            searchText: '',
+            searchResults: []
         });
     }
 
@@ -381,11 +401,10 @@ export default class NewTab extends React.Component<AppProps, AppState> {
 
     onSearchResultClick(result) {
         this.setState({
-            paragraph: result,
-            searchBoxVisible: false,
-            searchText: '',
-            searchResults: []
+            paragraph: result
         });
+
+        this.closeSearchBox();
     }
 
     onLockClick() {
