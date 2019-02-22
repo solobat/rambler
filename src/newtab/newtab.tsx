@@ -116,12 +116,15 @@ export default class NewTab extends React.Component<AppProps, AppState> {
 
     searchIptRef = null
 
+    paragraphRef = null
+
     commentIptRef = null
 
     constructor(props: AppProps, state: AppState) {
         super(props, state);
         this.searchIptRef = React.createRef();
         this.commentIptRef = React.createRef();
+        this.paragraphRef = React.createRef();
     }
 
     loadBook(bookId) {
@@ -183,6 +186,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                     paragraph: resp.data
                 });
                 this.loadComments();
+                requestAnimationFrame(() => {
+                    this.paragraphRef.current.scrollTo(0, 0);
+                });
             } else {
                 toast.error(resp.message);
             }
@@ -482,7 +488,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                                     borderRadius: '0'
                                 }}/>
                         </div>
-                        <p className="paragraph-text">{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
+                        <p className="paragraph-text" ref={this.paragraphRef}>{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
                         <p className="book-name">{ this.state.currentBook ? `-- ${this.getPureBookName(false)}` : '' }</p>
                         <div className="share-icons">
                             { this.state.networks.map((network, index) => {
