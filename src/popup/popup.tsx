@@ -13,6 +13,8 @@ interface AppState {
     bookList: IBook[]
 }
 
+const newTabUrl = chrome.extension.getURL('newtab.html');
+
 export default class Popup extends React.Component<AppProps, AppState> {
     state = {
         currentBookId: 0,
@@ -71,6 +73,12 @@ export default class Popup extends React.Component<AppProps, AppState> {
     render() {
         return (
             <div className="popupContainer">
+                <div className="app-title">
+                    <a className="logo-wrap" href={ newTabUrl } target="_blank">
+                        <i className="icon-app"></i>
+                        <div className="text">Rambler</div>
+                    </a>
+                </div>
                 <BookList currentId={this.state.currentBookId}
                     list={this.state.bookList} onBookClick={this.onBookClick.bind(this)}
                     onBookDeleteClick={this.onBookDeleteClick.bind(this)}

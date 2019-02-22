@@ -17,7 +17,33 @@ body {
     min-height: 100px;
     justify-content: center;
     width: 300px;
-    padding: 20px;
+    padding: 10px;
+}
+
+.app-title {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ededed;
+
+    .logo-wrap {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        text-decoration: none;
+
+        .text {
+            margin-left: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+    }
+
+    .icon-app {
+        display: block;
+        background: url(/img/icon/icon128.png) no-repeat center center;
+        background-size: 30px 30px;
+        width: 30px;
+        height: 30px;
+    }
 }
 
 .book-item {
