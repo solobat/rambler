@@ -66,13 +66,20 @@ body {
         cursor: pointer;
         margin-top: 5px;
 
-        &:first-of-type {
+        &.current-color {
             margin-top: 0;
         }
     }
 
     .color-list {
         display: none;
+    }
+
+    .custom-color {
+        border: 0;
+        padding: 2px;
+        width: 100%;
+        height: 100%;
     }
 }
 

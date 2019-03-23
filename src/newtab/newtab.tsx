@@ -227,7 +227,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
     }
 
     isKeyValid(target) {
-        if (target.closest('.comment-container')) {
+        if (target.closest('.comment-container') || target.closest('.color-selector')) {
             return false;
         } else {
             return true;
@@ -259,12 +259,16 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         });
     }
 
-    onColorBoxClick(color) {
+    setBgColor(color) {
         window.localStorage.setItem('wallpaper', color);
         this.setState({
             currentBg: color
         });
         window.ramblerApi.initTheme();
+    }
+
+    onColorBoxClick(color) {
+        this.setBgColor(color);
     }
 
     onCommentBoxMouseEnter() {
@@ -426,6 +430,16 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         });
     }
 
+    onCustomColorEnter(event) {
+        if (event.key === 'Enter') {
+            const color = event.target.value;
+
+            if (color.match(/^#[a-fA-F0-9]{3,6}$/)) {
+                this.setBgColor(color);
+            }
+        }
+    }
+
     render() {
         return (
             <div className="newtab-container">
@@ -451,6 +465,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                                     }} key={index} onClick={() => this.onColorBoxClick(color)}></div>
                                 )
                             }) }
+                            <div className="color-box">
+                                <input type="text" className="custom-color" onKeyPress={(event) => this.onCustomColorEnter(event)}/>
+                            </div>
                         </div>
                     </div>                
                 </div>
