@@ -458,6 +458,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                             background: this.state.currentBg
                         }}></div>
                         <div className="color-list">
+                            <div className="color-box">
+                                <input type="text" className="custom-color" onKeyPress={(event) => this.onCustomColorEnter(event)}/>
+                            </div>
                             { SOLID_COLORS.map((color, index) => {
                                 return (
                                     <div className="color-box" style={{
@@ -465,9 +468,6 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                                     }} key={index} onClick={() => this.onColorBoxClick(color)}></div>
                                 )
                             }) }
-                            <div className="color-box">
-                                <input type="text" className="custom-color" onKeyPress={(event) => this.onCustomColorEnter(event)}/>
-                            </div>
                         </div>
                     </div>                
                 </div>
