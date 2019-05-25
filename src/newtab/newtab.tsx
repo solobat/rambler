@@ -31,7 +31,9 @@ interface AppState {
     searchText: string,
     searchResults: IParagraph[],
     locked: boolean,
-    allowComment: boolean
+    allowComment: boolean,
+    history: Number[],
+    cursor: Number
 }
 
 declare global {
@@ -55,11 +57,14 @@ interface KEYCODE {
 
 const KEY_CODE: KEYCODE = {
     REFRESH: [82],
-    PREV: [37, 38],
-    NEXT: [39, 40],
+    PREV: [37, 38, 75],
+    NEXT: [39, 40, 74],
     OPEN_SEARCH_BOX: [70],
-    CLOSE_SEARCH_BOX: [27]
+    CLOSE_SEARCH_BOX: [27],
+    BACK: [66],
+    FORWARD: [78]
 }
+const MAX_HISTORY_LENGTH = 1024;
 
 let searchTimer;
 
@@ -76,7 +81,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         searchText: '',
         searchResults: [],
         locked: false,
-        allowComment: false
+        allowComment: false,
+        history: [],
+        cursor: 0
     }
 
     uploaderProps = {
@@ -173,11 +180,27 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         });
     }
 
-    loadParagraphByIndex(index: number, shouldRecord: boolean) {
+    addHistory(index: number) {
+        const history = this.state.history;
+
+        if (history.length > MAX_HISTORY_LENGTH) {
+            history.shift();
+        }
+        history.push(index);
+        this.setState({
+            cursor: history.length
+        });
+    }
+
+    loadParagraphByIndex(index: number, shouldRecord: boolean, history = true) {
         const fixedIndex = this.getFixedParagraphIndex(index);
 
         if (shouldRecord && this.state.currentBook.mode === BookMode.INORDER) {
             this.recordCursor(fixedIndex);
+        }
+
+        if (history) {
+            this.addHistory(fixedIndex);
         }
 
         paragraphController.queryByIndex(this.state.currentBookId, fixedIndex).then(resp => {
@@ -234,6 +257,33 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         }
     }
 
+    getFixedCursor(index: number): number {
+        let fixedIndex = index;
+        const count = this.state.history.length;
+
+        if (index < 0) {
+            fixedIndex = 0;
+        } else if (index >= count - 1) {
+            fixedIndex = count - 1;
+        }
+
+        return fixedIndex;
+    }
+
+    goback() {
+        const cursor = this.getFixedCursor(this.state.cursor - 1);
+
+        this.loadParagraphByIndex(this.state.history[cursor], true, false);
+        this.state.cursor = cursor;
+    }
+
+    goforward() {
+        const cursor = this.getFixedCursor(this.state.cursor + 1);
+
+        this.loadParagraphByIndex(this.state.history[cursor], true, false);
+        this.state.cursor = cursor;
+    }
+
     handleKeyDown(event) {
         const keyCode = event.keyCode;
 
@@ -248,6 +298,10 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 this.openSearchBox();
             } else if (KEY_CODE.CLOSE_SEARCH_BOX.indexOf(keyCode) !== -1) {
                 this.closeSearchBox();
+            } else if (KEY_CODE.BACK.indexOf(keyCode) !== -1) {
+                this.goback();
+            } else if (KEY_CODE.FORWARD.indexOf(keyCode) !== -1) {
+                this.goforward();
             }
         }
     }
