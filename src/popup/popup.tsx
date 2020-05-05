@@ -79,15 +79,29 @@ export default class Popup extends React.Component<AppProps, AppState> {
                         <div className="text">Rambler</div>
                     </a>
                 </div>
-                <BookList currentId={this.state.currentBookId}
+                { this.state.bookList.length ? <BookList currentId={this.state.currentBookId}
                     list={this.state.bookList} onBookClick={this.onBookClick.bind(this)}
                     onBookDeleteClick={this.onBookDeleteClick.bind(this)}
-                    onBookOrderClick={this.onBookOrderClick.bind(this)}></BookList>
+                    onBookOrderClick={this.onBookOrderClick.bind(this)}></BookList> : 
+                    <NoData />
+                }
+                
             </div>
         )
     }
 }
 
+function NoData () {
+    const onClick = () => {
+        window.open(newTabUrl)
+    }
+    return (
+        <div className="nodata">
+            <div className="msg">No Data</div>
+            <button onClick={onClick} className="btn-add">+ Add Book</button>
+        </div>
+    )
+}
 
 interface BookListProps {
     list: IBook[],
