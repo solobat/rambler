@@ -306,10 +306,20 @@ export default class NewTab extends React.Component<AppProps, AppState> {
         }
     }
 
+    setDefaultBook() {
+        bookController.setDefaultBook().then(bid => {
+            window.location.reload()
+        })
+    }
+
     componentDidMount() {
         bookController.getCurrentBook().then(id => {
-            this.loadBook(id);
-            document.addEventListener("keydown", this.handleKeyDown.bind(this));
+            if (id) {
+                this.loadBook(id);
+                document.addEventListener("keydown", this.handleKeyDown.bind(this));
+            } else {
+                this.setDefaultBook();
+            }
         });
     }
 

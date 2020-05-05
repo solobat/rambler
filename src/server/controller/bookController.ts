@@ -5,6 +5,7 @@ import { STORAGE_LOCAL } from '../../common/constant';
 import Response from '../common/response';
 import * as Code from '../common/code';
 import { IBook, IParagraph, db } from '../db/database';
+import TheFirstAndLastFreedom from '../../assets/text/The-first-and-last-freedom';
 
 export async function saveBook(file: File, paragraphs: string[]): Promise<Response> {
     if (file && paragraphs && paragraphs.length > 0) {
@@ -24,6 +25,18 @@ export async function saveBook(file: File, paragraphs: string[]): Promise<Respon
     } else {
         return Response.error(Code.PARAMS_ERROR);
     }
+}
+
+export async function setDefaultBook() {
+    const bid = await bookService.saveDefault()
+
+    if (bid) {
+        await paragraphService.bulkSave(bid, TheFirstAndLastFreedom)
+        await browser.storage.local.set({
+            [STORAGE_LOCAL.CURRENT_BOOK_ID]: bid
+        })
+    }
+    return Response.ok(bid);
 }
 
 export async function info(id: number): Promise<Response> {
