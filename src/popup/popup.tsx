@@ -48,6 +48,7 @@ export default class Popup extends React.Component<AppProps, AppState> {
         });
         bookController.setCurrentBook(book.id).then(() => {
             console.log('save successfully!');
+            window.open(newTabUrl)
         });
     }
 
