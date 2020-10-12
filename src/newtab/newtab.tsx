@@ -603,9 +603,6 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 ) }
                 <ToastContainer autoClose={3000} hideProgressBar={true}/>
                 <div className="bottom-right-tools">
-                    <div className="lock-btn" onClick={() => this.onLockClick()}>
-                        { this.state.locked ? <i className="locked" /> : <i className="unlock" /> }
-                    </div>
                     <div className="comment-btn" onClick={() => this.onCommentBtnClick()}>
                         { this.state.allowComment ? <i className="comment-enable"></i> :
                             <i className="comment-disable"></i> }
