@@ -44,7 +44,11 @@ module.exports = {
             loader: "css-loader" // Translates CSS into CommonJS
           },
           {
-            loader: "sass-loader" // Compiles Sass to CSS
+            loader: "sass-loader",
+            options: {
+              implementation: require("sass")//使用dart-sass代替node-sass
+            }
+             // Compiles Sass to CSS
           }
         ]
       }

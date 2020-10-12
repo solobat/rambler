@@ -85,11 +85,11 @@ body {
 
 .search-box {
     position: fixed;
-    top: 100px;
+    top: 150px;
     left: 50%;
-    margin-left: -30vw;
+    margin-left: -35vw;
     background-color: var(--newtab-background-color);
-    width: 60vw;
+    width: 70vw;
     height: 400px;
     z-index: 100;
 
@@ -127,16 +127,18 @@ body {
 
 .paragraph-container {
     position: relative;
-    width: 60vw;
-    margin: 100px auto 0;
+    width: 70vw;
+    margin: 150px auto 0;
     text-align: left;
-    font-size: 14px;
-    color: #fff;
-    line-height: 1.5;
+    color: #d0d3d8;
 }
 
 .paragraph-text {
-    height: 150px;
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: PingFang SC,-apple-system,SF UI Text,Lucida Grande,STheiti,Microsoft YaHei,sans-serif;
+    text-align: justify;
+    max-height: 400px;
     overflow: auto;
 }
 
@@ -293,7 +295,7 @@ body {
 
 /* scrollbar styles */
 ::-webkit-scrollbar {
-    width: 2px;
+    width: 4px;
     height: 8px;
 }
 
