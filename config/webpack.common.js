@@ -3,6 +3,7 @@ const path = require("path");
 module.exports = {
   entry: {
     newtab: path.join(__dirname, "../src/newtab/index.tsx"),
+    options: path.join(__dirname, "../src/options/index.tsx"),
     popup: path.join(__dirname, "../src/popup/index.tsx"),
     eventPage: path.join(__dirname, "../src/eventPage.ts")
   },
