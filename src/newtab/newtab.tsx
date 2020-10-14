@@ -553,19 +553,6 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 }
                 { this.state.paragraph && (
                     <div className="paragraph-container">
-                        <p className="paragraph-text" ref={this.paragraphRef}>{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
-                        <p className="book-name">{ this.state.currentBook ? `-- ${this.getPureBookName(false)}` : '' }</p>
-                        <div className="share-icons">
-                            { this.state.networks.map((network, index) => {
-                                const className: string = ['icon-share', `icon-share-${network.className}`].join(' ');
-
-                                return (
-                                    <i className={className} key={index}
-                                        onMouseEnter={() => this.onShareHover()}
-                                        onClick={() => this.onShareClick(network)}></i>
-                                )
-                            }) }
-                        </div>
                         <div className="process">
                             <Slider defaultValue={this.state.paragraph.index}
                                 min={0} max={this.state.currentBook.paragraphCount}
@@ -581,6 +568,19 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                                 handleStyle={{
                                     borderRadius: '0'
                                 }}/>
+                        </div>
+                        <p className="paragraph-text" ref={this.paragraphRef}>{ this.state.paragraph ? this.state.paragraph.text : '' }</p>
+                        <p className="book-name">{ this.state.currentBook ? `-- ${this.getPureBookName(false)}` : '' }</p>
+                        <div className="share-icons">
+                            { this.state.networks.map((network, index) => {
+                                const className: string = ['icon-share', `icon-share-${network.className}`].join(' ');
+
+                                return (
+                                    <i className={className} key={index}
+                                        onMouseEnter={() => this.onShareHover()}
+                                        onClick={() => this.onShareClick(network)}></i>
+                                )
+                            }) }
                         </div>
                     </div>
                 )}
