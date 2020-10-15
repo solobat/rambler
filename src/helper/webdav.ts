@@ -106,7 +106,6 @@ async function getClient() {
 }
 
 function getDataFullFileName() {
-  console.log("getDataFullFileName -> dayjs", dayjs)
   const suffix = dayjs().format('YYYY-MM-DD');
 
   return `${ROOT_PATH}/rambler-export_${suffix}_${getCuid()}.json`

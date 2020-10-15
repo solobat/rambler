@@ -32,7 +32,7 @@ export async function setDefaultBook() {
 
     if (bid) {
         await paragraphService.bulkSave(bid, TheFirstAndLastFreedom)
-        await browser.storage.local.set({
+        await browser.storage.sync.set({
             [STORAGE_LOCAL.CURRENT_BOOK_ID]: bid
         })
     }
@@ -81,13 +81,13 @@ export async function getList() {
 }
 
 export function setCurrentBook(bookId: number) {
-    return browser.storage.local.set({
+    return browser.storage.sync.set({
         [STORAGE_LOCAL.CURRENT_BOOK_ID]: bookId
     });
 }
 
 export function getCurrentBook(): Promise<number> {
-    return browser.storage.local.get(STORAGE_LOCAL.CURRENT_BOOK_ID).then(resp => {
+    return browser.storage.sync.get(STORAGE_LOCAL.CURRENT_BOOK_ID).then(resp => {
         return resp[STORAGE_LOCAL.CURRENT_BOOK_ID];
     });
 }
