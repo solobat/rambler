@@ -259,15 +259,13 @@ body {
 }
 
 ::-webkit-scrollbar-track-piece {
-    -webkit-border-radius: 0;
+    border-radius: 0;
     background-color: rgba(0, 0, 0, 0);
 }
 
 ::-webkit-scrollbar-thumb {
     width: 50px;
-
-    -webkit-border-radius: 8px;
-    outline: 1px solid #ccc;
+    border-radius: 8px;
     background-color: rgba(0, 0, 0, 0.3);
 }
 
