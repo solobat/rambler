@@ -2,6 +2,7 @@ import { db } from '../server/db/database'
 import { exportDB, importInto } from "dexie-export-import"
 import download from 'downloadjs'
 import dayjs from 'dayjs'
+import { throttle } from 'lodash'
 
 export async function exportAndDownload() {
   const blob = await exportDB(db)
@@ -35,12 +36,13 @@ export function onDbUpdate(callback) {
   const dbNames = ['books', 'paragraphs', 'comments']
   const eventNames = ['creating', 'updating', 'deleting']
   const unbindFns = [];
+  const cb = throttle(callback, 1000);
 
   dbNames.forEach(name => {
     eventNames.forEach(event => {
-      db[name].hook(event, callback)
+      db[name].hook(event, cb)
       unbindFns.push(() => {
-        db[name].hook(event).unsubscribe(callback);
+        db[name].hook(event).unsubscribe(cb);
       });
     });
   });

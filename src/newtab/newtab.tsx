@@ -9,13 +9,16 @@ import { IBook, IParagraph, IComment } from '../server/db/database';
 import * as Code from '../server/common/code';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import { SOLID_COLORS } from '../common/constant';
+import { APP_ACTIONS, SOLID_COLORS } from '../common/constant';
 import { BookMode } from '../server/enum/Book';
 import * as browser from 'webextension-polyfill';
 import { getRandomIndex } from '../util/common';
 import { getValidNetworks, Network, generateUrl, NetworkOption } from '../common/socialShare';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import { onDbUpdate } from '../helper/db.helper';
+import { isAutoSync } from '../helper/sync';
+import { noticeBg } from '../helper/event';
 
 interface AppProps {}
 
@@ -319,6 +322,13 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 document.addEventListener("keydown", this.handleKeyDown.bind(this));
             } else {
                 this.setDefaultBook();
+            }
+        });
+        onDbUpdate(() => {
+            if (isAutoSync()) {
+              noticeBg({
+                action: APP_ACTIONS.START_SYNC
+              })
             }
         });
     }
