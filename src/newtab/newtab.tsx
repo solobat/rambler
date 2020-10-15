@@ -19,6 +19,7 @@ import 'rc-slider/assets/index.css';
 import { onDbUpdate } from '../helper/db.helper';
 import { isAutoSync } from '../helper/sync';
 import { noticeBg } from '../helper/event';
+import { CommentOutlined } from '@ant-design/icons';
 
 interface AppProps {}
 
@@ -599,7 +600,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                         onMouseEnter={() => this.onCommentBoxMouseEnter()}
                         onMouseLeave={() => this.onCommentBoxMouseLeave()}>
                         <div className="comment-input-box">
-                            <input type="text" ref={this.commentIptRef}
+                            <input type="text" ref={this.commentIptRef} placeholder="comment here"
                                 onKeyPress={(event) => this.onCommentInputKeyPress(event)}/>
                         </div>
                         <div className="comments">
@@ -613,10 +614,9 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                 ) }
                 <ToastContainer autoClose={3000} hideProgressBar={true}/>
                 <div className="bottom-right-tools">
-                    <div className="comment-btn" onClick={() => this.onCommentBtnClick()}>
-                        { this.state.allowComment ? <i className="comment-enable"></i> :
-                            <i className="comment-disable"></i> }
-                    </div>
+                    <CommentOutlined style={{color: "#fff", fontSize: "20px"}}
+                        className={["icon-comment", this.state.allowComment ? 'icon-comment-enable' : 'icon-comment-disable'].join(' ')}
+                        onClick={() => this.onCommentBtnClick()} />
                 </div>
             </div>
         )
