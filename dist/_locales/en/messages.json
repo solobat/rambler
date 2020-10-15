@@ -11,6 +11,9 @@
     "upload_ok": {
         "message": "Upload successfully!"
     },
+    "comment_here": {
+        "message": "Comment here"
+    },
     "save_ok": {
         "message": "Save successfully!"
     },

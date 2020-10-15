@@ -52,7 +52,8 @@ const style = `
 
 const i18nMsg = {
     uploadTxt: chrome.i18n.getMessage('upload_txt'),
-    uploadDone: chrome.i18n.getMessage('upload_ok')
+    uploadDone: chrome.i18n.getMessage('upload_ok'),
+    commentHere: chrome.i18n.getMessage('comment_here'),
 }
 
 interface KEYCODE {
@@ -600,7 +601,7 @@ export default class NewTab extends React.Component<AppProps, AppState> {
                         onMouseEnter={() => this.onCommentBoxMouseEnter()}
                         onMouseLeave={() => this.onCommentBoxMouseLeave()}>
                         <div className="comment-input-box">
-                            <input type="text" ref={this.commentIptRef} placeholder="comment here"
+                            <input type="text" ref={this.commentIptRef} placeholder={i18nMsg.commentHere}
                                 onKeyPress={(event) => this.onCommentInputKeyPress(event)}/>
                         </div>
                         <div className="comments">
