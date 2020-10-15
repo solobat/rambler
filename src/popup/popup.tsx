@@ -5,6 +5,10 @@ import * as bookController from '../server/controller/bookController';
 import * as Code from '../server/common/code';
 import Book from '../server/model/Book';
 import { BookMode } from '../server/enum/Book';
+import { onDbUpdate } from '../helper/db.helper';
+import { isAutoSync } from '../helper/sync';
+import { noticeBg } from '../helper/event';
+import { APP_ACTIONS } from '../common/constant';
 
 interface AppProps {}
 
@@ -39,6 +43,13 @@ export default class Popup extends React.Component<AppProps, AppState> {
     componentDidMount() {
         bookController.getCurrentBook().then(id => {
             this.loadBook(id);
+        });
+        onDbUpdate(() => {
+            if (isAutoSync()) {
+              noticeBg({
+                action: APP_ACTIONS.START_SYNC
+              })
+            }
         });
     }
 
