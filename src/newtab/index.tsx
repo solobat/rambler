@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import NewTab from './newtab';
+import App from './newtab';
 
 document.addEventListener('DOMContentLoaded', function() {
-    ReactDOM.render(<NewTab />, document.getElementById('main'));
+    ReactDOM.render(<App />, document.getElementById('main'));
 });
