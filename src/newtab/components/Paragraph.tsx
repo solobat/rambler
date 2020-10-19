@@ -9,7 +9,7 @@ import { ADD_HISTORY, SET_CURSOR } from '../redux/actionTypes';
 
 export default function Paragraph() {
   const dispatch = useDispatch();
-  const { paragraph, currentBook } = useSelector((state: RootState) => state.readers);
+  const { paragraph, currentBook, cursor } = useSelector((state: RootState) => state.readers);
   const paragraphRef = useRef();
   const onSlideChange = useCallback((newIndex) => {
     dispatch({ type: SET_CURSOR, payload: newIndex });
@@ -24,6 +24,7 @@ export default function Paragraph() {
       <div className="process">
         <Slider
           defaultValue={paragraph.index}
+          value={cursor}
           min={0}
           max={currentBook.paragraphCount}
           onAfterChange={onSlideChange}
