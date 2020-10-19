@@ -27,7 +27,7 @@ export default function Paragraph() {
           value={cursor}
           min={0}
           max={currentBook.paragraphCount}
-          onAfterChange={onSlideChange}
+          onChange={onSlideChange}
           railStyle={{
             height: '2px',
             borderRadius: '0',
