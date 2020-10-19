@@ -27,7 +27,8 @@ export const APP_ACTIONS = {
 
 export const STORAGE_KEYS = {
     SYNC_INTERVAL: 'sync_interval',
-    AUTO_SYNC: 'auto_sync'
+    AUTO_SYNC: 'auto_sync',
+    ALLOW_COMMENT: 'allow_comment'
 }
 
 export const SYNC_INTERVAL_OPTIONS = [
