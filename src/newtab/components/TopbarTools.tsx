@@ -10,7 +10,8 @@ import { UPDATE_SEARCHBOX_VISIBLE } from '../redux/actionTypes';
 export default function TopbarTools() {
   const dispatch = useDispatch();
   const searchBoxVisible = useSelector((state: RootState) => state.search.searchBoxVisible);
-  const [currentBg, setCurrentBg] = useLocalStorageState('wallpaper', '#5b7e91');
+  const defaultBg = localStorage.getItem('wallpaper') || '#5b7e91'
+  const [currentBg, setCurrentBg] = useLocalStorageState('wallpaper', defaultBg);
   const onColorChange = (color) => {
     setCurrentBg(color);
     setBgColor(color);
