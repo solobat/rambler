@@ -1,7 +1,6 @@
-import { createContext } from 'react';
 import { IBook, IParagraph } from '../server/db/database';
 import * as bookController from '../server/controller/bookController';
-import { KEYCODE, ReducerState } from './types';
+import { KEYCODE } from './types';
 import * as Code from '../server/common/code';
 import { BookMode } from '../server/enum/Book';
 import { getRandomIndex } from '../util/common';

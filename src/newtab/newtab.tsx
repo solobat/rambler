@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback, useContext, useEffect, useReducer } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './redux/store';
 import { ToastContainer } from 'react-toastify';
