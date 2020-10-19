@@ -29,6 +29,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
     "@types/lodash": "^4.14.149",
+    "@types/react-redux": "^7.1.9",
     "ahooks": "^2.7.0",
     "antd": "^4.1.4",
     "cuid": "^2.1.8",
@@ -42,7 +43,9 @@
     "react": "^16.8.0",
     "react-composition": "^0.2.2",
     "react-dom": "^16.8.0",
+    "react-redux": "^7.2.1",
     "react-toastify": "^4.4.3",
+    "redux": "^4.0.5",
     "webdav": "^3.3.0",
     "webextension-polyfill": "^0.3.1"
   }

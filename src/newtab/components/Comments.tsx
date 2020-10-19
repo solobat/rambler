@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { AppContext, i18nMsg } from "../newtab.helper";
+import { i18nMsg } from "../newtab.helper";
 import * as commentController from '../../server/controller/commentController';
 import * as Code from '../../server/common/code';
 import { toast } from 'react-toastify';
 import { IComment } from "../../server/db/database";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/reducers';
 
 export default function Comments() {
-  const { state, dispatch } = useContext(AppContext);
-  const { currentBookId, paragraph } = state;
+  const { currentBookId, paragraph } = useSelector((state: RootState) => state.readers);
   const commentIptRef = useRef();
   const [comments, setComments] = useState<IComment[]>([]);
   const onCommentBoxMouseEnter = () => {};

@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useCallback, useContext, useEffect, useReducer } from 'react';
+import { Provider, useDispatch, useSelector } from "react-redux";
+import store from "./redux/store";
 import { ToastContainer } from 'react-toastify';
 import { useEventListener } from 'ahooks';
 
@@ -15,35 +17,44 @@ import Comments from './components/Comments';
 import Paragraph from './components/Paragraph';
 import BottombarTools from './components/BottombarTools';
 
-import { keydownEventHandler, initialState, reducer, loadBook, 
-    loadParagraph, initBook, ACTIONS, recordCursor, AppContext } from './newtab.helper';
+import { keydownEventHandler, loadBook, loadParagraph,
+    initBook, recordCursor } from './newtab.helper';
 
 import 'react-toastify/dist/ReactToastify.css'
 import 'rc-slider/assets/index.css';
 import './newtab.scss';
+import { RootState } from './redux/reducers';
+import { RESET_HISTORY } from './redux/actionTypes';
 
 declare global {
     interface Window { ramblerApi: any; }
 }
 
-export default function App() {
-    const [state, dispatch] = useReducer(reducer, initialState);
+export default function Root() {
     return (
-        <AppContext.Provider value={{state, dispatch}}>
-            <div className="newtab-container">
-                <TxtUpload />
-                <TopbarTools />
-                <Container />
-                <ToastContainer autoClose={3000} hideProgressBar={true}/>
-                <BottombarTools />
-            </div>
-        </AppContext.Provider>
+        <Provider store={store}>
+            <App />
+        </Provider>
     )
 }
 
+function App () {
+    return (
+        <div className="newtab-container">
+            <TxtUpload />
+            <TopbarTools />
+            <Container />
+            <ToastContainer autoClose={3000} hideProgressBar={true}/>
+            <BottombarTools />
+        </div>
+    )
+} 
+
 function Container() {
-    const {state, dispatch} = useContext(AppContext);
-    const { paragraph, allowComment, currentBookId, cursor, currentBook, searchBoxVisible } = state;
+    const dispatch = useDispatch();
+    const { paragraph, currentBookId, cursor, currentBook } = useSelector((state: RootState) => state.readers);
+    const { allowComment } = useSelector((state: RootState) => state.comments);
+    const { searchBoxVisible } = useSelector((state: RootState) => state.search);
     const commentsVisible = paragraph && allowComment;
 
     useEffect(() => {
@@ -59,7 +70,7 @@ function Container() {
         }
     }, [currentBook, cursor]);
     useEffect(() => {
-        dispatch({ type: ACTIONS.RESET_HISTORY });
+        dispatch({ type: RESET_HISTORY });
     }, [currentBook]);
     
     useEffect(() => {

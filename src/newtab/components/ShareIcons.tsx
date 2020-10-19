@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { useCallback, useContext, useMemo, useState } from "react";
 import { generateUrl, getValidNetworks, Network, NetworkOption } from "../../common/socialShare";
-import { AppContext, getPureBookName } from "../newtab.helper";
+import { getPureBookName } from "../newtab.helper";
 import * as browser from 'webextension-polyfill';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/reducers';
 
 const networks = getValidNetworks();
 
 export default function ShareIcons() {
-  const { state } = useContext(AppContext);
-  const { paragraph, currentBook } = state;
+  const { paragraph, currentBook } = useSelector((state: RootState) => state.readers);
   const [selectedText, setSelectedText] = useState('');
   const sharedText = useMemo(() => {
       if (selectedText) {

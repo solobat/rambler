@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { useCallback, useContext, useRef, useState } from "react";
-import { ACTIONS, AppContext } from "../newtab.helper";
 import * as paragraphController from '../../server/controller/paragraphController';
 import * as Code from '../../server/common/code';
 import { IParagraph } from "../../server/db/database";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/reducers';
+import { ADD_HISTORY, SET_CURSOR, UPDATE_SEARCHBOX_VISIBLE } from '../redux/actionTypes';
 
 export default function SearchBox() {
-  const { state, dispatch } = useContext(AppContext);
-  const { currentBookId } = state;
+  const dispatch = useDispatch();
+  const currentBookId = useSelector((state: RootState) => state.readers.currentBookId);
   const [keywords, setKeywords] = useState('');
   const searchIptRef = useRef();
   const [timer, setTimer] = useState(0);
@@ -29,9 +31,9 @@ export default function SearchBox() {
       setTimer(t);
   }
   const onSearchResultClick = useCallback((result: IParagraph) => {
-      dispatch({ type: ACTIONS.UPDATE_SEARCHBOX_VISIBLE, payload: false, });
-      dispatch({ type: ACTIONS.SET_CURSOR, payload: result.index });
-      dispatch({ type: ACTIONS.ADD_HISTORY, payload: result.index });
+      dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: false, });
+      dispatch({ type: SET_CURSOR, payload: result.index });
+      dispatch({ type: ADD_HISTORY, payload: result.index });
   }, []);
 
   return (

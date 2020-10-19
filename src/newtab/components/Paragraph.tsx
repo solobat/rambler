@@ -1,16 +1,19 @@
 import * as React from 'react';
 import { useContext, useRef, useCallback, useMemo } from 'react';
-import { ACTIONS, AppContext, getPureBookName } from '../newtab.helper';
+import { getPureBookName } from '../newtab.helper';
 import ShareIcons from "./ShareIcons";
 import Slider from 'rc-slider';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/reducers';
+import { ADD_HISTORY, SET_CURSOR } from '../redux/actionTypes';
 
 export default function Paragraph() {
-    const {state, dispatch} = useContext(AppContext);
-    const { paragraph, currentBook } = state;
+    const dispatch = useDispatch();
+    const { paragraph, currentBook } = useSelector((state: RootState) => state.readers);
     const paragraphRef = useRef();
     const onSlideChange = useCallback((newIndex) => {
-        dispatch({ type: ACTIONS.SET_CURSOR, payload: newIndex });
-        dispatch({ type: ACTIONS.ADD_HISTORY, payload: newIndex });
+        dispatch({ type: SET_CURSOR, payload: newIndex });
+        dispatch({ type: ADD_HISTORY, payload: newIndex });
     }, []);
     const pureBookName = useMemo(() => {
         return getPureBookName(false, currentBook);

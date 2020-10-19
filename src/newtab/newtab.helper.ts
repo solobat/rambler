@@ -7,6 +7,8 @@ import { BookMode } from "../server/enum/Book";
 import { getRandomIndex } from "../util/common";
 import { toast } from 'react-toastify';
 import * as paragraphController from '../server/controller/paragraphController';
+import { Dispatch } from 'redux';
+import { SET_CURRENT_BOOK, SET_CURRENT_BOOKID, SET_CURSOR, SET_PARAGRAPH, UPDATE_SEARCHBOX_VISIBLE } from './redux/actionTypes';
 
 function isKeyValid(target) {
   if (target.closest('.comment-container') || target.closest('.color-selector')) {
@@ -24,17 +26,6 @@ const KEY_CODE: KEYCODE = {
   CLOSE_SEARCH_BOX: ['Escape'],
   BACK: ['b'],
   FORWARD: ['n']
-}
-
-export const ACTIONS = {
-  SET_CURRENT_BOOKID: 'setCurrentBookId',
-  SET_CURRENT_BOOK: 'setCurrentBook',
-  SET_PARAGRAPH: 'setParagraph',
-  SET_CURSOR: 'setCursor',
-  UPDATE_SEARCHBOX_VISIBLE: 'updateSearchboxVisible',
-  UPDATE_ALLOW_COMMENT: 'updateAllowComment',
-  RESET_HISTORY: 'resetHistory',
-  ADD_HISTORY: 'addHistory',
 }
 
 function getPrevParagraphIndex(paragraph: IParagraph, toHead: boolean) {
@@ -87,16 +78,16 @@ export function keydownEventHandler(event: React.KeyboardEvent, dispatch, curren
       } else if (KEY_CODE.PREV.indexOf(key) !== -1) {
           const index = getPrevParagraphIndex(paragraph, false);
 
-          dispatch({ type: ACTIONS.SET_CURSOR, payload: index });
+          dispatch({ type: SET_CURSOR, payload: index });
       } else if (KEY_CODE.NEXT.indexOf(key) !== -1) {
           const index = getNextParagraphIndex(paragraph, currentBook, false);
 
-          dispatch({ type: ACTIONS.SET_CURSOR, payload: index });
+          dispatch({ type: SET_CURSOR, payload: index });
       } else if (KEY_CODE.OPEN_SEARCH_BOX.indexOf(key) !== -1) {
           event.preventDefault();
-          dispatch({ type: ACTIONS.UPDATE_SEARCHBOX_VISIBLE, payload: true});
+          dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: true});
       } else if (KEY_CODE.CLOSE_SEARCH_BOX.indexOf(key) !== -1) {
-          dispatch({ type: ACTIONS.UPDATE_SEARCHBOX_VISIBLE, payload: false});
+          dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: false});
       } else if (KEY_CODE.BACK.indexOf(key) !== -1) {
           // this.goback();
 
@@ -139,67 +130,7 @@ export const i18nMsg = {
   commentHere: chrome.i18n.getMessage('comment_here'),
 }
 
-export const initialState: ReducerState = {
-  currentBookId: 0,
-  currentBook: null,
-  paragraph: null,
-  searchBoxVisible: false,
-  allowComment: false,
-  cursor: 0,
-  history: [],
-};
-
-const MAX_HISTORY_LENGTH = 1024;
-
-export const AppContext = createContext<{
-  state: ReducerState,
-  dispatch: React.Dispatch<any>;
-}>({
-  state: initialState,
-  dispatch: () => null
-});
-
-export function reducer(state: ReducerState, action) {
-  switch (action.type) {
-      case ACTIONS.SET_CURRENT_BOOKID:
-          state.currentBookId = action.payload;
-          return {...state};
-      case ACTIONS.SET_CURRENT_BOOK:
-          state.currentBook = action.payload;
-          return {...state};
-      case ACTIONS.SET_PARAGRAPH:
-          state.paragraph = action.payload;
-          return {...state};
-      case ACTIONS.SET_CURSOR:
-          state.cursor = action.payload;
-          return {...state};
-      case ACTIONS.UPDATE_SEARCHBOX_VISIBLE:
-          state.searchBoxVisible = action.payload;
-          return {...state};
-      case ACTIONS.UPDATE_ALLOW_COMMENT:
-          state.allowComment = action.payload;
-          return {...state};
-      case ACTIONS.RESET_HISTORY:
-          state.history = [];
-          return {...state};
-      case ACTIONS.ADD_HISTORY:
-          state.history = addHistory(state.history, action.payload);
-          return {...state};
-      default:
-          throw new Error();
-  }
-}
-
-function addHistory(history: number[], newItem: number): number[] {
-  if (history.length >= MAX_HISTORY_LENGTH) {
-    history.shift();
-  }
-  history.push(newItem);
-
-  return [...history];
-}
-
-export function loadBook(dispatch: React.Dispatch<any>, bookId: number) {
+export function loadBook(dispatch: Dispatch, bookId: number) {
   bookController.info(bookId).then(resp => {
     if (resp.code === Code.OK.code) {
         const book: IBook = resp.data;
@@ -212,11 +143,11 @@ export function loadBook(dispatch: React.Dispatch<any>, bookId: number) {
         }
 
         dispatch({
-            type: ACTIONS.SET_CURRENT_BOOK,
+            type: SET_CURRENT_BOOK,
             payload: book
         });
         dispatch({
-          type: ACTIONS.SET_CURSOR,
+          type: SET_CURSOR,
           payload: cursor
         })
     } else {
@@ -240,7 +171,7 @@ export function loadParagraph(dispatch: React.Dispatch<any>, currentBook: IBook,
   paragraphController.queryByIndex(currentBookId, fixedIndex).then(resp => {
       if (resp.code === Code.OK.code) {
           dispatch({
-              type: ACTIONS.SET_PARAGRAPH,
+              type: SET_PARAGRAPH,
               payload: resp.data
           });
           requestAnimationFrame(() => {
@@ -255,7 +186,7 @@ export function loadParagraph(dispatch: React.Dispatch<any>, currentBook: IBook,
 export function initBook(dispatch:  React.Dispatch<any>) {
   bookController.getCurrentBook().then(id => {
     if (id) {
-        dispatch({ type: ACTIONS.SET_CURRENT_BOOKID, payload: id });
+        dispatch({ type: SET_CURRENT_BOOKID, payload: id });
     } else {
         setDefaultBook();
     }

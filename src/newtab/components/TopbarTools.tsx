@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { useCallback, useContext } from "react";
 import { useLocalStorageState } from "ahooks";
-import { ACTIONS, AppContext, setBgColor } from "../newtab.helper";
+import { setBgColor } from "../newtab.helper";
 import { SOLID_COLORS } from "../../common/constant";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/reducers';
+import { UPDATE_SEARCHBOX_VISIBLE } from '../redux/actionTypes';
 
 export default function TopbarTools() {
-  const { dispatch, state } = useContext(AppContext);
-  const { searchBoxVisible } = state;
+  const dispatch = useDispatch();
+  const searchBoxVisible = useSelector((state: RootState) => state.search.searchBoxVisible);
   const [currentBg, setCurrentBg] = useLocalStorageState('wallpaper', '#5b7e91');
   const onColorChange = (color) => {
       setCurrentBg(color);
@@ -22,7 +25,7 @@ export default function TopbarTools() {
       }
   }
   const onSearchBtnClick = useCallback(() => {
-      dispatch({ type: ACTIONS.UPDATE_SEARCHBOX_VISIBLE, payload: !searchBoxVisible});
+      dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: !searchBoxVisible});
   }, [searchBoxVisible]);
 
   return (
