@@ -215,6 +215,13 @@ body {
         border: 0;
         margin: 0 auto;
         background: rgba(0, 0, 0, 0.1);
+        border: 1px solid transparent;
+        border-radius: 2px;
+        transform: all 300ms;
+
+        &:hover {
+            border-color: #666;
+        }
     }
 }
 

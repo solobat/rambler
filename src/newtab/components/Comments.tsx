@@ -10,10 +10,14 @@ import { RootState } from '../redux/reducers';
 
 export default function Comments() {
   const { currentBookId, paragraph } = useSelector((state: RootState) => state.readers);
-  const commentIptRef = useRef();
+  const commentIptRef = useRef<HTMLInputElement>();
   const [comments, setComments] = useState<IComment[]>([]);
-  const onCommentBoxMouseEnter = () => {};
-  const onCommentBoxMouseLeave = () => {};
+  const onCommentBoxMouseEnter = useCallback(() => {
+    commentIptRef.current.focus();
+  }, []);
+  const onCommentBoxMouseLeave = useCallback(() => {
+    commentIptRef.current.blur();
+  }, []);;
   const onCommentInputKeyPress = useCallback(
     (event) => {
       if (event.key === 'Enter') {
