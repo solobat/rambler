@@ -13,36 +13,27 @@ import Switch from 'antd/es/switch';
 const { Option } = Select;
 const { useForm } = Form;
 
-export default function() {
+export default function () {
   const [isConfiged, setConfiged] = useState(isWebDavConfiged());
   const onConfigSaved = useCallback(() => {
     setConfiged(true);
     noticeBg({
-      action: APP_ACTIONS.START_SYNC
+      action: APP_ACTIONS.START_SYNC,
     });
   }, []);
   const onReset = useCallback(() => {
     setConfiged(false);
     noticeBg({
-      action: APP_ACTIONS.STOP_SYNC
+      action: APP_ACTIONS.STOP_SYNC,
     });
   }, []);
 
-  return (
-    <div>
-      {
-        isConfiged ? 
-        <ResetConfig onReset={onReset}/> :
-        <FormConfig onSave={onConfigSaved}/>
-      }
-    </div>
-  )
+  return <div>{isConfiged ? <ResetConfig onReset={onReset} /> : <FormConfig onSave={onConfigSaved} />}</div>;
 }
 
 function ResetConfig(props) {
-  const url = getWebDavURL()
-  const [syncInterval, setSyncInterval] = useLocalStorageState(STORAGE_KEYS.SYNC_INTERVAL,
-    WEBDAV_MAX_SYNC_INTERVAL);
+  const url = getWebDavURL();
+  const [syncInterval, setSyncInterval] = useLocalStorageState(STORAGE_KEYS.SYNC_INTERVAL, WEBDAV_MAX_SYNC_INTERVAL);
   const [autoSync, setAutoSync] = useLocalStorageState(STORAGE_KEYS.AUTO_SYNC, 1);
 
   const onReset = useCallback(() => {
@@ -51,37 +42,39 @@ function ResetConfig(props) {
     props.onReset();
   }, []);
   const onIntervalChange = useCallback((value) => {
-    setSyncInterval(Number(value))
+    setSyncInterval(Number(value));
     noticeBg({
-      action: APP_ACTIONS.START_SYNC
-    })
+      action: APP_ACTIONS.START_SYNC,
+    });
   }, []);
   const onAutoSyncChange = useCallback((value) => {
     setAutoSync(Number(value));
   }, []);
 
   return (
-    <Form className="webdav-form" labelCol={{span: 5}}>
-      <Form.Item label="URL">
-        {url}
-      </Form.Item>
+    <Form className="webdav-form" labelCol={{ span: 5 }}>
+      <Form.Item label="URL">{url}</Form.Item>
       <Form.Item label="Sync Interval">
         <Select defaultValue={syncInterval} onChange={onIntervalChange}>
-          {
-            SYNC_INTERVAL_OPTIONS.map((opt, index) => {
-              return <Option value={opt.value} key={index}>{opt.label}</Option>
-            })
-          }
+          {SYNC_INTERVAL_OPTIONS.map((opt, index) => {
+            return (
+              <Option value={opt.value} key={index}>
+                {opt.label}
+              </Option>
+            );
+          })}
         </Select>
       </Form.Item>
       <Form.Item label="Auto Sync">
-          <Switch defaultChecked={autoSync === 1} onChange={onAutoSyncChange}></Switch>
+        <Switch defaultChecked={autoSync === 1} onChange={onAutoSyncChange}></Switch>
       </Form.Item>
       <Form.Item {...tailLayout}>
-        <Button onClick={onReset} type="primary">Reset</Button>
+        <Button onClick={onReset} type="primary">
+          Reset
+        </Button>
       </Form.Item>
     </Form>
-  )
+  );
 }
 
 const tailLayout = {
@@ -90,16 +83,15 @@ const tailLayout = {
 
 function FormConfig(props) {
   const [form] = useForm();
-  const onFinish = values => {
+  const onFinish = (values) => {
     initClientWithConfig(values).then(() => {
       saveConfig(values);
       props.onSave();
-    })
-  }
+    });
+  };
 
   return (
-    <Form form={form} name="config-webdav" onFinish={onFinish}
-      className="webdav-form" labelCol={{span: 5}}>
+    <Form form={form} name="config-webdav" onFinish={onFinish} className="webdav-form" labelCol={{ span: 5 }}>
       <Form.Item name="url" label="URL" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
@@ -115,5 +107,5 @@ function FormConfig(props) {
         </Button>
       </Form.Item>
     </Form>
-  )
+  );
 }

@@ -13,14 +13,14 @@ function initCuid() {
 function restoreCuid() {
   const id = window.localStorage.getItem(STORAGE_KEY);
 
-  return id
+  return id;
 }
 
 export function getCuid() {
   const id = restoreCuid();
 
   if (id) {
-    return id
+    return id;
   } else {
     return initCuid();
   }

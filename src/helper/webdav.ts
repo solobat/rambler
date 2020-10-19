@@ -1,4 +1,4 @@
-import { createClient } from "webdav/web";
+import { createClient } from 'webdav/web';
 import dayjs = require('dayjs');
 import { exportAsJson, importDBFile } from './db.helper';
 import { getCuid } from './cuid';
@@ -12,14 +12,11 @@ interface Config {
 }
 
 function configClient(config: Config) {
-  const { url, username, password } = config
-  const client = createClient(
-    url,
-    {
-      username,
-      password,
-    }
-  );
+  const { url, username, password } = config;
+  const client = createClient(url, {
+    username,
+    password,
+  });
 
   return client;
 }
@@ -33,14 +30,14 @@ function restoreConfig(): Config | null {
     try {
       return JSON.parse(str);
     } catch (error) {
-      return
+      return;
     }
   } else {
     return null;
   }
 }
 
-export function removeWebDavConfig () {
+export function removeWebDavConfig() {
   localStorage.removeItem(WEBDAV_CONFIG_KEY);
   webDavClient = null;
 }
@@ -49,9 +46,9 @@ export function getWebDavURL(): string {
   const config = restoreConfig();
 
   if (config) {
-    return config.url 
+    return config.url;
   } else {
-    return ''
+    return '';
   }
 }
 
@@ -59,7 +56,7 @@ export function isWebDavConfiged(): boolean {
   const config = restoreConfig();
 
   if (config) {
-    return true
+    return true;
   } else {
     return false;
   }
@@ -68,9 +65,7 @@ export function isWebDavConfiged(): boolean {
 export function saveConfig(config: Config) {
   try {
     localStorage.setItem(WEBDAV_CONFIG_KEY, JSON.stringify(config));
-  } catch (error) {
-
-  }
+  } catch (error) {}
 }
 
 const ROOT_PATH: string = '/rambler';
@@ -79,7 +74,7 @@ export async function initClientWithConfig(config: Config) {
   const client = configClient(config);
 
   try {
-    if (await client.exists(ROOT_PATH) === false) {
+    if ((await client.exists(ROOT_PATH)) === false) {
       await client.createDirectory(ROOT_PATH);
     }
 
@@ -93,7 +88,7 @@ export async function initClientWithConfig(config: Config) {
 
 async function getClient() {
   if (webDavClient) {
-    return webDavClient
+    return webDavClient;
   } else {
     const config = restoreConfig();
 
@@ -108,7 +103,7 @@ async function getClient() {
 function getDataFullFileName() {
   const suffix = dayjs().format('YYYY-MM-DD');
 
-  return `${ROOT_PATH}/rambler-export_${suffix}_${getCuid()}.json`
+  return `${ROOT_PATH}/rambler-export_${suffix}_${getCuid()}.json`;
 }
 
 export async function saveData() {
@@ -144,8 +139,10 @@ function parseFileName(name = '') {
   const [base, date, cuid] = name.split('.json')[0].split('_');
 
   return {
-    base, date, cuid
-  }
+    base,
+    date,
+    cuid,
+  };
 }
 
 function isCreatedBy(file) {
@@ -163,11 +160,11 @@ async function getFileContents(file) {
 }
 
 async function renameFileWithCuid(file) {
-  await webDavClient.moveFile(file.filename, getDataFullFileName())
+  await webDavClient.moveFile(file.filename, getDataFullFileName());
 }
 
 function sortFiles(files) {
-  return files.sort((a, b) => Number(new Date(a.lastmod)) > Number(new Date(b.lastmod)) ? -1 : 1);
+  return files.sort((a, b) => (Number(new Date(a.lastmod)) > Number(new Date(b.lastmod)) ? -1 : 1));
 }
 
 export async function createDataSyncTick() {
@@ -182,12 +179,12 @@ export async function createDataSyncTick() {
 
       return false;
     } else {
-      const content = await getFileContents(latest)
+      const content = await getFileContents(latest);
       const blob = new Blob([content]);
 
       if (content) {
-        await importDBFile(blob)
-        await renameFileWithCuid(latest)
+        await importDBFile(blob);
+        await renameFileWithCuid(latest);
 
         return true;
       } else {

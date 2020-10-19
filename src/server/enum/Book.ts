@@ -1,5 +1,4 @@
-
 export enum BookMode {
-    SHUFFLE = 0,
-    INORDER
+  SHUFFLE = 0,
+  INORDER,
 }

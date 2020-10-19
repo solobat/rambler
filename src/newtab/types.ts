@@ -1,4 +1,4 @@
-import { IBook, IParagraph } from "../server/db/database";
+import { IBook, IParagraph } from '../server/db/database';
 
 export interface ReducerState {
   currentBookId: number;
@@ -11,5 +11,5 @@ export interface ReducerState {
 }
 
 export interface KEYCODE {
-  [propName: string]: string[]
+  [propName: string]: string[];
 }

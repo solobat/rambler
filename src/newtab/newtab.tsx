@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useCallback, useContext, useEffect, useReducer } from 'react';
-import { Provider, useDispatch, useSelector } from "react-redux";
-import store from "./redux/store";
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import store from './redux/store';
 import { ToastContainer } from 'react-toastify';
 import { useEventListener } from 'ahooks';
 
@@ -17,89 +17,93 @@ import Comments from './components/Comments';
 import Paragraph from './components/Paragraph';
 import BottombarTools from './components/BottombarTools';
 
-import { keydownEventHandler, loadBook, loadParagraph,
-    initBook, recordCursor } from './newtab.helper';
+import { keydownEventHandler, loadBook, loadParagraph, initBook, recordCursor } from './newtab.helper';
 
-import 'react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css';
 import 'rc-slider/assets/index.css';
 import './newtab.scss';
 import { RootState } from './redux/reducers';
 import { RESET_HISTORY } from './redux/actionTypes';
 
 declare global {
-    interface Window { ramblerApi: any; }
+  interface Window {
+    ramblerApi: any;
+  }
 }
 
 export default function Root() {
-    return (
-        <Provider store={store}>
-            <App />
-        </Provider>
-    )
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
 }
 
-function App () {
-    return (
-        <div className="newtab-container">
-            <TxtUpload />
-            <TopbarTools />
-            <Container />
-            <ToastContainer autoClose={3000} hideProgressBar={true}/>
-            <BottombarTools />
-        </div>
-    )
-} 
+function App() {
+  return (
+    <div className="newtab-container">
+      <TxtUpload />
+      <TopbarTools />
+      <Container />
+      <ToastContainer autoClose={3000} hideProgressBar={true} />
+      <BottombarTools />
+    </div>
+  );
+}
 
 function Container() {
-    const dispatch = useDispatch();
-    const { paragraph, currentBookId, cursor, currentBook } = useSelector((state: RootState) => state.readers);
-    const { allowComment } = useSelector((state: RootState) => state.comments);
-    const { searchBoxVisible } = useSelector((state: RootState) => state.search);
-    const commentsVisible = paragraph && allowComment;
+  const dispatch = useDispatch();
+  const { paragraph, currentBookId, cursor, currentBook } = useSelector((state: RootState) => state.readers);
+  const { allowComment } = useSelector((state: RootState) => state.comments);
+  const { searchBoxVisible } = useSelector((state: RootState) => state.search);
+  const commentsVisible = paragraph && allowComment;
 
-    useEffect(() => {
-        if (currentBookId) {
-            loadBook(dispatch, currentBookId);
-        }
-    }, [currentBookId]);
+  useEffect(() => {
+    if (currentBookId) {
+      loadBook(dispatch, currentBookId);
+    }
+  }, [currentBookId]);
 
-    useEffect(() => {
-        if (currentBook) {
-           loadParagraph(dispatch, currentBook, cursor);
-           recordCursor(currentBook.id, cursor);
-        }
-    }, [currentBook, cursor]);
-    useEffect(() => {
-        dispatch({ type: RESET_HISTORY });
-    }, [currentBook]);
-    
-    useEffect(() => {
-        initBook(dispatch);
-    }, []);
-    
-    const onKeydown = useCallback((event: React.KeyboardEvent) => {
-        keydownEventHandler(event, dispatch, currentBook, paragraph);
-    }, [currentBook, paragraph])
+  useEffect(() => {
+    if (currentBook) {
+      loadParagraph(dispatch, currentBook, cursor);
+      recordCursor(currentBook.id, cursor);
+    }
+  }, [currentBook, cursor]);
+  useEffect(() => {
+    dispatch({ type: RESET_HISTORY });
+  }, [currentBook]);
 
-    useEventListener('keydown', onKeydown, {
-        target: document
-    });
+  useEffect(() => {
+    initBook(dispatch);
+  }, []);
 
-    useEffect(() => {
-        onDbUpdate(() => {
-            if (isAutoSync()) {
-              noticeBg({
-                action: APP_ACTIONS.START_SYNC
-              })
-            }
+  const onKeydown = useCallback(
+    (event: React.KeyboardEvent) => {
+      keydownEventHandler(event, dispatch, currentBook, paragraph);
+    },
+    [currentBook, paragraph],
+  );
+
+  useEventListener('keydown', onKeydown, {
+    target: document,
+  });
+
+  useEffect(() => {
+    onDbUpdate(() => {
+      if (isAutoSync()) {
+        noticeBg({
+          action: APP_ACTIONS.START_SYNC,
         });
-    }, []);
+      }
+    });
+  }, []);
 
-    return (
-        <>
-            { searchBoxVisible ? <SearchBox /> : null }
-            { paragraph ? <Paragraph /> : null }
-            { commentsVisible ? <Comments /> : null }
-        </>
-    )
+  return (
+    <>
+      {searchBoxVisible ? <SearchBox /> : null}
+      {paragraph ? <Paragraph /> : null}
+      {commentsVisible ? <Comments /> : null}
+    </>
+  );
 }

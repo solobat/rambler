@@ -7,9 +7,7 @@ import './Options.scss';
 const { TabPane } = Tabs;
 
 export function Options() {
-  const onTabChange = useCallback(() => {
-
-  }, []);
+  const onTabChange = useCallback(() => {}, []);
 
   return (
     <div className="container">
@@ -22,5 +20,5 @@ export function Options() {
         </TabPane>
       </Tabs>
     </div>
-  )
+  );
 }

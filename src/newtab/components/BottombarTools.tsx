@@ -9,17 +9,19 @@ export default function BottombarTools() {
   const dispatch = useDispatch();
   const allowComment = useSelector((state: RootState) => state.comments.allowComment);
   const onCommentBtnClick = useCallback(() => {
-      dispatch({
-          type: UPDATE_ALLOW_COMMENT,
-          payload: !allowComment
-      });
+    dispatch({
+      type: UPDATE_ALLOW_COMMENT,
+      payload: !allowComment,
+    });
   }, [allowComment]);
 
   return (
-      <div className="bottom-right-tools">
-          <CommentOutlined style={{color: "#fff", fontSize: "20px"}}
-              className={["icon-comment", allowComment ? 'icon-comment-enable' : 'icon-comment-disable'].join(' ')}
-              onClick={onCommentBtnClick} />
-      </div>
-  )
+    <div className="bottom-right-tools">
+      <CommentOutlined
+        style={{ color: '#fff', fontSize: '20px' }}
+        className={['icon-comment', allowComment ? 'icon-comment-enable' : 'icon-comment-disable'].join(' ')}
+        onClick={onCommentBtnClick}
+      />
+    </div>
+  );
 }

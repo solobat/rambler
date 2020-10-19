@@ -1,18 +1,18 @@
-import { throttle } from "lodash";
-import { STORAGE_KEYS, SYNC_STATUS, WEBDAV_MAX_SYNC_INTERVAL, WEBDAV_MIN_SYNC_INTERVAL } from "../common/constant";
-import { SimpleEvent } from "../util/event";
-import { tuple } from "../util/types";
-import { onDbUpdate } from "./db.helper";
-import { createDataSyncTick, isWebDavConfiged } from "./webdav";
+import { throttle } from 'lodash';
+import { STORAGE_KEYS, SYNC_STATUS, WEBDAV_MAX_SYNC_INTERVAL, WEBDAV_MIN_SYNC_INTERVAL } from '../common/constant';
+import { SimpleEvent } from '../util/event';
+import { tuple } from '../util/types';
+import { onDbUpdate } from './db.helper';
+import { createDataSyncTick, isWebDavConfiged } from './webdav';
 
-const EventTypes = tuple('received', 'uploaded')
+const EventTypes = tuple('received', 'uploaded');
 
-export type EventType = (typeof EventTypes)[number]
+export type EventType = typeof EventTypes[number];
 
 export function isAutoSync() {
-  const autoSync = Number(localStorage.getItem(STORAGE_KEYS.AUTO_SYNC) || 1)
+  const autoSync = Number(localStorage.getItem(STORAGE_KEYS.AUTO_SYNC) || 1);
 
-  return autoSync === 1
+  return autoSync === 1;
 }
 
 export default class Sync extends SimpleEvent<EventType> {
@@ -30,7 +30,7 @@ export default class Sync extends SimpleEvent<EventType> {
       if (isAutoSync()) {
         this.tryStartSync();
       }
-    })
+    });
   }
 
   stopSync() {
@@ -41,13 +41,13 @@ export default class Sync extends SimpleEvent<EventType> {
   async runDataSyncTick() {
     try {
       const newReceived = await createDataSyncTick();
-  
+
       if (newReceived) {
         this.emit('received');
       }
       this.syncStatus = SYNC_STATUS.SUCCESS;
     } catch (error) {
-      console.log(error); 
+      console.log(error);
       this.syncStatus = SYNC_STATUS.FAIL;
     }
   }
@@ -63,13 +63,13 @@ export default class Sync extends SimpleEvent<EventType> {
     this.stopSync();
     this.syncStatus = SYNC_STATUS.BEGIN;
     await this.runDataSyncTick();
-  
+
     const inerval = this.getSyncInterval();
 
     this.syncTimer = setInterval(async () => {
-      await this.runDataSyncTick()
+      await this.runDataSyncTick();
     }, inerval);
-  }, WEBDAV_MIN_SYNC_INTERVAL)
+  }, WEBDAV_MIN_SYNC_INTERVAL);
 
   tryStartSync() {
     if (isWebDavConfiged()) {
