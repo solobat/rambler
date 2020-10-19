@@ -4,7 +4,7 @@ import { i18nMsg } from '../newtab.helper';
 import * as commentController from '../../server/controller/commentController';
 import * as Code from '../../server/common/code';
 import { toast } from 'react-toastify';
-import { IComment } from '../../server/db/database';
+import { IComment, IParagraph } from '../../server/db/database';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/reducers';
 
@@ -17,7 +17,7 @@ export default function Comments() {
   }, []);
   const onCommentBoxMouseLeave = useCallback(() => {
     commentIptRef.current.blur();
-  }, []);;
+  }, []);
   const onCommentInputKeyPress = useCallback(
     (event) => {
       if (event.key === 'Enter') {
@@ -28,6 +28,7 @@ export default function Comments() {
           commentController.saveComment(trimedCommentText, currentBookId, paragraph.id).then((resp) => {
             if (resp.code === Code.OK.code) {
               console.log('save successfully');
+              loadComments(setComments, currentBookId, paragraph);
             } else {
               toast.error(resp.message);
             }
@@ -39,17 +40,7 @@ export default function Comments() {
   );
 
   useEffect(() => {
-    commentController.queryByParagraph(currentBookId, paragraph.id).then((resp) => {
-      if (resp.code === Code.OK.code) {
-        if (resp.data) {
-          const comments = resp.data;
-
-          setComments(comments);
-        }
-      } else {
-        toast.error(resp.message);
-      }
-    });
+    loadComments(setComments, currentBookId, paragraph);
   }, [currentBookId, paragraph]);
 
   return (
@@ -74,4 +65,19 @@ function Comment(props: CommentProps) {
   const { comment } = props;
 
   return <div className="comment-item">{comment.text}</div>;
+}
+
+function loadComments(setComments: React.Dispatch<React.SetStateAction<IComment[]>>,
+  currentBookId: number, paragraph: IParagraph) {
+  commentController.queryByParagraph(currentBookId, paragraph.id).then((resp) => {
+    if (resp.code === Code.OK.code) {
+      if (resp.data) {
+        const comments = resp.data;
+
+        setComments(comments);
+      }
+    } else {
+      toast.error(resp.message);
+    }
+  });
 }
