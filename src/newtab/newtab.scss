@@ -219,8 +219,12 @@ body {
         border-radius: 2px;
         transform: all 300ms;
 
+        &::placeholder {
+            color: rgba(255, 255, 255, .3);
+        }
+
         &:hover {
-            border-color: #666;
+            border-color: rgba(255, 255, 255, .3);
         }
     }
 }
