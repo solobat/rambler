@@ -6,3 +6,4 @@ export const UPDATE_SEARCHBOX_VISIBLE = 'updateSearchboxVisible';
 export const UPDATE_ALLOW_COMMENT = 'updateAllowComment';
 export const RESET_HISTORY = 'resetHistory';
 export const ADD_HISTORY = 'addHistory';
+export const SET_SHORTCUTS_MODAL_VISIBLE = 'setShortcutsModalVisible';

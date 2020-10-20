@@ -24,6 +24,7 @@ import 'rc-slider/assets/index.css';
 import './newtab.scss';
 import { RootState } from './redux/reducers';
 import { RESET_HISTORY } from './redux/actionTypes';
+import ShortcutsModal from './components/ShortcutsModal';
 
 declare global {
   interface Window {
@@ -47,6 +48,7 @@ function App() {
       <Container />
       <ToastContainer autoClose={3000} hideProgressBar={true} />
       <BottombarTools />
+      <ShortcutsModal />
     </div>
   );
 }

@@ -11,6 +11,7 @@ export interface ReaderState {
   paragraph: IParagraph;
   cursor: number;
   history: number[];
+  shortcutsModalVisible: boolean;
 }
 
 export interface CommentsState {

@@ -1,3 +1,10 @@
+@import '~antd/dist/antd.css';
+
+html, body {
+    width: initial!important;
+    height: initial!important;
+}
+
 body {
     background-color: var(--newtab-background-color);
     font-family: "PingFang SC","Helvetica Neue","Helvetica","Arial",sans-serif;
@@ -23,6 +30,10 @@ body {
 
     &:hover {
         opacity: 1;
+    }
+
+    a {
+        color: #ddd;
     }
 }
 
@@ -255,6 +266,36 @@ body {
 
     &.icon-comment-disable {
         opacity: .3;
+    }
+}
+
+.icon-shortcuts {
+    margin-left: 5px;
+    opacity: .3;
+
+    &:hover {
+        opacity: .7;
+    }
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+  
+    .key-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 4px;
+      background: #5d646f;
+      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      color: #fff;
+    }
+  
+    .shortcut-label {
+      margin-left: 3px;
     }
 }
 
