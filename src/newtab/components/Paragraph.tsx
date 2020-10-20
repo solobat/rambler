@@ -18,6 +18,9 @@ export default function Paragraph() {
   const pureBookName = useMemo(() => {
     return getPureBookName(false, currentBook);
   }, [currentBook]);
+  const text = useMemo(() => {
+    return (paragraph.text || '').trim()
+  }, [paragraph.text])
 
   return (
     <div className="paragraph-container">
@@ -42,7 +45,7 @@ export default function Paragraph() {
         />
       </div>
       <p className="paragraph-text" ref={paragraphRef}>
-        {paragraph.text}
+        {text}
       </p>
       <p className="book-name">{currentBook ? `-- ${pureBookName}` : ''}</p>
       <ShareIcons />
