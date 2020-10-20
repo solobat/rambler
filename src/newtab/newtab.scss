@@ -258,23 +258,25 @@ body {
     position: fixed;
     right: 10px;
     bottom: 10px;
-}
 
-.icon-comment {
-    opacity: .7;
-    outline: none;
-
-    &.icon-comment-disable {
+    .icon {
+        margin-left: 6px;
         opacity: .3;
+        color: #ccc;
+        font-size: 18px;
+
+        &:hover {
+            opacity: .7;
+        }
     }
-}
 
-.icon-shortcuts {
-    margin-left: 5px;
-    opacity: .3;
-
-    &:hover {
+    .icon-comment {
         opacity: .7;
+        outline: none;
+    
+        &.icon-comment-disable {
+            opacity: .3;
+        }
     }
 }
 
