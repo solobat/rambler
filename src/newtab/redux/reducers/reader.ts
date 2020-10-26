@@ -1,5 +1,6 @@
 import { IBook, IParagraph } from '../../../server/db/database';
-import { ADD_HISTORY, RESET_HISTORY, SET_CURRENT_BOOK, SET_CURRENT_BOOKID, SET_CURSOR, SET_PARAGRAPH, SET_SHORTCUTS_MODAL_VISIBLE } from '../actionTypes';
+import { ADD_HISTORY, RESET_HISTORY, SET_CURRENT_BOOK, SET_CURRENT_BOOKID,
+  SET_CURSOR, SET_PARAGRAPH, SET_SHORTCUTS_MODAL_VISIBLE, UPDATE_PARAGRAH_TEXT } from '../actionTypes';
 import { Action, ReaderState } from '../types';
 
 const initialState: ReaderState = {
@@ -44,6 +45,13 @@ export default function (state = initialState, action: Action) {
       return { ...state };
     case SET_SHORTCUTS_MODAL_VISIBLE:
       state.shortcutsModalVisible = action.payload;
+      return { ...state };
+    case UPDATE_PARAGRAH_TEXT:
+      state.paragraph = {
+        ...state.paragraph,
+        text: action.payload
+      }
+
       return { ...state };
     default:
       return state;

@@ -22,6 +22,10 @@ export function queryByIndex(bookId: number, index: number) {
   });
 }
 
+export function update(key, changes) {
+  return db.paragraphs.update(key, changes);
+}
+
 export function search(bookId: number, text: string) {
   return db.paragraphs
     .where({ bookId })

@@ -9,6 +9,18 @@ export function bulkSave() {}
 
 export function queryByBook() {}
 
+export async function updateText(id, text) {
+  if (id && text) {
+    const result = await paragraphService.update(id, {
+      text
+    });
+
+    return Response.ok(result);
+  } else {
+    return Response.error(Code.PARAMS_ERROR);
+  }
+}
+
 export async function queryByIndex(bookId: number, index: number): Promise<Response<IParagraph> | Response<null>> {
   if (bookId && typeof index === 'number') {
     const result = await paragraphService.queryByIndex(bookId, index);

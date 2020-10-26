@@ -1,11 +1,15 @@
 import * as React from 'react';
-import { useContext, useRef, useCallback, useMemo } from 'react';
+import { useContext, useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { getPureBookName } from '../newtab.helper';
 import ShareIcons from './ShareIcons';
 import Slider from 'rc-slider';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/reducers';
-import { ADD_HISTORY, SET_CURSOR } from '../redux/actionTypes';
+import { ADD_HISTORY, SET_CURSOR, UPDATE_PARAGRAH_TEXT } from '../redux/actionTypes';
+import { CheckOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons';
+import Input from 'antd/es/input';
+import useEditBtn from '../../hooks/useEditBtn';
+import { updateParagraphText } from '../redux/actions/reader';
 
 export default function Paragraph() {
   const dispatch = useDispatch();
@@ -21,6 +25,11 @@ export default function Paragraph() {
   const text = useMemo(() => {
     return (paragraph.text || '').trim()
   }, [paragraph.text])
+  const onEditDone = useCallback((newText) => {
+    dispatch(updateParagraphText(paragraph.id, newText));
+  }, [paragraph.id]);
+  const { editing, textEditing, onEditStart,
+    onEditDoneClick, onEditCancel, onTextChange } = useEditBtn(text, onEditDone);
 
   return (
     <div className="paragraph-container">
@@ -44,9 +53,23 @@ export default function Paragraph() {
           }}
         />
       </div>
-      <p className="paragraph-text" ref={paragraphRef}>
-        {text}
-      </p>
+      <div className="paragraph-tools">
+        {
+          editing ? 
+          <>
+            <CheckOutlined className="icon icon-edit-done" onClick={onEditDoneClick}/>
+            <CloseOutlined className="icon icon-edit-cancel" onClick={onEditCancel}/>
+          </> :
+          <FormOutlined className="icon icon-edit-start" onClick={onEditStart}/>
+        }
+      </div>
+      <div className="paragraph-text" ref={paragraphRef}>
+        {
+          editing ? 
+          <Input.TextArea value={textEditing} onChange={onTextChange} /> :
+          <>{text}</>
+        }
+      </div>
       <p className="book-name">{currentBook ? `-- ${pureBookName}` : ''}</p>
       <ShareIcons />
     </div>

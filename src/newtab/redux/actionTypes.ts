@@ -7,3 +7,4 @@ export const UPDATE_ALLOW_COMMENT = 'updateAllowComment';
 export const RESET_HISTORY = 'resetHistory';
 export const ADD_HISTORY = 'addHistory';
 export const SET_SHORTCUTS_MODAL_VISIBLE = 'setShortcutsModalVisible';
+export const UPDATE_PARAGRAH_TEXT = 'updateParagrahText';

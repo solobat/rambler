@@ -163,6 +163,25 @@ body {
     }
 }
 
+.paragraph-tools {
+    position: absolute;
+    z-index: 1;
+    top: 60px;
+    left: -20px;
+    transition: all 200ms ease-in;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    .icon {
+        margin-bottom: 10px;
+    }
+}
+
 .share-icons {
     position: absolute;
     z-index: 1;
