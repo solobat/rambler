@@ -17,3 +17,7 @@ export function queryByParagraph(bookId: number, paragraphId: number) {
     .reverse()
     .sortBy('createTime');
 }
+
+export function deleteComment(commentId: number) {
+  return db.comments.delete(commentId);
+}

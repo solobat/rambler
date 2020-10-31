@@ -7,6 +7,8 @@ import { toast } from 'react-toastify';
 import { IComment, IParagraph } from '../../server/db/database';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/reducers';
+import { CloseOutlined } from '@ant-design/icons';
+import { useHover } from 'ahooks';
 
 export default function Comments() {
   const { currentBookId, paragraph } = useSelector((state: RootState) => state.readers);
@@ -38,6 +40,15 @@ export default function Comments() {
     },
     [currentBookId, paragraph],
   );
+  const onCommentDeleteClick = useCallback((comment: IComment) => {
+    commentController.deleteComment(comment.id).then((resp) => {
+      if (resp.code === Code.OK.code) {
+        loadComments(setComments, currentBookId, paragraph);
+      } else {
+        toast.error(resp.message);
+      }
+    })
+  }, [currentBookId, paragraph]);
 
   useEffect(() => {
     loadComments(setComments, currentBookId, paragraph);
@@ -50,7 +61,7 @@ export default function Comments() {
       </div>
       <div className="comments">
         {comments.map((comment, index) => {
-          return <Comment key={index} comment={comment} />;
+          return <Comment key={index} comment={comment} onDeleteClick={onCommentDeleteClick}/>;
         })}
       </div>
     </div>
@@ -59,12 +70,22 @@ export default function Comments() {
 
 interface CommentProps {
   comment: IComment;
+  onDeleteClick: (comment: IComment) => void
 }
 
 function Comment(props: CommentProps) {
-  const { comment } = props;
+  const { comment, onDeleteClick } = props;
+  const ref = useRef<HTMLDivElement>(null);
+  const isHovering = useHover(ref);
 
-  return <div className="comment-item">{comment.text}</div>;
+  return (
+    <div ref={ref} className="comment-item">
+      { isHovering ? 
+        <CloseOutlined className="icon-del"
+          onClick={() => onDeleteClick(comment)}/> : null}
+      {comment.text}
+    </div>
+  )
 }
 
 function loadComments(setComments: React.Dispatch<React.SetStateAction<IComment[]>>,

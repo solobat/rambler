@@ -268,7 +268,21 @@ body {
     color: rgba(255, 255, 255, .6);
 
     .comment-item {
+        position: relative;
         line-height: 20px;
+
+        .icon-del {
+            position: absolute;
+            left: -8px;
+            top: 6px;
+            font-size: 8px;
+            opacity: .7;
+            transition: all 200ms;
+            
+            &:hover {
+                opacity: 1;
+            }
+        }
     }
 }
 

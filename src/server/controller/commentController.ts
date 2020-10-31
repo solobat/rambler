@@ -26,3 +26,13 @@ export async function queryByParagraph(bookId: number, paragraphId: number): Pro
     return Response.error(Code.PARAMS_ERROR);
   }
 }
+
+export async function deleteComment(commentId: number): Promise<Response<boolean> | Response<null>> {
+  if (commentId) {
+    await commentService.deleteComment(commentId);
+
+    return Response.ok(true);
+  } else {
+    return Response.error(Code.PARAMS_ERROR);
+  }
+}
