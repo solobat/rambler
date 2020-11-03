@@ -6,6 +6,7 @@ export interface Action {
 }
 
 export interface ReaderState {
+  bookLoaded: boolean;
   currentBookId: number;
   currentBook: IBook;
   paragraph: IParagraph;

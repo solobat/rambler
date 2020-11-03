@@ -7,7 +7,7 @@ import { getRandomIndex } from '../util/common';
 import { toast } from 'react-toastify';
 import * as paragraphController from '../server/controller/paragraphController';
 import { Dispatch } from 'redux';
-import { SET_CURRENT_BOOK, SET_CURRENT_BOOKID, SET_CURSOR, SET_PARAGRAPH, UPDATE_SEARCHBOX_VISIBLE } from './redux/actionTypes';
+import { SET_BOOK_LOADED, SET_CURRENT_BOOK, SET_CURRENT_BOOKID, SET_CURSOR, SET_PARAGRAPH, UPDATE_SEARCHBOX_VISIBLE } from './redux/actionTypes';
 
 function isKeyValid(target) {
   if (target.closest('.comment-container') || target.closest('.color-selector')) {
@@ -149,6 +149,10 @@ export function loadBook(dispatch: Dispatch, bookId: number) {
       dispatch({
         type: SET_CURSOR,
         payload: cursor,
+      });
+      dispatch({
+        type: SET_BOOK_LOADED,
+        payload: true
       });
     } else {
       toast.error(resp.message);

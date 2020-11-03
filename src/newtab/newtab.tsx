@@ -55,7 +55,7 @@ function App() {
 
 function Container() {
   const dispatch = useDispatch();
-  const { paragraph, currentBookId, cursor, currentBook } = useSelector((state: RootState) => state.readers);
+  const { paragraph, currentBookId, cursor, currentBook, bookLoaded } = useSelector((state: RootState) => state.readers);
   const { allowComment } = useSelector((state: RootState) => state.comments);
   const { searchBoxVisible } = useSelector((state: RootState) => state.search);
   const commentsVisible = paragraph && allowComment;
@@ -67,11 +67,11 @@ function Container() {
   }, [currentBookId]);
 
   useEffect(() => {
-    if (currentBook) {
+    if (currentBook && bookLoaded) {
       loadParagraph(dispatch, currentBook, cursor);
       recordCursor(currentBook.id, cursor);
     }
-  }, [currentBook, cursor]);
+  }, [currentBook, cursor, bookLoaded]);
   useEffect(() => {
     dispatch({ type: RESET_HISTORY });
   }, [currentBook]);

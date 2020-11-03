@@ -1,9 +1,11 @@
 import { IBook, IParagraph } from '../../../server/db/database';
 import { ADD_HISTORY, RESET_HISTORY, SET_CURRENT_BOOK, SET_CURRENT_BOOKID,
-  SET_CURSOR, SET_PARAGRAPH, SET_SHORTCUTS_MODAL_VISIBLE, UPDATE_PARAGRAH_TEXT } from '../actionTypes';
+  SET_CURSOR, SET_PARAGRAPH, SET_SHORTCUTS_MODAL_VISIBLE, UPDATE_PARAGRAH_TEXT,
+  SET_BOOK_LOADED } from '../actionTypes';
 import { Action, ReaderState } from '../types';
 
 const initialState: ReaderState = {
+  bookLoaded: false,
   currentBookId: 0,
   currentBook: null,
   paragraph: null,
@@ -45,6 +47,9 @@ export default function (state = initialState, action: Action) {
       return { ...state };
     case SET_SHORTCUTS_MODAL_VISIBLE:
       state.shortcutsModalVisible = action.payload;
+      return { ...state };
+    case SET_BOOK_LOADED:
+      state.bookLoaded = action.payload;
       return { ...state };
     case UPDATE_PARAGRAH_TEXT:
       state.paragraph = {
