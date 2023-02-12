@@ -1,9 +1,7 @@
-import cuid = require('cuid');
-
-const STORAGE_KEY = 'rambler_cuid';
+const STORAGE_KEY = "rambler_cuid";
 
 function initCuid() {
-  const id = cuid();
+  const id = crypto.randomUUID();
 
   window.localStorage.setItem(STORAGE_KEY, id);
 

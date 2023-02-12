@@ -2,10 +2,11 @@
 
 # prepare
 echo "Prepare dir......"
+rm -fr dist/
 
 # build
 echo "Compiling....."
-npm run build || { echo "Compilation failed, please check and try again"; exit 1; }
+yarn build || { echo "Compilation failed, please check and try again"; exit 1; }
 
 zip -r rambler.zip dist/
 

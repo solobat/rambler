@@ -1,6 +1,5 @@
 import * as bookService from '../service/bookService';
 import * as paragraphService from '../service/paragraphService';
-import * as browser from 'webextension-polyfill';
 import { STORAGE_LOCAL } from '../../common/constant';
 import Response from '../common/response';
 import * as Code from '../common/code';
@@ -32,7 +31,7 @@ export async function setDefaultBook() {
 
   if (bid) {
     await paragraphService.bulkSave(bid, TheFirstAndLastFreedom);
-    await browser.storage.sync.set({
+    await chrome.storage.sync.set({
       [STORAGE_LOCAL.CURRENT_BOOK_ID]: bid,
     });
   }
@@ -81,13 +80,13 @@ export async function getList(): Promise<Response<IBook[]>> {
 }
 
 export function setCurrentBook(bookId: number) {
-  return browser.storage.sync.set({
+  return chrome.storage.sync.set({
     [STORAGE_LOCAL.CURRENT_BOOK_ID]: bookId,
   });
 }
 
 export function getCurrentBook(): Promise<number> {
-  return browser.storage.sync.get(STORAGE_LOCAL.CURRENT_BOOK_ID).then((resp) => {
+  return chrome.storage.sync.get(STORAGE_LOCAL.CURRENT_BOOK_ID).then((resp) => {
     return resp[STORAGE_LOCAL.CURRENT_BOOK_ID];
   });
 }

@@ -1,7 +1,7 @@
-import { createClient } from 'webdav/web';
-import dayjs = require('dayjs');
-import { exportAsJson, importDBFile } from './db.helper';
-import { getCuid } from './cuid';
+import { createClient } from "webdav/web";
+import dayjs from "dayjs";
+import { exportAsJson, importDBFile } from "./db.helper";
+import { getCuid } from "./cuid";
 
 let webDavClient;
 
@@ -21,34 +21,26 @@ function configClient(config: Config) {
   return client;
 }
 
-const WEBDAV_CONFIG_KEY = 'webdav_config';
+const WEBDAV_CONFIG_KEY = "webdav_config";
 
-function restoreConfig(): Config | null {
-  const str = localStorage.getItem(WEBDAV_CONFIG_KEY);
+async function restoreConfig(): Promise<Config | null> {
+  const res = await chrome.storage.local.get(WEBDAV_CONFIG_KEY);
 
-  if (str) {
-    try {
-      return JSON.parse(str);
-    } catch (error) {
-      return;
-    }
-  } else {
-    return null;
-  }
+  return res[WEBDAV_CONFIG_KEY] || null;
 }
 
 export function removeWebDavConfig() {
-  localStorage.removeItem(WEBDAV_CONFIG_KEY);
+  chrome.storage.local.remove(WEBDAV_CONFIG_KEY);
   webDavClient = null;
 }
 
-export function getWebDavURL(): string {
-  const config = restoreConfig();
+export async function getWebDavURL(): Promise<string> {
+  const config = await restoreConfig();
 
   if (config) {
     return config.url;
   } else {
-    return '';
+    return "";
   }
 }
 
@@ -64,11 +56,11 @@ export function isWebDavConfiged(): boolean {
 
 export function saveConfig(config: Config) {
   try {
-    localStorage.setItem(WEBDAV_CONFIG_KEY, JSON.stringify(config));
+    chrome.storage.local.set({ WEBDAV_CONFIG_KEY: config });
   } catch (error) {}
 }
 
-const ROOT_PATH: string = '/rambler';
+const ROOT_PATH: string = "/rambler";
 
 export async function initClientWithConfig(config: Config) {
   const client = configClient(config);
@@ -90,18 +82,18 @@ async function getClient() {
   if (webDavClient) {
     return webDavClient;
   } else {
-    const config = restoreConfig();
+    const config = await restoreConfig();
 
     if (config) {
       return initClientWithConfig(config);
     } else {
-      return Promise.reject('failed to init');
+      return Promise.reject("failed to init");
     }
   }
 }
 
 function getDataFullFileName() {
-  const suffix = dayjs().format('YYYY-MM-DD');
+  const suffix = dayjs().format("YYYY-MM-DD");
 
   return `${ROOT_PATH}/rambler-export_${suffix}_${getCuid()}.json`;
 }
@@ -119,7 +111,7 @@ export async function saveData() {
       return Promise.reject(error);
     }
   } else {
-    return Promise.reject('client init failed...');
+    return Promise.reject("client init failed...");
   }
 }
 
@@ -135,8 +127,8 @@ async function restoreData() {
   }
 }
 
-function parseFileName(name = '') {
-  const [base, date, cuid] = name.split('.json')[0].split('_');
+function parseFileName(name = "") {
+  const [base, date, cuid] = name.split(".json")[0].split("_");
 
   return {
     base,
@@ -156,7 +148,9 @@ function isCreatedBy(file) {
 }
 
 async function getFileContents(file) {
-  return await webDavClient.getFileContents(file.filename, { format: 'binary' });
+  return await webDavClient.getFileContents(file.filename, {
+    format: "binary",
+  });
 }
 
 async function renameFileWithCuid(file) {
@@ -164,7 +158,9 @@ async function renameFileWithCuid(file) {
 }
 
 function sortFiles(files) {
-  return files.sort((a, b) => (Number(new Date(a.lastmod)) > Number(new Date(b.lastmod)) ? -1 : 1));
+  return files.sort((a, b) =>
+    Number(new Date(a.lastmod)) > Number(new Date(b.lastmod)) ? -1 : 1
+  );
 }
 
 export async function createDataSyncTick() {

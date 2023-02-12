@@ -1,5 +1,4 @@
 import * as commentService from '../service/commentService';
-import * as browser from 'webextension-polyfill';
 import { STORAGE_LOCAL } from '../../common/constant';
 import Response from '../common/response';
 import * as Code from '../common/code';

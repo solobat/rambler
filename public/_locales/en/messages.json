@@ -1,0 +1,59 @@
+{
+    "extName": {
+        "message": "Rambler"
+    },
+    "extDesc": {
+        "message": "Rambler -- random reading"
+    },
+    "upload_txt": {
+        "message": "Upload a txt file"
+    },
+    "upload_ok": {
+        "message": "Upload successfully!"
+    },
+    "comment_here": {
+        "message": "Comment here"
+    },
+    "save_ok": {
+        "message": "Save successfully!"
+    },
+    "add_ok": {
+        "message": "Add successfully!"
+    },
+    "delete_ok": {
+        "message": "Delete successfully!"
+    },
+    "delete_ok_tpl": {
+        "message": "Delete {{text}} successfully!"
+    },
+    "set_ok": {
+        "message": "Set successfully!"
+    },
+    "toggle_ok": {
+        "message": "Toggle {{text}} successfully!"
+    },
+    "confirm_delete_tpl": {
+        "message": "This operation will permanently delete the {{text}}, whether to continue?"
+    },
+    "settings_actions_save": {
+        "message": "Save"
+    },
+    "settings_actions_delete": {
+        "message": "Delete"
+    },
+    "settings_actions_applysave": {
+        "message": "Apply and Save"
+    },
+    "settings_actions_reset": {
+        "message": "Reset"
+    },
+    "settings_actions_export": {
+        "message": "Export"
+    },
+    "settings_actions_import": {
+        "message": "Import"
+    },
+    "settings_actions_downloadcrx": {
+        "message": "Download CRX"
+    }
+}
