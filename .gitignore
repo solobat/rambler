@@ -1,4 +1,4 @@
-dist/js
+/dist
 .private
 
 node_modules
@@ -21,7 +21,6 @@ npm-debug.log
 *.rar
 *.tar
 *.zip
-
 
 
 # OS generated files #

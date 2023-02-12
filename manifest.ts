@@ -2,9 +2,9 @@ import packageJson from "./package.json";
 
 const manifest: chrome.runtime.ManifestV3 = {
   manifest_version: 3,
-  name: "_MSG_extName",
+  name: "__MSG_extName__",
   version: packageJson.version,
-  description: "_MSG_extDesc",
+  description: "__MSG_extDesc__",
   default_locale: "en",
   options_page: "src/pages/options/index.html",
   chrome_url_overrides: {

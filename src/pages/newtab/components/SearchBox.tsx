@@ -28,7 +28,7 @@ export default function SearchBox() {
         }
       });
     }, 300);
-    setTimer(t);
+    setTimer(t as any);
   };
   const onSearchResultClick = useCallback((result: IParagraph) => {
     dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: false });

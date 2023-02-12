@@ -26,7 +26,7 @@ export default function Paragraph() {
     return (paragraph.text || '').trim()
   }, [paragraph.text])
   const onEditDone = useCallback((newText) => {
-    dispatch(updateParagraphText(paragraph.id, newText));
+    dispatch(updateParagraphText(paragraph.id, newText) as any);
   }, [paragraph.id]);
   const { editing, textEditing, onEditStart,
     onEditDoneClick, onEditCancel, onTextChange } = useEditBtn(text, onEditDone);

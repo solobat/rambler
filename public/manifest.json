@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Rambler",
+  "name": "__MSG_extName__",
   "version": "1.6.0",
-  "description": "random reading",
+  "description": "__MSG_extDesc__",
   "default_locale": "en",
   "options_page": "src/pages/options/index.html",
   "chrome_url_overrides": {
