@@ -28,7 +28,11 @@ import ShortcutsModal from './components/ShortcutsModal';
 
 declare global {
   interface Window {
-    ramblerApi: any;
+    ramblerApi: {
+      initTheme: () => void;
+      applyTheme: (theme: string) => void;
+      updateMode: () => void;
+    };
   }
 }
 

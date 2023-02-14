@@ -48,6 +48,17 @@ export function setBgColor(color) {
   window.ramblerApi.initTheme();
 }
 
+export type NewtabMode = 'read' | 'setting';
+
+export function getMode(): NewtabMode {
+  return (window.localStorage.getItem('mode') || 'read') as NewtabMode;
+}
+
+export function setMode(mode: NewtabMode) {
+  window.localStorage.setItem('mode', mode);
+  window.ramblerApi.updateMode();
+}
+
 export function getPureBookName(fix: boolean, currentBook: IBook) {
   let fixedName: string;
 

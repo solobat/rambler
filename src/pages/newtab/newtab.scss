@@ -49,10 +49,10 @@ body {
 
     .icon-search {
         display: block;
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
         background: url(/img/icon/search.svg) no-repeat center center;
-        background-size: 20px 20px;
+        background-size: 18px 18px;
         cursor: pointer;
         color: #fff;
         opacity: .3;
@@ -245,7 +245,7 @@ body {
         border: 0;
         margin: 0 auto;
         background: rgba(0, 0, 0, 0.1);
-        border: 1px solid transparent;
+        border: 1px solid rgba(255, 255, 255, .1);
         border-radius: 2px;
         transform: all 300ms;
 
@@ -286,6 +286,23 @@ body {
     }
 }
 
+.mode-read {
+    .bottom-right-tools, .color-selector {
+        display: none;
+    }
+}
+
+.icon-mode {
+    margin-left: 6px;
+    opacity: .3;
+    color: #ccc;
+    font-size: 18px;
+
+    &:hover {
+        opacity: .7;
+    }
+}
+
 .bottom-right-tools {
     display: flex;
     position: fixed;
@@ -293,7 +310,7 @@ body {
     bottom: 10px;
 
     .icon {
-        margin-left: 6px;
+        margin-left: 12px;
         opacity: .3;
         color: #ccc;
         font-size: 18px;

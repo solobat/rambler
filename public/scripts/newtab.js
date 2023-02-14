@@ -1,54 +1,63 @@
-(function() {
-    function getBg() {
-        return localStorage.getItem('wallpaper') || '#5b7e91';
-    }
+(function () {
+  function getBg() {
+    return localStorage.getItem("wallpaper") || "#5b7e91";
+  }
 
-    const defaultTheme = {
-        '--app-newtab-background-image': '#5b7e91',
-        '--newtab-background-color': '#5b7e91'
-    }
+  function getMode() {
+    return localStorage.getItem("mode") || "read";
+  }
 
-    function initTheme() {
-        const themesStr = window.localStorage.getItem('themes');
+  const defaultTheme = {
+    "--app-newtab-background-image": "#5b7e91",
+    "--newtab-background-color": "#5b7e91",
+  };
 
-        if (themesStr) {
-            const theme = JSON.parse(themesStr);
+  function initTheme() {
+    const themesStr = window.localStorage.getItem("themes");
 
-            if (theme) {
-                
-                const bg = getBg();
+    if (themesStr) {
+      const theme = JSON.parse(themesStr);
 
-                if (bg.startsWith('#')) {
-                    theme['--app-newtab-background-image'] = bg;
-                    theme['--newtab-background-color'] = bg;
-                } else {
-                    theme['--app-newtab-background-image'] = `url(${bg})`;
-                }
+      if (theme) {
+        const bg = getBg();
 
-                applyTheme(theme);
-            }
+        if (bg.startsWith("#")) {
+          theme["--app-newtab-background-image"] = bg;
+          theme["--newtab-background-color"] = bg;
         } else {
-            window.localStorage.setItem('themes', JSON.stringify(defaultTheme));
-            window.localStorage.setItem('wallpaper', '#5b7e91');
-
-            applyTheme(defaultTheme);
-        }
-    }
-
-    function applyTheme(theme) {
-        let cssText = '';
-                
-        for (const prop in theme) {
-            cssText += `${prop}: ${theme[prop]};`;
+          theme["--app-newtab-background-image"] = `url(${bg})`;
         }
 
-        document.querySelector('html').style.cssText = cssText;
+        applyTheme(theme);
+      }
+    } else {
+      window.localStorage.setItem("themes", JSON.stringify(defaultTheme));
+      window.localStorage.setItem("wallpaper", "#5b7e91");
+
+      applyTheme(defaultTheme);
+    }
+  }
+
+  function applyTheme(theme) {
+    let cssText = "";
+
+    for (const prop in theme) {
+      cssText += `${prop}: ${theme[prop]};`;
     }
 
-    initTheme();
+    document.querySelector("html").style.cssText = cssText;
+  }
 
-    window.ramblerApi = {
-        initTheme,
-        applyTheme
-    }
+  function updateMode() {
+    document.documentElement.className = `mode-${getMode()}`;
+  }
+
+  initTheme();
+  updateMode();
+
+  window.ramblerApi = {
+    initTheme,
+    applyTheme,
+    updateMode,
+  };
 })();
