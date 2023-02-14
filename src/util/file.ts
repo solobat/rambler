@@ -1,9 +1,11 @@
-export function readFile(file: File) {
+import { TextDecoder } from "text-encoding";
+
+export function readFileText(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
     reader.onload = function (event) {
-      resolve(event.target.result);
+      resolve(event.target.result as string);
     };
 
     reader.onerror = function (event) {
@@ -14,20 +16,59 @@ export function readFile(file: File) {
   });
 }
 
+function readFileAsBuffer(file: File): Promise<ArrayBuffer> {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader();
+
+    reader.addEventListener("loadend", (e) =>
+      resolve(e.target.result as ArrayBuffer)
+    );
+    reader.addEventListener("error", reject);
+
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function getAsByteArray(file: File) {
+  return new Uint8Array(await readFileAsBuffer(file));
+}
+
+async function checkGBK(file: File) {
+  const text = await file.text();
+
+  return text.indexOf("�") !== -1;
+}
+
 const chapterReg = /(第.*章)|(chapter)/i;
 
 function notEmpty(str) {
-  if (str === '\n' || str === '\r\n' || str.trim() === '') {
+  if (str === "\n" || str === "\r\n" || str.trim() === "") {
     return false;
   } else {
     return true;
   }
 }
 
-export function sliceFileToParagraphs(file: File): Promise<string[]> {
+async function readFile(file: File) {
+  const isGBK = await checkGBK(file);
+  let text: string;
+  if (isGBK) {
+    const byteArray = await getAsByteArray(file);
+    const decoder = new TextDecoder("gb2312");
+    text = decoder.decode(byteArray);
+  } else {
+    text = await readFileText(file);
+  }
+
+  return text;
+}
+
+export async function sliceFileToParagraphs(file: File): Promise<string[]> {
   return readFile(file).then((resp: string) => {
     if (resp) {
-      const list = resp.split('\n').filter((item) => notEmpty(item) && !item.match(chapterReg));
+      const list = resp
+        .split("\n")
+        .filter((item) => notEmpty(item) && !item.match(chapterReg));
 
       return list;
     } else {
