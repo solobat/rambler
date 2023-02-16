@@ -3,19 +3,21 @@ const STORAGE_KEY = "rambler_cuid";
 function initCuid() {
   const id = crypto.randomUUID();
 
-  window.localStorage.setItem(STORAGE_KEY, id);
+  chrome.storage.local.set({
+    [STORAGE_KEY]: id,
+  });
 
   return id;
 }
 
-function restoreCuid() {
-  const id = window.localStorage.getItem(STORAGE_KEY);
+async function restoreCuid() {
+  const res = await chrome.storage.local.get(STORAGE_KEY);
 
-  return id;
+  return res[STORAGE_KEY];
 }
 
-export function getCuid() {
-  const id = restoreCuid();
+export async function getCuid() {
+  const id = await restoreCuid();
 
   if (id) {
     return id;

@@ -51,7 +51,7 @@ export default function () {
 }
 
 function ResetConfig(props) {
-  let url = "";
+  let [url, setURL] = useState("");
   const [syncInterval, setSyncInterval] = useLocalStorageState(
     STORAGE_KEYS.SYNC_INTERVAL,
     WEBDAV_MAX_SYNC_INTERVAL
@@ -78,7 +78,7 @@ function ResetConfig(props) {
 
   React.useEffect(() => {
     getWebDavURL().then((res) => {
-      url = res;
+      setURL(res);
     });
   }, []);
 

@@ -1,7 +1,12 @@
-import { createClient } from "webdav/web";
+import { createClient, getPatcher, RequestOptions } from "webdav/web";
 import dayjs from "dayjs";
 import { exportAsJson, importDBFile } from "./db.helper";
 import { getCuid } from "./cuid";
+import axios from "axios";
+import fetchAdapter from "@vespaiach/axios-fetch-adapter";
+const client = axios.create({ adapter: fetchAdapter as any });
+
+getPatcher().patch("request", (opts: RequestOptions) => client(opts as any));
 
 let webDavClient;
 
@@ -11,11 +16,30 @@ interface Config {
   password: string;
 }
 
+if (typeof window === "undefined") {
+  globalThis.document = {
+    createElement: () => {
+      const elem = {
+        value: "",
+        innerHTML(text: any) {
+          elem.value = text;
+        },
+      };
+
+      return elem;
+    },
+  } as any;
+}
+
+Object.defineProperties(globalThis.document, {});
 function configClient(config: Config) {
   const { url, username, password } = config;
   const client = createClient(url, {
     username,
     password,
+    headers: {
+      Accept: "application/json",
+    },
   });
 
   return client;
@@ -56,7 +80,7 @@ export function isWebDavConfiged(): boolean {
 
 export function saveConfig(config: Config) {
   try {
-    chrome.storage.local.set({ WEBDAV_CONFIG_KEY: config });
+    chrome.storage.local.set({ [WEBDAV_CONFIG_KEY]: config });
   } catch (error) {}
 }
 
@@ -74,6 +98,8 @@ export async function initClientWithConfig(config: Config) {
 
     return client;
   } catch (error) {
+    console.log(error);
+
     return null;
   }
 }
@@ -92,10 +118,11 @@ async function getClient() {
   }
 }
 
-function getDataFullFileName() {
+async function getDataFullFileName() {
   const suffix = dayjs().format("YYYY-MM-DD");
+  const cuid = await getCuid();
 
-  return `${ROOT_PATH}/rambler-export_${suffix}_${getCuid()}.json`;
+  return `${ROOT_PATH}/rambler-export_${suffix}_${cuid}.json`;
 }
 
 export async function saveData() {
@@ -104,7 +131,7 @@ export async function saveData() {
   if (client) {
     try {
       const data = await exportAsJson();
-      const name = getDataFullFileName();
+      const name = await getDataFullFileName();
 
       await client.putFileContents(name, data);
     } catch (error) {
@@ -137,10 +164,11 @@ function parseFileName(name = "") {
   };
 }
 
-function isCreatedBy(file) {
+async function isCreatedBy(file) {
   const info = parseFileName(file.basename);
+  const cuid = await getCuid();
 
-  if (info.cuid === getCuid()) {
+  if (info.cuid === cuid) {
     return true;
   } else {
     return false;
@@ -170,11 +198,14 @@ export async function createDataSyncTick() {
   const latest = files[0];
 
   if (latest) {
-    if (isCreatedBy(latest)) {
+    if (await isCreatedBy(latest)) {
       await saveData();
 
       return false;
     } else {
+      console.log("rambler:: should restore with webdav");
+
+      return;
       const content = await getFileContents(latest);
       const blob = new Blob([content]);
 

@@ -50,6 +50,7 @@
     "@ant-design/icons": "^4.2.2",
     "@types/lodash": "^4.14.149",
     "@types/react-redux": "^7.1.9",
+    "@vespaiach/axios-fetch-adapter": "^0.3.1",
     "ahooks": "^2.7.0",
     "antd": "^4.24.1",
     "dayjs": "^1.9.1",
