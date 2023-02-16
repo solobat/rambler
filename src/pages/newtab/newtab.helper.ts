@@ -1,30 +1,41 @@
-import { IBook, IParagraph } from '../../server/db/database';
-import * as bookController from '../../server/controller/bookController';
-import { KEYCODE } from './types';
-import * as Code from '../../server/common/code';
-import { BookMode } from '../../server/enum/Book';
-import { getRandomIndex } from '../../util/common';
-import { toast } from 'react-toastify';
-import * as paragraphController from '../../server/controller/paragraphController';
-import { Dispatch } from 'redux';
-import { SET_BOOK_LOADED, SET_CURRENT_BOOK, SET_CURRENT_BOOKID, SET_CURSOR, SET_PARAGRAPH, UPDATE_SEARCHBOX_VISIBLE } from './redux/actionTypes';
+import { IBook, IParagraph } from "../../server/db/database";
+import * as bookController from "../../server/controller/bookController";
+import { KEYCODE } from "./types";
+import * as Code from "../../server/common/code";
+import { BookMode } from "../../server/enum/Book";
+import { getRandomIndex } from "../../util/common";
+import { toast } from "react-toastify";
+import * as paragraphController from "../../server/controller/paragraphController";
+import { Dispatch } from "redux";
+import {
+  SET_BOOK_LOADED,
+  SET_CURRENT_BOOK,
+  SET_CURRENT_BOOKID,
+  SET_CURSOR,
+  SET_PARAGRAPH,
+  UPDATE_SEARCHBOX_VISIBLE,
+} from "./redux/actionTypes";
 
 function isKeyValid(target) {
-  if (target.closest('.comment-container') || target.closest('.color-selector')) {
+  if (
+    target.closest(".comment-container") ||
+    target.closest(".color-selector")
+  ) {
     return false;
   } else {
     return true;
   }
 }
+const CURSOR_STORAGE_KEY = "cursors";
 
 const KEY_CODE: KEYCODE = {
-  REFRESH: ['r'],
-  PREV: ['ArrowLeft', 'ArrowUp', 'k'],
-  NEXT: ['ArrowRight', 'ArrowDown', 'j'],
-  OPEN_SEARCH_BOX: ['f'],
-  CLOSE_SEARCH_BOX: ['Escape'],
-  BACK: ['b'],
-  FORWARD: ['n'],
+  REFRESH: ["r"],
+  PREV: ["ArrowLeft", "ArrowUp", "k"],
+  NEXT: ["ArrowRight", "ArrowDown", "j"],
+  OPEN_SEARCH_BOX: ["f"],
+  CLOSE_SEARCH_BOX: ["Escape"],
+  BACK: ["b"],
+  FORWARD: ["n"],
 };
 
 function getPrevParagraphIndex(paragraph: IParagraph, toHead: boolean) {
@@ -35,7 +46,11 @@ function getPrevParagraphIndex(paragraph: IParagraph, toHead: boolean) {
   }
 }
 
-function getNextParagraphIndex(paragraph: IParagraph, book: IBook, toTail: boolean) {
+function getNextParagraphIndex(
+  paragraph: IParagraph,
+  book: IBook,
+  toTail: boolean
+) {
   if (toTail) {
     return book.paragraphCount - 1;
   } else {
@@ -44,18 +59,18 @@ function getNextParagraphIndex(paragraph: IParagraph, book: IBook, toTail: boole
 }
 
 export function setBgColor(color) {
-  window.localStorage.setItem('wallpaper', color);
+  window.localStorage.setItem("wallpaper", color);
   window.ramblerApi.initTheme();
 }
 
-export type NewtabMode = 'read' | 'setting';
+export type NewtabMode = "read" | "setting";
 
 export function getMode(): NewtabMode {
-  return (window.localStorage.getItem('mode') || 'read') as NewtabMode;
+  return (window.localStorage.getItem("mode") || "read") as NewtabMode;
 }
 
 export function setMode(mode: NewtabMode) {
-  window.localStorage.setItem('mode', mode);
+  window.localStorage.setItem("mode", mode);
   window.ramblerApi.updateMode();
 }
 
@@ -63,23 +78,28 @@ export function getPureBookName(fix: boolean, currentBook: IBook) {
   let fixedName: string;
 
   if (fix) {
-    fixedName = currentBook.name.replace(/[《》]/g, '');
+    fixedName = currentBook.name.replace(/[《》]/g, "");
   } else {
     fixedName = currentBook.name;
   }
 
-  const arr = fixedName.split('.');
+  const arr = fixedName.split(".");
 
   if (arr.length > 1) {
     arr.pop();
 
-    return arr.join('.');
+    return arr.join(".");
   } else {
     return arr[0];
   }
 }
 
-export function keydownEventHandler(event: React.KeyboardEvent, dispatch, currentBook: IBook, paragraph: IParagraph) {
+export function keydownEventHandler(
+  event: React.KeyboardEvent,
+  dispatch,
+  currentBook: IBook,
+  paragraph: IParagraph
+) {
   const key = event.key;
 
   if (isKeyValid(event.target)) {
@@ -106,14 +126,26 @@ export function keydownEventHandler(event: React.KeyboardEvent, dispatch, curren
   }
 }
 
-export function recordCursor(bookId: number, newCursor: number) {
-  bookController
-    .updateBook(bookId, {
-      cursor: newCursor,
-    })
-    .then((resp) => {
-      //   console.log(resp);
-    });
+async function getCursors() {
+  const res = await chrome.storage.sync.get(CURSOR_STORAGE_KEY);
+
+  return res[CURSOR_STORAGE_KEY];
+}
+
+export async function getBookCursor(bookId: number) {
+  const cursors = await getCursors();
+
+  return cursors[bookId] ?? 0;
+}
+
+export async function recordCursor(bookId: number, newCursor: number) {
+  const cursors = await getCursors();
+
+  cursors[bookId] = newCursor;
+
+  chrome.storage.sync.set({
+    [CURSOR_STORAGE_KEY]: cursors,
+  });
 }
 
 export function setDefaultBook() {
@@ -122,7 +154,10 @@ export function setDefaultBook() {
   });
 }
 
-export function getFixedParagraphIndex(currentBook: IBook, index: number): number {
+export function getFixedParagraphIndex(
+  currentBook: IBook,
+  index: number
+): number {
   let fixedIndex = index;
   const count = currentBook.paragraphCount;
 
@@ -136,19 +171,19 @@ export function getFixedParagraphIndex(currentBook: IBook, index: number): numbe
 }
 
 export const i18nMsg = {
-  uploadTxt: chrome.i18n.getMessage('upload_txt'),
-  uploadDone: chrome.i18n.getMessage('upload_ok'),
-  commentHere: chrome.i18n.getMessage('comment_here'),
+  uploadTxt: chrome.i18n.getMessage("upload_txt"),
+  uploadDone: chrome.i18n.getMessage("upload_ok"),
+  commentHere: chrome.i18n.getMessage("comment_here"),
 };
 
 export function loadBook(dispatch: Dispatch, bookId: number) {
-  bookController.info(bookId).then((resp) => {
+  bookController.info(bookId).then(async (resp) => {
     if (resp.code === Code.OK.code) {
       const book: IBook = resp.data;
       let cursor: number;
 
       if (book.mode === BookMode.INORDER) {
-        cursor = book.cursor || 0;
+        cursor = await getBookCursor(bookId);
       } else {
         cursor = getRandomIndex(book.paragraphCount);
       }
@@ -163,7 +198,7 @@ export function loadBook(dispatch: Dispatch, bookId: number) {
       });
       dispatch({
         type: SET_BOOK_LOADED,
-        payload: true
+        payload: true,
       });
     } else {
       toast.error(resp.message);
@@ -171,19 +206,13 @@ export function loadBook(dispatch: Dispatch, bookId: number) {
   });
 }
 
-export function loadParagraph(dispatch: React.Dispatch<any>, currentBook: IBook, cursor: number) {
+export function loadParagraph(
+  dispatch: React.Dispatch<any>,
+  currentBook: IBook,
+  cursor: number
+) {
   const fixedIndex = getFixedParagraphIndex(currentBook, cursor);
   const currentBookId = currentBook.id;
-
-  if (currentBook.mode === BookMode.INORDER) {
-    bookController
-      .updateBook(currentBookId, {
-        cursor: fixedIndex,
-      })
-      .then((resp) => {
-        //   console.log(resp);
-      });
-  }
 
   paragraphController.queryByIndex(currentBookId, fixedIndex).then((resp) => {
     if (resp.code === Code.OK.code) {
