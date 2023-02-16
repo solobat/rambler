@@ -1,6 +1,6 @@
 {
   "name": "rambler",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "random reading",
   "scripts": {
     "build": "tsc --noEmit && vite build",
