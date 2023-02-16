@@ -17,7 +17,7 @@ interface AppState {
   bookList: IBook[];
 }
 
-const newTabUrl = chrome.runtime.getURL('newtab.html');
+const newTabUrl = chrome.runtime.getURL('src/pages/newtab/index.html');
 
 export default class Popup extends React.Component<AppProps, AppState> {
   state = {
