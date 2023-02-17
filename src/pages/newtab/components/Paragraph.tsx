@@ -66,7 +66,7 @@ export default function Paragraph() {
       <div className="paragraph-text" ref={paragraphRef}>
         {
           editing ? 
-          <Input.TextArea value={textEditing} onChange={onTextChange} /> :
+          <Input.TextArea value={textEditing} onChange={onTextChange} autoSize /> :
           <>{text}</>
         }
       </div>
