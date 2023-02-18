@@ -62,6 +62,13 @@ export default class Popup extends React.Component<AppProps, AppState> {
     });
   }
 
+  onBookDblClick(book: IBook) {
+    this.onBookClick(book);
+    chrome.tabs.create({
+      url: "chrome://newtab"
+    })
+  }
+
   onBookDeleteClick(event, book: Book) {
     event.stopPropagation();
     event.preventDefault();
@@ -95,6 +102,7 @@ export default class Popup extends React.Component<AppProps, AppState> {
             currentId={this.state.currentBookId}
             list={this.state.bookList}
             onBookClick={this.onBookClick.bind(this)}
+            onBookDblClick= {this.onBookDblClick.bind(this)} 
             onBookDeleteClick={this.onBookDeleteClick.bind(this)}
             onBookOrderClick={this.onBookOrderClick.bind(this)}
           ></BookList>
@@ -126,6 +134,7 @@ interface BookListProps {
   onBookClick: Function;
   onBookDeleteClick: Function;
   onBookOrderClick: Function;
+  onBookDblClick: (book: IBook) => void;
 }
 
 class BookList extends React.Component<BookListProps> {
@@ -135,7 +144,8 @@ class BookList extends React.Component<BookListProps> {
         {this.props.list.map((book, index) => {
           const className = ['book-item', book.id === this.props.currentId ? 'selected' : ''].join(' ');
           return (
-            <div className={className} key={index} onClick={() => this.props.onBookClick(book)}>
+            <div className={className} key={index} onClick={() => this.props.onBookClick(book)}
+              onDoubleClick={() => this.props.onBookDblClick(book)}>
               {book.name.split('.')[0]}
               <div className="icons">
                 {book.mode === BookMode.INORDER ? (
