@@ -5,7 +5,7 @@ import ShareIcons from './ShareIcons';
 import Slider from 'rc-slider';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/reducers';
-import { ADD_HISTORY, SET_CURSOR, UPDATE_PARAGRAH_TEXT } from '../redux/actionTypes';
+import { ADD_HISTORY, INC_CURSOR, SET_CURSOR, UPDATE_PARAGRAH_TEXT } from '../redux/actionTypes';
 import { CheckOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons';
 import Input from 'antd/es/input';
 import useEditBtn from '../../../hooks/useEditBtn';
@@ -13,7 +13,7 @@ import { updateParagraphText } from '../redux/actions/reader';
 
 export default function Paragraph() {
   const dispatch = useDispatch();
-  const { paragraph, currentBook, cursor } = useSelector((state: RootState) => state.readers);
+  const { paragraph, currentBook, cursor, spanCursor } = useSelector((state: RootState) => state.readers);
   const paragraphRef = useRef();
   const onSlideChange = useCallback((newIndex) => {
     dispatch({ type: SET_CURSOR, payload: newIndex });
@@ -63,15 +63,49 @@ export default function Paragraph() {
           <FormOutlined className="icon icon-edit-start" onClick={onEditStart}/>
         }
       </div>
-      <div className="paragraph-text" ref={paragraphRef}>
+      <div className={spanCursor >= 0 ? "paragraph-text cursor-active" : "paragraph-text"} ref={paragraphRef}>
         {
           editing ? 
           <Input.TextArea value={textEditing} onChange={onTextChange} autoSize /> :
-          <>{text}</>
+          <Text text={text} cursor={spanCursor} />
         }
       </div>
       <p className="book-name">{currentBook ? `-- ${pureBookName}` : ''}</p>
       <ShareIcons />
     </div>
+  );
+}
+
+function Text(props: { text: string, cursor: number }) {
+  const dispatch = useDispatch(); 
+  const arr = props.text.split(/([,，。.?？])/g);
+  arr.push("");
+ 
+  const total = arr.reduce(
+    (memo, item, index) => {
+      if (index % 2 !== 0) {
+        memo.total.push(`${memo.temp}${item}`);
+        memo.temp = "";
+      } else {
+        memo.temp = item;
+      }
+
+      return memo;
+    },
+    { total: [] as string[], temp: "" }
+  ).total;
+
+  useEffect(() => {
+    if (props.cursor >= total.length) {
+      dispatch({ type: INC_CURSOR })
+    }
+  }, [props.cursor, total])
+
+  return (
+    <>
+      {total.map((item, index) => (
+        <span className={index === props.cursor ? "is-active" : ""}>{item}</span>
+      ))}
+    </>
   );
 }

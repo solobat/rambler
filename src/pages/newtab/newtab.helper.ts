@@ -13,6 +13,7 @@ import {
   SET_CURRENT_BOOKID,
   SET_CURSOR,
   SET_PARAGRAPH,
+  SET_SPAN_CURSOR,
   UPDATE_SEARCHBOX_VISIBLE,
 } from "./redux/actionTypes";
 
@@ -28,13 +29,15 @@ function isKeyValid(target) {
 }
 const CURSOR_STORAGE_KEY = "cursors";
 
-const KEY_CODE: KEYCODE = {
+const KEY_CODE = {
   REFRESH: ["r"],
-  PREV: ["ArrowLeft", "ArrowUp", "k"],
-  NEXT: ["ArrowRight", "ArrowDown", "j"],
+  PREV: ["ArrowLeft", "ArrowUp", "h"],
+  NEXT: ["ArrowRight", "ArrowDown", "l"],
   OPEN_SEARCH_BOX: ["f"],
   CLOSE_SEARCH_BOX: ["Escape"],
-  BACK: ["b"],
+  PREV_SPAN: ['k'],
+  NEXT_SPAN: ["j"],
+  BACK: ["u"],
   FORWARD: ["n"],
 };
 
@@ -98,7 +101,8 @@ export function keydownEventHandler(
   event: React.KeyboardEvent,
   dispatch,
   currentBook: IBook,
-  paragraph: IParagraph
+  paragraph: IParagraph,
+  spanCursor: number
 ) {
   const key = event.key;
 
@@ -113,6 +117,10 @@ export function keydownEventHandler(
       const index = getNextParagraphIndex(paragraph, currentBook, false);
 
       dispatch({ type: SET_CURSOR, payload: index });
+    } else if (KEY_CODE.PREV_SPAN.indexOf(key) !== -1) {
+      dispatch({ type: SET_SPAN_CURSOR, payload: spanCursor - 1})
+    } else if (KEY_CODE.NEXT_SPAN.indexOf(key) !== -1) {
+      dispatch({ type: SET_SPAN_CURSOR, payload: spanCursor + 1})
     } else if (KEY_CODE.OPEN_SEARCH_BOX.indexOf(key) !== -1) {
       event.preventDefault();
       dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: true });

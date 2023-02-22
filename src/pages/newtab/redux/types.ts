@@ -13,6 +13,7 @@ export interface ReaderState {
   cursor: number;
   history: number[];
   shortcutsModalVisible: boolean;
+  spanCursor: number; 
 }
 
 export interface CommentsState {

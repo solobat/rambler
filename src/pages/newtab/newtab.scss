@@ -151,6 +151,18 @@ body {
     text-align: justify;
     max-height: 400px;
     overflow: auto;
+   
+    &.cursor-active {
+        span {
+            opacity: 0.4;
+            transition: all 200ms ease-in;
+
+            &.is-active {
+                font-weight: 700;
+                opacity: 1; 
+            }
+        }
+    }
 }
 
 .process {

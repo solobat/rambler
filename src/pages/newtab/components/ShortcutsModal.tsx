@@ -13,8 +13,10 @@ interface KeyItemType {
 
 const keyItems: KeyItemType[] = [
   { label: 'Refresh', value: ['r'], type: '' },
-  { label: 'Prev Paragraph', value: ['←', '↑', 'k'], type: 'multiple'},
-  { label: 'Next Paragraph', value: ['→', '↓', 'j'], type: 'multiple'},
+  { label: 'Prev Paragraph', value: ['←', '↑', 'h'], type: 'multiple'},
+  { label: 'Next Paragraph', value: ['→', '↓', 'l'], type: 'multiple'},
+  { label: 'Prev Clause', value: ['k'], type: 'multiple'},
+  { label: 'Next Clause', value: ['j'], type: 'multiple'},
   { label: 'Open Searchbox', value: ['f'], type: ''},
   { label: 'Close Searchbox', value: ['esc'], type: ''},
 ]

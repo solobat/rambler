@@ -1,7 +1,9 @@
 import { IBook, IParagraph } from '../../../../server/db/database';
 import { ADD_HISTORY, RESET_HISTORY, SET_CURRENT_BOOK, SET_CURRENT_BOOKID,
   SET_CURSOR, SET_PARAGRAPH, SET_SHORTCUTS_MODAL_VISIBLE, UPDATE_PARAGRAH_TEXT,
-  SET_BOOK_LOADED } from '../actionTypes';
+  SET_BOOK_LOADED, 
+  SET_SPAN_CURSOR,
+  INC_CURSOR} from '../actionTypes';
 import { Action, ReaderState } from '../types';
 
 const initialState: ReaderState = {
@@ -12,6 +14,7 @@ const initialState: ReaderState = {
   cursor: 0,
   history: [],
   shortcutsModalVisible: false,
+  spanCursor: -1, 
 };
 
 const MAX_HISTORY_LENGTH = 1024;
@@ -38,6 +41,14 @@ export default function (state = initialState, action: Action) {
       return { ...state };
     case SET_CURSOR:
       state.cursor = action.payload;
+      state.spanCursor = -1; 
+      return { ...state };
+    case INC_CURSOR:
+      state.cursor += 1;
+      state.spanCursor = 0;
+      return {...state};
+    case SET_SPAN_CURSOR:
+      state.spanCursor = action.payload;
       return { ...state };
     case RESET_HISTORY:
       state.history = [];
