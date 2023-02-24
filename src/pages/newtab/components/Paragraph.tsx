@@ -78,7 +78,7 @@ export default function Paragraph() {
 
 function Text(props: { text: string, cursor: number }) {
   const dispatch = useDispatch(); 
-  const arr = props.text.split(/([,，。.?？])/g);
+  const arr = props.text.split(/([,，。.?？;；])/g);
   arr.push("");
  
   const total = arr.reduce(
