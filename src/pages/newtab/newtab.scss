@@ -278,6 +278,7 @@ body {
     height: 190px;
     overflow: auto;
     color: rgba(255, 255, 255, .6);
+    font-size: 12px; 
 
     .comment-item {
         position: relative;
@@ -360,6 +361,26 @@ body {
   
     .shortcut-label {
       margin-left: 3px;
+    }
+}
+
+.stock-data {
+    font-size: 12px;
+}
+
+.simp-tb {
+    font-size: 12px;
+    margin-bottom: 5px; 
+    width: 100%; 
+    
+    thead {
+        cursor: pointer;
+    }
+
+    td, th {
+        text-align: left; 
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 2px;
     }
 }
 
