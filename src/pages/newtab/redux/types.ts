@@ -14,6 +14,7 @@ export interface ReaderState {
   history: number[];
   shortcutsModalVisible: boolean;
   spanCursor: number; 
+  editing: boolean;
 }
 
 export interface CommentsState {

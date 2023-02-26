@@ -2,6 +2,7 @@ export const SET_CURRENT_BOOKID = 'setCurrentBookId';
 export const SET_CURRENT_BOOK = 'setCurrentBook';
 export const SET_PARAGRAPH = 'setParagraph';
 export const SET_CURSOR = 'setCursor';
+export const SET_EDITING = 'setEditing';
 export const INC_CURSOR = 'incCursor';
 export const SET_SPAN_CURSOR = 'setSpanCursor';
 export const UPDATE_SEARCHBOX_VISIBLE = 'updateSearchboxVisible';

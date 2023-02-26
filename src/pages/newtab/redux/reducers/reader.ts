@@ -3,12 +3,14 @@ import { ADD_HISTORY, RESET_HISTORY, SET_CURRENT_BOOK, SET_CURRENT_BOOKID,
   SET_CURSOR, SET_PARAGRAPH, SET_SHORTCUTS_MODAL_VISIBLE, UPDATE_PARAGRAH_TEXT,
   SET_BOOK_LOADED, 
   SET_SPAN_CURSOR,
-  INC_CURSOR} from '../actionTypes';
+  INC_CURSOR,
+  SET_EDITING} from '../actionTypes';
 import { Action, ReaderState } from '../types';
 
 const initialState: ReaderState = {
   bookLoaded: false,
   currentBookId: 0,
+  editing: false, 
   currentBook: null,
   paragraph: null,
   cursor: 0,
@@ -43,6 +45,9 @@ export default function (state = initialState, action: Action) {
       state.cursor = action.payload;
       state.spanCursor = -1; 
       return { ...state };
+    case SET_EDITING:
+      state.editing = action.payload;
+      return { ...state }
     case INC_CURSOR:
       state.cursor += 1;
       state.spanCursor = 0;

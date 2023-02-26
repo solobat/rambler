@@ -59,7 +59,15 @@ function App() {
 
 function Container() {
   const dispatch = useDispatch();
-  const { paragraph, currentBookId, cursor, currentBook, bookLoaded, spanCursor } = useSelector((state: RootState) => state.readers);
+  const {
+    paragraph,
+    currentBookId,
+    cursor,
+    currentBook,
+    bookLoaded,
+    spanCursor,
+    editing,
+  } = useSelector((state: RootState) => state.readers);
   const { allowComment } = useSelector((state: RootState) => state.comments);
   const { searchBoxVisible } = useSelector((state: RootState) => state.search);
   const commentsVisible = paragraph && allowComment;
@@ -86,9 +94,11 @@ function Container() {
 
   const onKeydown = useCallback(
     (event: React.KeyboardEvent) => {
-      keydownEventHandler(event, dispatch, currentBook, paragraph, spanCursor);
+      if (!editing) {
+        keydownEventHandler(event, dispatch, currentBook, paragraph, spanCursor);
+      }
     },
-    [currentBook, paragraph, spanCursor],
+    [currentBook, paragraph, spanCursor, editing],
   );
 
   useEventListener('keydown', onKeydown, {
