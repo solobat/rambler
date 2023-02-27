@@ -3,6 +3,10 @@ export const STORAGE_LOCAL = {
     CURRENT_BOOK_ID: 'current_book_id' 
 }
 
+export const SESSION_STORAGE = {
+    CURRENT_BOOK_ID: 'current_book_id' 
+}
+
 export const SOLID_COLORS = [
     '#1e1e1e',
     '#202124',

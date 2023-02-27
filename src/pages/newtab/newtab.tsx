@@ -25,6 +25,7 @@ import './newtab.scss';
 import { RootState } from './redux/reducers';
 import { RESET_HISTORY } from './redux/actionTypes';
 import ShortcutsModal from './components/ShortcutsModal';
+import { getFileShortName } from '@src/util/file';
 
 declare global {
   interface Window {
@@ -86,6 +87,10 @@ function Container() {
   }, [currentBook, cursor, bookLoaded]);
   useEffect(() => {
     dispatch({ type: RESET_HISTORY });
+
+    if (currentBook && currentBook.name) {
+      document.title = getFileShortName(currentBook.name);
+    }
   }, [currentBook]);
 
   useEffect(() => {

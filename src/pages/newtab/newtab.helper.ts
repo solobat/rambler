@@ -16,6 +16,7 @@ import {
   SET_SPAN_CURSOR,
   UPDATE_SEARCHBOX_VISIBLE,
 } from "./redux/actionTypes";
+import { SESSION_STORAGE } from "@src/common/constant";
 
 function isKeyValid(target) {
   if (
@@ -238,11 +239,25 @@ export function loadParagraph(
 }
 
 export function initBook(dispatch: React.Dispatch<any>) {
-  bookController.getCurrentBook().then((id) => {
+  getCurrentBookId().then((id) => {
     if (id) {
       dispatch({ type: SET_CURRENT_BOOKID, payload: id });
     } else {
       setDefaultBook();
     }
   });
+}
+
+function getCurrentBookId() {
+  const localId = window.sessionStorage.getItem(SESSION_STORAGE.CURRENT_BOOK_ID);
+
+  if (localId) {
+    return Promise.resolve(Number(localId))
+  } else {
+    return bookController.getCurrentBook().then((id) => {
+      window.sessionStorage.setItem(SESSION_STORAGE.CURRENT_BOOK_ID, String(id));
+
+      return id
+    })
+  }
 }

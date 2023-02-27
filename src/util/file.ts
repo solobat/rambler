@@ -36,10 +36,10 @@ async function getAsByteArray(file: File) {
 async function checkGBK(file: File) {
   const text = await file.text();
 
-  return text.indexOf("ï¿½") !== -1;
+  return text.indexOf("ï¿?") !== -1;
 }
 
-const chapterReg = /(ç¬¬.*ç« )|(chapter)/i;
+const chapterReg = /(ç¬?.*ç«?)|(chapter)/i;
 
 function notEmpty(str) {
   if (str === "\n" || str === "\r\n" || str.trim() === "") {
@@ -75,4 +75,11 @@ export async function sliceFileToParagraphs(file: File): Promise<string[]> {
       return [];
     }
   });
+}
+
+export function getFileShortName(name: string) {
+  const arr = name.split('.')
+  arr.pop();
+
+  return arr.join('.')
 }
