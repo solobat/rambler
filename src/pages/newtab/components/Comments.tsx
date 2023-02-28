@@ -20,8 +20,7 @@ import {
   getStockIncome,
   getStockIndicators,
 } from "@src/server/service/tushareService";
-import { getStockAnnounce } from "@src/server/service/xueqiuService";
-import { Button } from "antd";
+import { getStockTimeline } from "@src/server/service/xueqiuService";
 
 export default function Comments() {
   const { currentBookId, paragraph } = useSelector(
@@ -136,7 +135,8 @@ function CommentRenderer(props: { text: string }) {
       {type === "daily" && <CommentStockDaily data={data as string} />}
       {type === "income" && <CommentStockIncome data={data as string} />}
       {type === "indicators" && <CommentStockIndicator data={data as string} />}
-      {type === "ann" && <CommentStockAnnouncement data={data as string} />}
+      {type === "ann" && <CommentStockTimeline data={data as string} source="公告" />}
+      {type === "news" && <CommentStockTimeline data={data as string} source="自选股新闻" />}
       {type === "text" && <>{data}</>}
     </>
   );
@@ -214,35 +214,35 @@ function CommentStockDaily(props: { data: string }) {
     }
   }, [props.data]);
 
-  return <span className="stock-data">{info}</span>;
+  return <div className="stock-data">{info}</div>;
 }
 
-function CommentStockAnnouncement(props: { data: string }) {
-  const [anns, setAnns] = useState([]);
+function CommentStockTimeline(props: { data: string, source: string }) {
+  const [list, setList] = useState([]);
   const [show, { toggle }] = useToggle(false);
 
   useEffect(() => {
     if (show) {
-      getStockAnnounce(props.data).then((list) => {
-        setAnns(list);
+      getStockTimeline(props.data, props.source).then((list) => {
+        setList(list);
       });
     }
-  }, [props.data, show]);
+  }, [props.data, props.source,  show]);
 
   return (
-    <div className="stock-anns">
+    <div className="stock-timeline">
       <div>
         <button
-          className="anns-fold-btn"
+          className="timeline-fold-btn"
           onClick={() => toggle()}
         >
-          公告 {show ? "收起" : "展开"}
+          {props.source} {show ? "收起" : "展开"}
         </button>
       </div>
       {show &&
-        anns.map((item) => (
+        list.map((item) => (
           <div
-            className="ann-item"
+            className="timeline-item"
             key={item.id}
             dangerouslySetInnerHTML={{ __html: item.text }}
           ></div>
@@ -384,16 +384,16 @@ function loadComments(
 }
 
 function sortComments(list: IComment[]) {
-  const symbols = ["%", "[", "$", "!", "#"];
+  const symbols = ["$", "%", "[", "!", "#"].reverse();
   const isSp = (item) => symbols.some((s) => item.text.startsWith(s));
   const shouldSort = list.some(isSp);
 
   if (shouldSort) {
     return list.sort((a, b) => {
-      const isASp = isSp(a);
-      const isBSp = isSp(b);
+      const aIndex = symbols.indexOf(a.text[0])
+      const bIndex = symbols.indexOf(b.text[0])
 
-      return Number(isASp) < Number(isBSp) ? 1 : -1;
+      return aIndex < bIndex ? 1 : -1;
     });
   } else {
     return list;

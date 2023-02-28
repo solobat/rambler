@@ -3,8 +3,8 @@ const APIList = {
   Timeline: "/statuses/stock_timeline.json",
 };
 
-export function getStockAnnounce(code: string, count = 10) {
-  return baseListRequest(APIList.Timeline, code, '公告', count);
+export function getStockTimeline(code: string, source: string, count = 10) {
+  return baseListRequest(APIList.Timeline, code, source, count);
 }
 
 function baseListRequest(

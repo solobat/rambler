@@ -366,6 +366,9 @@ body {
 
 .stock-data {
     font-size: 12px;
+    margin-bottom: 5px; 
+    border: 1px solid rgba(0, 0, 0, 0.1); 
+    padding: 2px;
 }
 
 .simp-tb {
@@ -384,15 +387,17 @@ body {
     }
 }
 
-.stock-anns {
-    .anns-fold-btn {
+.stock-timeline {
+    margin-bottom: 5px; 
+
+    .timeline-fold-btn {
         border: 1px solid rgba(0, 0, 0, 0.1); 
         color: inherit; 
         background-color: transparent;
         cursor: pointer; 
     } 
-    
-    .ann-item {
+
+    .timeline-item {
         margin: 1px 0;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
     }
