@@ -384,6 +384,20 @@ body {
     }
 }
 
+.stock-anns {
+    .anns-fold-btn {
+        border: 1px solid rgba(0, 0, 0, 0.1); 
+        color: inherit; 
+        background-color: transparent;
+        cursor: pointer; 
+    } 
+    
+    .ann-item {
+        margin: 1px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
+    }
+}
+
 /* scrollbar styles */
 ::-webkit-scrollbar {
     width: 4px;

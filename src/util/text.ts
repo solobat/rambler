@@ -48,12 +48,19 @@ const StockIncomeParser: Parser<string> = {
   resolve: (match) => [match[1], StockIncomeParser.type],
 }
 
+const StockAnnouncementParser: Parser<string> = {
+  type: "ann",
+  reg: /^#(.*)#ANN$/,
+  resolve: (match) => [match[1], StockAnnouncementParser.type],
+}
+
 const parsers: Parser[] = [
   LinkParser,
   ImgParser,
   StockDailyParser,
   StockIndicatorsParser,
-  StockIncomeParser
+  StockIncomeParser,
+  StockAnnouncementParser
 ];
 
 export function getCommentInfo(text: string): CommentInfo {

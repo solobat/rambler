@@ -7,7 +7,11 @@ import { toast } from "react-toastify";
 import { IComment, IParagraph } from "../../../server/db/database";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/reducers";
-import { CloseOutlined } from "@ant-design/icons";
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
 import { getCommentInfo } from "@src/util/text";
 import { Img, Link } from "@src/util/types";
@@ -16,6 +20,8 @@ import {
   getStockIncome,
   getStockIndicators,
 } from "@src/server/service/tushareService";
+import { getStockAnnounce } from "@src/server/service/xueqiuService";
+import { Button } from "antd";
 
 export default function Comments() {
   const { currentBookId, paragraph } = useSelector(
@@ -130,6 +136,7 @@ function CommentRenderer(props: { text: string }) {
       {type === "daily" && <CommentStockDaily data={data as string} />}
       {type === "income" && <CommentStockIncome data={data as string} />}
       {type === "indicators" && <CommentStockIndicator data={data as string} />}
+      {type === "ann" && <CommentStockAnnouncement data={data as string} />}
       {type === "text" && <>{data}</>}
     </>
   );
@@ -208,6 +215,40 @@ function CommentStockDaily(props: { data: string }) {
   }, [props.data]);
 
   return <span className="stock-data">{info}</span>;
+}
+
+function CommentStockAnnouncement(props: { data: string }) {
+  const [anns, setAnns] = useState([]);
+  const [show, { toggle }] = useToggle(false);
+
+  useEffect(() => {
+    if (show) {
+      getStockAnnounce(props.data).then((list) => {
+        setAnns(list);
+      });
+    }
+  }, [props.data, show]);
+
+  return (
+    <div className="stock-anns">
+      <div>
+        <button
+          className="anns-fold-btn"
+          onClick={() => toggle()}
+        >
+          公告 {show ? "收起" : "展开"}
+        </button>
+      </div>
+      {show &&
+        anns.map((item) => (
+          <div
+            className="ann-item"
+            key={item.id}
+            dangerouslySetInnerHTML={{ __html: item.text }}
+          ></div>
+        ))}
+    </div>
+  );
 }
 
 function CommentStockIndicator(props: { data: string }) {
@@ -343,7 +384,7 @@ function loadComments(
 }
 
 function sortComments(list: IComment[]) {
-  const symbols = ["%", "[", "$", "!"];
+  const symbols = ["%", "[", "$", "!", "#"];
   const isSp = (item) => symbols.some((s) => item.text.startsWith(s));
   const shouldSort = list.some(isSp);
 
