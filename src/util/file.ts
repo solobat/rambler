@@ -36,10 +36,10 @@ async function getAsByteArray(file: File) {
 async function checkGBK(file: File) {
   const text = await file.text();
 
-  return text.indexOf("ï¿?") !== -1;
+  return text.indexOf("ï¿½?") !== -1;
 }
 
-const chapterReg = /(ç¬?.*ç«?)|(chapter)/i;
+const chapterReg = /(ç¬¬.*ç« )|(chapter)/i;
 
 function notEmpty(str) {
   if (str === "\n" || str === "\r\n" || str.trim() === "") {
