@@ -1,28 +1,30 @@
-import * as React from 'react';
-import './Popup.scss';
-import { IBook } from '../../server/db/database';
-import * as bookController from '../../server/controller/bookController';
-import * as Code from '../../server/common/code';
-import Book from '../../server/model/Book';
-import { BookMode } from '../../server/enum/Book';
-import { onDbUpdate } from '../../helper/db.helper';
-import { isAutoSync } from '../../helper/sync';
-import { noticeBg } from '../../helper/event';
-import { APP_ACTIONS } from '../../common/constant';
+import * as React from "react";
+import "./Popup.scss";
+import { IBook } from "../../server/db/database";
+import * as bookController from "../../server/controller/bookController";
+import * as Code from "../../server/common/code";
+import Book from "../../server/model/Book";
+import { BookMode } from "../../server/enum/Book";
+import { onDbUpdate } from "../../helper/db.helper";
+import { isAutoSync } from "../../helper/sync";
+import { noticeBg } from "../../helper/event";
+import { APP_ACTIONS } from "../../common/constant";
 
 interface AppProps {}
 
 interface AppState {
   currentBookId: number;
   bookList: IBook[];
+  showAll: boolean;
 }
 
-const newTabUrl = chrome.runtime.getURL('src/pages/newtab/index.html');
+const newTabUrl = chrome.runtime.getURL("src/pages/newtab/index.html");
 
 export default class Popup extends React.Component<AppProps, AppState> {
   state = {
     currentBookId: 0,
     bookList: [],
+    showAll: false,
   };
 
   constructor(props: AppProps, state: AppState) {
@@ -30,7 +32,7 @@ export default class Popup extends React.Component<AppProps, AppState> {
   }
 
   loadBook(bookId) {
-    bookController.getList().then((resp) => {
+    bookController.getList(this.state.showAll).then((resp) => {
       if (resp.code === Code.OK.code) {
         this.setState({
           currentBookId: bookId,
@@ -53,20 +55,31 @@ export default class Popup extends React.Component<AppProps, AppState> {
     });
   }
 
+  onShowAllChanged() {
+    this.setState(
+      {
+        showAll: !this.state.showAll,
+      },
+      () => {
+        this.loadBook(this.state.currentBookId);
+      }
+    );
+  }
+
   onBookClick(book) {
     this.setState({
       currentBookId: book.id,
     });
     bookController.setCurrentBook(book.id).then(() => {
-      console.log('save successfully!');
+      console.log("save successfully!");
     });
   }
 
   onBookDblClick(book: IBook) {
     this.onBookClick(book);
     chrome.tabs.create({
-      url: "chrome://newtab"
-    })
+      url: "chrome://newtab",
+    });
   }
 
   onBookDeleteClick(event, book: Book) {
@@ -97,12 +110,21 @@ export default class Popup extends React.Component<AppProps, AppState> {
             <div className="text">Rambler</div>
           </a>
         </div>
+        <label className="show-all-wrap" htmlFor="show-all">
+          ALL 
+          <input
+            id="show-all"
+            type="checkbox"
+            checked={this.state.showAll}
+            onChange={this.onShowAllChanged.bind(this)}
+          />
+        </label>
         {this.state.bookList.length ? (
           <BookList
             currentId={this.state.currentBookId}
             list={this.state.bookList}
             onBookClick={this.onBookClick.bind(this)}
-            onBookDblClick= {this.onBookDblClick.bind(this)} 
+            onBookDblClick={this.onBookDblClick.bind(this)}
             onBookDeleteClick={this.onBookDeleteClick.bind(this)}
             onBookOrderClick={this.onBookOrderClick.bind(this)}
           ></BookList>
@@ -142,25 +164,61 @@ class BookList extends React.Component<BookListProps> {
     return (
       <div className="book-list">
         {this.props.list.map((book, index) => {
-          const className = ['book-item', book.id === this.props.currentId ? 'selected' : ''].join(' ');
+          const className = [
+            "book-item",
+            book.id === this.props.currentId ? "selected" : "",
+          ].join(" ");
           return (
-            <div className={className} key={index} onClick={() => this.props.onBookClick(book)}
-              onDoubleClick={() => this.props.onBookDblClick(book)}>
-              {book.name.split('.')[0]}
+            <div
+              className={className}
+              key={index}
+              onClick={() => this.props.onBookClick(book)}
+              onDoubleClick={() => this.props.onBookDblClick(book)}
+            >
+              {book.name.split(".")[0]}
               <div className="icons">
-                {book.mode === BookMode.INORDER ? (
+                {book.mode === BookMode.INORDER && (
                   <img
                     className="icon icon-order"
                     src="/img/icon/inorder.svg"
                     alt=""
-                    onClick={(event) => this.props.onBookOrderClick(event, book, 0)}
+                    onClick={(event) =>
+                      this.props.onBookOrderClick(event, book, BookMode.SHUFFLE)
+                    }
                   />
-                ) : (
+                )}
+                {book.mode === BookMode.SHUFFLE && (
                   <img
                     className="icon icon-order"
                     src="/img/icon/shuffle.svg"
                     alt=""
-                    onClick={(event) => this.props.onBookOrderClick(event, book, 1)}
+                    onClick={(event) =>
+                      this.props.onBookOrderClick(event, book, BookMode.INORDER)
+                    }
+                  />
+                )}
+                {book.mode !== BookMode.ARCHIVED && (
+                  <img
+                    className="icon icon-order"
+                    src="/img/icon/archived.svg"
+                    alt=""
+                    onClick={(event) =>
+                      this.props.onBookOrderClick(
+                        event,
+                        book,
+                        BookMode.ARCHIVED
+                      )
+                    }
+                  />
+                )}
+                {book.mode === BookMode.ARCHIVED && (
+                  <img
+                    className="icon icon-order"
+                    src="/img/icon/restore.svg"
+                    alt=""
+                    onClick={(event) =>
+                      this.props.onBookOrderClick(event, book, BookMode.SHUFFLE)
+                    }
                   />
                 )}
                 <img

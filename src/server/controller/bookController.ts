@@ -5,6 +5,7 @@ import Response from '../common/response';
 import * as Code from '../common/code';
 import { IBook, IParagraph, db } from '../db/database';
 import TheFirstAndLastFreedom from '../../assets/text/The-first-and-last-freedom';
+import { BookMode } from '../enum/Book';
 
 export async function saveBook(file: File, paragraphs: string[]): Promise<Response<number> | Response<null>> {
   if (file && paragraphs && paragraphs.length > 0) {
@@ -73,8 +74,12 @@ export async function updateBook(bookId: number, changes: object): Promise<Respo
   }
 }
 
-export async function getList(): Promise<Response<IBook[]>> {
-  const result = await bookService.getAll();
+export async function getList(all = false): Promise<Response<IBook[]>> {
+  let result = await bookService.getAll();
+  
+  if (!all) {
+    result = result.filter(item => item.mode !== BookMode.ARCHIVED)
+  }
 
   return Response.ok(result);
 }
