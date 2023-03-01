@@ -41,24 +41,30 @@ export default function Comments(props: {
   const onCommentBoxMouseLeave = useCallback(() => {
     commentIptRef.current.blur();
   }, []);
+  const onSubmit = (text: string) => {
+    const trimedCommentText = text.trim();
+
+    if (trimedCommentText) {
+      commentIptRef.current.value = "";
+
+      return commentController
+        .saveComment(trimedCommentText, currentBookId, paragraph.id)
+        .then((resp) => {
+          if (resp.code === Code.OK.code) {
+            console.log("save successfully");
+            loadComments(setComments, currentBookId, paragraph);
+          } else {
+            toast.error(resp.message);
+          }
+        });
+    } else {
+      return Promise.reject("no input");
+    }
+  };
   const onCommentInputKeyPress = useCallback(
     (event) => {
       if (event.key === "Enter") {
-        const trimedCommentText = event.target.value.trim();
-
-        if (trimedCommentText) {
-          event.target.value = "";
-          commentController
-            .saveComment(trimedCommentText, currentBookId, paragraph.id)
-            .then((resp) => {
-              if (resp.code === Code.OK.code) {
-                console.log("save successfully");
-                loadComments(setComments, currentBookId, paragraph);
-              } else {
-                toast.error(resp.message);
-              }
-            });
-        }
+        onSubmit(event.target.value)
       }
     },
     [currentBookId, paragraph]
@@ -76,8 +82,7 @@ export default function Comments(props: {
     [currentBookId, paragraph]
   );
   const onShortcutClick = (text: string) => {
-    commentIptRef.current.value = text;
-    commentIptRef.current.focus();
+    onSubmit(text);
   };
 
   useEffect(() => {
@@ -197,9 +202,7 @@ function CommentRenderer(props: { text: string }) {
       {type === "news" && (
         <CommentStockTimeline data={data as string} source="自选股新闻" />
       )}
-      {type === "info" && (
-        <CommentStockInfo data={data as string} />
-      )}
+      {type === "info" && <CommentStockInfo data={data as string} />}
       {type === "text" && <>{data}</>}
     </>
   );
@@ -289,16 +292,13 @@ function CommentStockInfo(props: { data: string }) {
   ];
   const list = infoKeys.map((pair) => ({
     label: pair[1],
-    text: info[pair[0]] ?? '--',
+    text: info[pair[0]] ?? "--",
   }));
 
   return (
     <CommentStockInfoBlock label="公司信息" onVisibleChange={onVisibleChange}>
       {list.map((item) => (
-        <div
-          className="info-item"
-          key={item.label}
-        >
+        <div className="info-item" key={item.label}>
           {item.label}: {item.text}
         </div>
       ))}
