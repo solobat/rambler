@@ -1,10 +1,18 @@
 const baseURI = "https://xueqiu.com";
+const stockBaseURI = "https://stock.xueqiu.com";
 const APIList = {
-  Timeline: "/statuses/stock_timeline.json",
+  Timeline: `${baseURI}/statuses/stock_timeline.json`,
+  Company: `${stockBaseURI}/v5/stock/f10/cn/company.json`,
 };
 
 export function getStockTimeline(code: string, source: string, count = 10) {
   return baseListRequest(APIList.Timeline, code, source, count);
+}
+
+export function getStockCompany(code: string) {
+  return baseRequest(`${APIList.Company}?symbol=${code}`).then(
+    (resp) => resp.data.company
+  );
 }
 
 function baseListRequest(
@@ -19,16 +27,18 @@ function baseListRequest(
     ["source", source],
     ["page", 1],
   ];
-  const str = params.map(pair => pair.join('=')).join('&');
+  const str = params.map((pair) => pair.join("=")).join("&");
 
-  return fetch(`${baseURI}${APIList.Timeline}?${str}`, {
+  return baseRequest(`${APIList.Timeline}?${str}`).then((res) => {
+    return res.list ?? [];
+  });
+}
+
+function baseRequest(url: string) {
+  return fetch(url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      return res.list ?? [];
-    });
+  }).then((res) => res.json());
 }

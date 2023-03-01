@@ -9,7 +9,17 @@ export interface Img extends Link {}
 
 export type TextDataType = Link | Img | string;
 
-export type TextFormatType = "link" | "img" | "text" | "indicators" | "daily" | "income" | "ann" | "news" | "cashflow";
+export type TextFormatType =
+  | "link"
+  | "img"
+  | "text"
+  | "indicators"
+  | "daily"
+  | "income"
+  | "ann"
+  | "news"
+  | "cashflow"
+  | "info";
 
 export interface CommentInfo {
   type: TextFormatType;

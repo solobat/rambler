@@ -17,7 +17,10 @@ import {
   getStockIncome,
   getStockIndicators,
 } from "@src/server/service/tushareService";
-import { getStockTimeline } from "@src/server/service/xueqiuService";
+import {
+  getStockCompany,
+  getStockTimeline,
+} from "@src/server/service/xueqiuService";
 import { fixNumber } from "@src/util/number";
 import { FieldsMap, sortComments } from "@src/util/data";
 import { Button } from "antd";
@@ -121,7 +124,7 @@ function generateStockShortcut(
   generate: (code: string, ex: string) => string
 ) {
   const code = text.split(":")[0];
-  const ex = (code.startsWith("30") || code.startsWith("00")) ? 'sz' : 'sh'
+  const ex = code.startsWith("30") || code.startsWith("00") ? "sz" : "sh";
 
   return generate(code, ex);
 }
@@ -194,6 +197,9 @@ function CommentRenderer(props: { text: string }) {
       {type === "news" && (
         <CommentStockTimeline data={data as string} source="自选股新闻" />
       )}
+      {type === "info" && (
+        <CommentStockInfo data={data as string} />
+      )}
       {type === "text" && <>{data}</>}
     </>
   );
@@ -239,31 +245,86 @@ function CommentStockDaily(props: { data: string }) {
 
 function CommentStockTimeline(props: { data: string; source: string }) {
   const [list, setList] = useState([]);
-  const [show, { toggle }] = useToggle(false);
 
-  useEffect(() => {
-    if (show) {
+  const onVisibleChange = (visible) => {
+    if (visible) {
       getStockTimeline(props.data, props.source).then((list) => {
         setList(list);
       });
     }
-  }, [props.data, props.source, show]);
+  };
 
   return (
-    <div className="stock-timeline">
+    <CommentStockInfoBlock
+      label={props.source}
+      onVisibleChange={onVisibleChange}
+    >
+      {list.map((item) => (
+        <div
+          className="info-item"
+          key={item.id}
+          dangerouslySetInnerHTML={{ __html: item.text }}
+        ></div>
+      ))}
+    </CommentStockInfoBlock>
+  );
+}
+
+function CommentStockInfo(props: { data: string }) {
+  const [info, setInfo] = useState({});
+
+  const onVisibleChange = (visible) => {
+    if (visible) {
+      getStockCompany(props.data).then((info) => {
+        setInfo(info);
+      });
+    }
+  };
+  const infoKeys = [
+    ["provincial_name", "所属省份"],
+    ["classi_name", "所有制"],
+    ["actual_controller", "实际控制人"],
+    ["main_operation_business", "主营业务"],
+    ["org_cn_introduction", "公司简介	"],
+  ];
+  const list = infoKeys.map((pair) => ({
+    label: pair[1],
+    text: info[pair[0]] ?? '--',
+  }));
+
+  return (
+    <CommentStockInfoBlock label="公司信息" onVisibleChange={onVisibleChange}>
+      {list.map((item) => (
+        <div
+          className="info-item"
+          key={item.label}
+        >
+          {item.label}: {item.text}
+        </div>
+      ))}
+    </CommentStockInfoBlock>
+  );
+}
+
+function CommentStockInfoBlock(props: {
+  label: string;
+  children?: React.ReactNode;
+  onVisibleChange: (visible: boolean) => void;
+}) {
+  const [show, { toggle }] = useToggle(false);
+  const onClick = () => {
+    toggle();
+    props.onVisibleChange(!show);
+  };
+
+  return (
+    <div className="stock-block">
       <div>
-        <button className="timeline-fold-btn" onClick={() => toggle()}>
-          {props.source} {show ? "收起" : "展开"}
+        <button className="block-fold-btn" onClick={onClick}>
+          {props.label} {show ? "收起" : "展开"}
         </button>
       </div>
-      {show &&
-        list.map((item) => (
-          <div
-            className="timeline-item"
-            key={item.id}
-            dangerouslySetInnerHTML={{ __html: item.text }}
-          ></div>
-        ))}
+      {show && props.children}
     </div>
   );
 }

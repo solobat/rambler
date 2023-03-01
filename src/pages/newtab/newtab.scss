@@ -391,17 +391,17 @@ body {
   }
 }
 
-.stock-timeline {
+.stock-block {
   margin-bottom: 5px;
 
-  .timeline-fold-btn {
+  .block-fold-btn {
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: inherit;
     background-color: transparent;
     cursor: pointer;
   }
-
-  .timeline-item {
+  
+  .info-item {
     margin: 1px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }

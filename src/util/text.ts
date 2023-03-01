@@ -66,6 +66,12 @@ const StockNewsParser: Parser<string> = {
   resolve: (match) => [match[1], StockNewsParser.type],
 }
 
+const StockInfoParser: Parser<string> = {
+  type: "info",
+  reg: /^#(.*)#INFO$/,
+  resolve: (match) => [match[1], StockInfoParser.type],
+}
+
 const parsers: Parser[] = [
   LinkParser,
   ImgParser,
@@ -74,7 +80,8 @@ const parsers: Parser[] = [
   StockIncomeParser,
   StockCashflowParser,
   StockAnnouncementParser,
-  StockNewsParser
+  StockNewsParser,
+  StockInfoParser
 ];
 
 export function getCommentInfo(text: string): CommentInfo {
@@ -105,7 +112,7 @@ function applyParser(
 
 
 interface StockShortcut {
-  type: TextFormatType,
+  type: TextFormatType | 'xueqiu',
   generate: (code: string, ex: string) => string
 }
 export const StockShortcuts: StockShortcut[] = [
@@ -132,5 +139,13 @@ export const StockShortcuts: StockShortcut[] = [
   {
     type: 'ann',
     generate: (code, ex) => `#${ex.toUpperCase()}${code}#ANN`
-  }
+  },
+  {
+    type: 'info',
+    generate: (code, ex) => `#${ex.toUpperCase()}${code}#INFO`
+  }, 
+  {
+    type: 'xueqiu',
+    generate: (code, ex) => `[雪球](https://xueqiu.com/S/${ex.toUpperCase()}${code})`
+  },
 ]
