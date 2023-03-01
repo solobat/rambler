@@ -9,7 +9,7 @@ const APIList = {
 };
 
 export function getStockDaily(token: string, code: string) {
-  const fields = ["close", "volume_ratio", "pe_ttm", "turnover_rate"];
+  const fields = ["close", "volume_ratio", "pe_ttm", "turnover_rate", "total_mv", 'pb'];
 
   return baseListRequest(token, APIList.Daily, code, fields);
 }

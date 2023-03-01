@@ -43,7 +43,7 @@ export const FieldsMap = {
 };
 
 export function sortComments(list: IComment[]) {
-  const symbols = ["$", "%", "[", "!", "#"].reverse();
+  const symbols = ["$", "%", "!", "#", "["].reverse();
   const isSp = (item) => symbols.some((s) => item.text.startsWith(s));
   const shouldSort = list.some(isSp);
 

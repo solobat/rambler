@@ -24,6 +24,7 @@ import {
 import { fixNumber } from "@src/util/number";
 import { FieldsMap, sortComments } from "@src/util/data";
 import { Button } from "antd";
+import dayjs from "dayjs";
 
 export default function Comments(props: {
   bookName?: string;
@@ -231,8 +232,15 @@ function CommentStockDaily(props: { data: string }) {
         const line = result.lines[0] ?? [];
         const text = result.fields
           .map(
-            (item, index) =>
-              `${FieldsMap[item]}: ${Number(line[index]).toFixed(3)}`
+            (item, index) => {
+              if (item === 'total_mv') {
+                const val = fixNumber(Number(line[index]) * 10000);
+
+                return `${FieldsMap[item]}: ${val}`
+              } else {
+                return `${FieldsMap[item]}: ${Number(line[index]).toFixed(3)}`;
+              }
+            } 
           )
           .join("; ");
 
@@ -273,6 +281,7 @@ function CommentStockTimeline(props: { data: string; source: string }) {
   );
 }
 
+const raw = (val: string | number) => val
 function CommentStockInfo(props: { data: string }) {
   const [info, setInfo] = useState({});
 
@@ -283,16 +292,17 @@ function CommentStockInfo(props: { data: string }) {
       });
     }
   };
-  const infoKeys = [
-    ["provincial_name", "所属省份"],
-    ["classi_name", "所有制"],
-    ["actual_controller", "实际控制人"],
-    ["main_operation_business", "主营业务"],
-    ["org_cn_introduction", "公司简介	"],
+  const infoKeys: Array<[string, string, (val: string | number) => string | number]> = [
+    ["provincial_name", "所属省份", raw],
+    ["classi_name", "所有制", raw],
+    ["actual_controller", "实际控制人", raw],
+    ["main_operation_business", "主营业务", raw],
+    ["org_cn_introduction", "公司简介", raw],
+    ["listed_date", "上市时间", (val: number) => dayjs(val).format('YYYY-MM-DD')]
   ];
   const list = infoKeys.map((pair) => ({
     label: pair[1],
-    text: info[pair[0]] ?? "--",
+    text: pair[2](info[pair[0]] ?? "--"),
   }));
 
   return (
