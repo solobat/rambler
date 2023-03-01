@@ -7,20 +7,19 @@ import { toast } from "react-toastify";
 import { IComment, IParagraph } from "../../../server/db/database";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/reducers";
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
 import { getCommentInfo } from "@src/util/text";
-import { Img, Link } from "@src/util/types";
+import { Img, Link, Result } from "@src/util/types";
 import {
+  getStockCashflow,
   getStockDaily,
   getStockIncome,
   getStockIndicators,
 } from "@src/server/service/tushareService";
 import { getStockTimeline } from "@src/server/service/xueqiuService";
+import { fixNumber } from "@src/util/number";
+import { FieldsMap, sortComments } from "@src/util/data";
 
 export default function Comments() {
   const { currentBookId, paragraph } = useSelector(
@@ -133,10 +132,21 @@ function CommentRenderer(props: { text: string }) {
       {type === "link" && <CommentLink data={data as Link} />}
       {type === "img" && <CommentImg data={data as Img} />}
       {type === "daily" && <CommentStockDaily data={data as string} />}
-      {type === "income" && <CommentStockIncome data={data as string} />}
-      {type === "indicators" && <CommentStockIndicator data={data as string} />}
-      {type === "ann" && <CommentStockTimeline data={data as string} source="公告" />}
-      {type === "news" && <CommentStockTimeline data={data as string} source="自选股新闻" />}
+      {type === "indicators" && (
+        <CommentStockData api={getStockIndicators} data={data as string} />
+      )}
+      {type === "income" && (
+        <CommentStockData api={getStockIncome} data={data as string} />
+      )}
+      {type === "cashflow" && (
+        <CommentStockData api={getStockCashflow} data={data as string} />
+      )}
+      {type === "ann" && (
+        <CommentStockTimeline data={data as string} source="公告" />
+      )}
+      {type === "news" && (
+        <CommentStockTimeline data={data as string} source="自选股新闻" />
+      )}
       {type === "text" && <>{data}</>}
     </>
   );
@@ -153,43 +163,6 @@ function CommentLink(props: { data: Link }) {
 function CommentImg(props: { data: Img }) {
   return <img alt={props.data.label} src={props.data.url} />;
 }
-
-const FieldsMap = {
-  roe: "ROE",
-  close: "收盘价",
-  volume_ratio: "量比",
-  pe_ttm: "PE",
-  turnover_rate: "换手率",
-  name: "名称",
-  ts_code: "代码",
-  ann_date: "公告日期",
-  end_date: "报告期",
-  inv_turn: "存货周转率",
-  ar_turn: "应收账款周转率",
-  fcff: "自由现金流",
-  grossprofit_margin: "销售毛利率",
-  debt_to_assets: "资产负债率",
-  op_yoy: "利润同比",
-  ocf_yoy: "经营现金流同比",
-  industry: "行业",
-  pb: "PB",
-  pe: "PE",
-  dv_ratio: "股息率",
-  total_mv: "市值",
-  ocf_to_profit: "经现利润比",
-  total_revenue: "营业总收入",
-  revenue: "营业收入",
-  core_profit: "核心利润",
-  fv_value_chg_gain: "公允价值变动",
-  invest_income: "投资净收益",
-  total_cogs: "营业总成本",
-  oper_cost: "营业成本",
-  sell_exp: "销售费用",
-  admin_exp: "管理费用",
-  operate_profit: "营业利润",
-  n_income: "净利润",
-  rd_exp: "研发费用",
-};
 
 function CommentStockDaily(props: { data: string }) {
   const [info, setInfo] = useState("");
@@ -217,7 +190,7 @@ function CommentStockDaily(props: { data: string }) {
   return <div className="stock-data">{info}</div>;
 }
 
-function CommentStockTimeline(props: { data: string, source: string }) {
+function CommentStockTimeline(props: { data: string; source: string }) {
   const [list, setList] = useState([]);
   const [show, { toggle }] = useToggle(false);
 
@@ -227,15 +200,12 @@ function CommentStockTimeline(props: { data: string, source: string }) {
         setList(list);
       });
     }
-  }, [props.data, props.source,  show]);
+  }, [props.data, props.source, show]);
 
   return (
     <div className="stock-timeline">
       <div>
-        <button
-          className="timeline-fold-btn"
-          onClick={() => toggle()}
-        >
+        <button className="timeline-fold-btn" onClick={() => toggle()}>
           {props.source} {show ? "收起" : "展开"}
         </button>
       </div>
@@ -251,7 +221,10 @@ function CommentStockTimeline(props: { data: string, source: string }) {
   );
 }
 
-function CommentStockIndicator(props: { data: string }) {
+function CommentStockData(props: {
+  data: string;
+  api: (token: string, code: string) => Promise<Result>;
+}) {
   const [info, setInfo] = useState({ fields: [], lines: [] });
   const [error, setError] = useState("");
   const [bodyVisible, { toggle }] = useToggle(false);
@@ -260,45 +233,13 @@ function CommentStockIndicator(props: { data: string }) {
     const token = window.localStorage.getItem("tushare_token");
 
     if (token) {
-      getStockIndicators(token, props.data).then((result) => {
+      props.api(token, props.data).then((result) => {
         setInfo(result);
       });
     } else {
       setError("tushare_token 不存在");
     }
-  }, [props.data, bodyVisible]);
-
-  return (
-    <>
-      {error && error}
-      {info && (
-        <SimpleTable
-          fields={info.fields}
-          lines={info.lines}
-          visible={bodyVisible}
-          onVisible={toggle}
-        />
-      )}
-    </>
-  );
-}
-
-function CommentStockIncome(props: { data: string }) {
-  const [info, setInfo] = useState({ fields: [], lines: [] });
-  const [error, setError] = useState("");
-  const [bodyVisible, { toggle }] = useToggle(false);
-
-  useEffect(() => {
-    const token = window.localStorage.getItem("tushare_token");
-
-    if (token) {
-      getStockIncome(token, props.data).then((result) => {
-        setInfo(result);
-      });
-    } else {
-      setError("tushare_token 不存在");
-    }
-  }, [props.data, bodyVisible]);
+  }, [props.data, props.api, bodyVisible]);
 
   return (
     <>
@@ -345,24 +286,6 @@ function SimpleTable(props: {
   );
 }
 
-function fixNumber(val: string | number | null) {
-  if (!val) {
-    return "--";
-  }
-
-  return typeof val === "string"
-    ? val
-    : Math.abs(val) < 1000
-    ? val.toFixed(2)
-    : formatNumber(val);
-}
-
-function formatNumber(n) {
-  const language = "en";
-
-  return Intl.NumberFormat(language, { notation: "compact" }).format(n);
-}
-
 function loadComments(
   setComments: React.Dispatch<React.SetStateAction<IComment[]>>,
   currentBookId: number,
@@ -381,21 +304,4 @@ function loadComments(
         toast.error(resp.message);
       }
     });
-}
-
-function sortComments(list: IComment[]) {
-  const symbols = ["$", "%", "[", "!", "#"].reverse();
-  const isSp = (item) => symbols.some((s) => item.text.startsWith(s));
-  const shouldSort = list.some(isSp);
-
-  if (shouldSort) {
-    return list.sort((a, b) => {
-      const aIndex = symbols.indexOf(a.text[0])
-      const bIndex = symbols.indexOf(b.text[0])
-
-      return aIndex < bIndex ? 1 : -1;
-    });
-  } else {
-    return list;
-  }
 }

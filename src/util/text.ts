@@ -48,6 +48,12 @@ const StockIncomeParser: Parser<string> = {
   resolve: (match) => [match[1], StockIncomeParser.type],
 }
 
+const StockCashflowParser: Parser<string> = {
+  type: "cashflow",
+  reg: /^%(.*)%CASHFLOW$/,
+  resolve: (match) => [match[1], StockCashflowParser.type],
+}
+
 const StockAnnouncementParser: Parser<string> = {
   type: "ann",
   reg: /^#(.*)#ANN$/,
@@ -66,6 +72,7 @@ const parsers: Parser[] = [
   StockDailyParser,
   StockIndicatorsParser,
   StockIncomeParser,
+  StockCashflowParser,
   StockAnnouncementParser,
   StockNewsParser
 ];

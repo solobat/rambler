@@ -5,6 +5,7 @@ const APIList = {
   Indicator: "fina_indicator",
   Daily: "daily_basic",
   Income: "income",
+  Cashflow: "cashflow"
 };
 
 export function getStockDaily(token: string, code: string) {
@@ -32,6 +33,19 @@ export function getStockIncome(token: string, code: string) {
   return baseListRequest(token, APIList.Income, code, fields).then(
     addCoreProfitField
   );
+}
+
+export function getStockCashflow(token: string, code: string) {
+  const fields = [
+    "end_date",
+    "n_cashflow_act",
+    "loss_fv_chg",
+    "n_cashflow_inv_act",
+    "invest_loss",
+    "decr_inventories",
+  ];
+
+  return baseListRequest(token, APIList.Cashflow, code, fields);
 }
 
 function addCoreProfitField(result: Result) {
