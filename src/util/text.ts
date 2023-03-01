@@ -102,3 +102,35 @@ function applyParser(
 
   return null;
 }
+
+
+interface StockShortcut {
+  type: TextFormatType,
+  generate: (code: string, ex: string) => string
+}
+export const StockShortcuts: StockShortcut[] = [
+  {
+    type: 'daily',
+    generate: (code, ex) => `$${code}.${ex}$`
+  },
+  {
+    type: 'indicators',
+    generate: (code, ex) => `%${code}.${ex}%`
+  },
+  {
+    type: 'income',
+    generate: (code, ex) => `%${code}.${ex}%INCOME`
+  },
+  {
+    type: 'cashflow',
+    generate: (code, ex) => `%${code}.${ex}%CASHFLOW`
+  },
+  {
+    type: 'news',
+    generate: (code, ex) => `#${ex.toUpperCase()}${code}#NEWS`
+  },
+  {
+    type: 'ann',
+    generate: (code, ex) => `#${ex.toUpperCase()}${code}#ANN`
+  }
+]

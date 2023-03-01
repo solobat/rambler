@@ -124,7 +124,7 @@ function Container() {
     <>
       {searchBoxVisible ? <SearchBox /> : null}
       {paragraph ? <Paragraph /> : null}
-      {commentsVisible ? <Comments /> : null}
+      {commentsVisible ? <Comments paragraph={paragraph?.text} bookName={currentBook?.name} /> : null}
     </>
   );
 }

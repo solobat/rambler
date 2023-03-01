@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/reducers";
 import { CloseOutlined } from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
-import { getCommentInfo } from "@src/util/text";
+import { getCommentInfo, StockShortcuts } from "@src/util/text";
 import { Img, Link, Result } from "@src/util/types";
 import {
   getStockCashflow,
@@ -20,12 +20,17 @@ import {
 import { getStockTimeline } from "@src/server/service/xueqiuService";
 import { fixNumber } from "@src/util/number";
 import { FieldsMap, sortComments } from "@src/util/data";
+import { Button } from "antd";
 
-export default function Comments() {
+export default function Comments(props: {
+  bookName?: string;
+  paragraph?: string;
+}) {
   const { currentBookId, paragraph } = useSelector(
     (state: RootState) => state.readers
   );
   const commentIptRef = useRef<HTMLInputElement>();
+  const isStock = props.bookName?.indexOf("股票") !== -1;
   const [comments, setComments] = useState<IComment[]>([]);
   const onCommentBoxMouseEnter = useCallback(() => {
     commentIptRef.current.focus();
@@ -67,6 +72,10 @@ export default function Comments() {
     },
     [currentBookId, paragraph]
   );
+  const onShortcutClick = (text: string) => {
+    commentIptRef.current.value = text;
+    commentIptRef.current.focus();
+  };
 
   useEffect(() => {
     loadComments(setComments, currentBookId, paragraph);
@@ -78,12 +87,18 @@ export default function Comments() {
       onMouseEnter={() => onCommentBoxMouseEnter()}
       onMouseLeave={() => onCommentBoxMouseLeave()}
     >
+      {isStock && (
+        <StockShortcutsRenderer
+          text={props.paragraph}
+          onClick={onShortcutClick}
+        />
+      )}
       <div className="comment-input-box">
         <input
           type="text"
           ref={commentIptRef}
           placeholder={i18nMsg.commentHere}
-          onKeyPress={onCommentInputKeyPress}
+          onKeyDown={onCommentInputKeyPress}
         />
       </div>
       <div className="comments">
@@ -97,6 +112,38 @@ export default function Comments() {
           );
         })}
       </div>
+    </div>
+  );
+}
+
+function generateStockShortcut(
+  text: string,
+  generate: (code: string, ex: string) => string
+) {
+  const code = text.split(":")[0];
+  const ex = (code.startsWith("30") || code.startsWith("00")) ? 'sz' : 'sh'
+
+  return generate(code, ex);
+}
+
+function StockShortcutsRenderer(props: {
+  text: string;
+  onClick: (text: string) => void;
+}) {
+  return (
+    <div className="stock-shortcuts">
+      {StockShortcuts.map((item) => (
+        <Button
+          type="link"
+          className="stock-shortcut-btn"
+          key={item.type}
+          onClick={() =>
+            props.onClick(generateStockShortcut(props.text, item.generate))
+          }
+        >
+          {item.type.toUpperCase()}
+        </Button>
+      ))}
     </div>
   );
 }
