@@ -138,7 +138,7 @@ export function keydownEventHandler(
 async function getCursors() {
   const res = await chrome.storage.sync.get(CURSOR_STORAGE_KEY);
 
-  return res[CURSOR_STORAGE_KEY];
+  return res[CURSOR_STORAGE_KEY] ?? {};
 }
 
 export async function getBookCursor(bookId: number) {
@@ -242,8 +242,6 @@ export function initBook(dispatch: React.Dispatch<any>) {
   getCurrentBookId().then((id) => {
     if (id) {
       dispatch({ type: SET_CURRENT_BOOKID, payload: id });
-    } else {
-      setDefaultBook();
     }
   });
 }

@@ -8,6 +8,7 @@ import Upload from 'rc-upload';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/reducers';
 import { SET_CURRENT_BOOKID, SET_CURSOR } from '../redux/actionTypes';
+import { SESSION_STORAGE } from '@src/common/constant';
 
 export default function TxtUpload() {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export default function TxtUpload() {
             const bookId: number = resp.data;
 
             bookController.setCurrentBook(bookId);
+            window.sessionStorage.setItem(SESSION_STORAGE.CURRENT_BOOK_ID, String(bookId)); 
             dispatch({ type: SET_CURRENT_BOOKID, payload: bookId });
             dispatch({ type: SET_CURSOR, payload: 0 });
 
