@@ -26,6 +26,7 @@ import { RootState } from './redux/reducers';
 import { RESET_HISTORY } from './redux/actionTypes';
 import ShortcutsModal from './components/ShortcutsModal';
 import { getFileShortName } from '@src/util/file';
+import { detectBookCategory } from '@src/util/book';
 
 declare global {
   interface Window {
@@ -72,6 +73,7 @@ function Container() {
   const { allowComment } = useSelector((state: RootState) => state.comments);
   const { searchBoxVisible } = useSelector((state: RootState) => state.search);
   const commentsVisible = paragraph && allowComment;
+  const bookCategory = detectBookCategory(currentBook?.name ?? '');
 
   useEffect(() => {
     if (currentBookId) {
@@ -123,8 +125,8 @@ function Container() {
   return (
     <>
       {searchBoxVisible ? <SearchBox /> : null}
-      {paragraph ? <Paragraph /> : null}
-      {commentsVisible ? <Comments paragraph={paragraph?.text} bookName={currentBook?.name} /> : null}
+      {paragraph ? <Paragraph bookCategory={bookCategory} /> : null}
+      {commentsVisible ? <Comments paragraph={paragraph?.text} bookCategory={bookCategory} /> : null}
     </>
   );
 }

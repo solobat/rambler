@@ -10,8 +10,10 @@ import { CheckOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons';
 import Input from 'antd/es/input';
 import useEditBtn from '../../../hooks/useEditBtn';
 import { updateParagraphText } from '../redux/actions/reader';
+import { BookCategory } from '@src/util/book';
+import c from 'classnames';
 
-export default function Paragraph() {
+export default function Paragraph(props: {bookCategory: BookCategory}) {
   const dispatch = useDispatch();
   const { paragraph, currentBook, cursor, spanCursor } = useSelector((state: RootState) => state.readers);
   const paragraphRef = useRef();
@@ -32,7 +34,7 @@ export default function Paragraph() {
     onEditDoneClick, onEditCancel, onTextChange } = useEditBtn(text, onEditDone);
 
   return (
-    <div className="paragraph-container">
+    <div className={c(['paragraph-container', `bookcate-${props.bookCategory}`])}>
       <div className="process">
         <Slider
           defaultValue={paragraph.index}

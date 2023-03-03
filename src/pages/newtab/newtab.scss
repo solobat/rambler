@@ -154,6 +154,16 @@ body {
   text-align: justify;
   max-height: 312px;
   overflow: auto;
+ 
+  .bookcate-wordbook & {
+    font-size: 56px;
+    font-weight: 600;
+  }
+
+  .bookcate-stock & {
+    font-size: 24px;
+    font-weight: 600; 
+  }
 
   &.cursor-active {
     span {
@@ -401,7 +411,7 @@ body {
     background-color: transparent;
     cursor: pointer;
   }
-  
+
   .info-item {
     margin: 1px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -420,7 +430,7 @@ body {
   &:hover {
     opacity: 1;
   }
- 
+
   .stock-shortcut-btn {
     font-size: 12px;
   }
@@ -431,7 +441,7 @@ body {
 
   .jsmind-describe {
     top: 0;
-  } 
+  }
 }
 
 #jsmind_container {
@@ -440,8 +450,9 @@ body {
   border: solid 1px #35363a;
   background: #35363a;
 
-  .jsmind, jmnodes {
-    zoom: 0.6!important;
+  .jsmind,
+  jmnodes {
+    zoom: 0.6 !important;
   }
 }
 

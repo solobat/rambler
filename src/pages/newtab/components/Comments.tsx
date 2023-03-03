@@ -9,7 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/reducers";
 import { CloseOutlined } from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
-import { getCommentInfo, StockShortcuts, WordbookShortcuts } from "@src/util/text";
+import {
+  getCommentInfo,
+  StockShortcuts,
+  WordbookShortcuts,
+} from "@src/util/text";
 import { Img, Link, Result } from "@src/util/types";
 import {
   getStockCashflow,
@@ -28,17 +32,16 @@ import dayjs from "dayjs";
 import { queryByName } from "@src/server/service/wordService";
 import { IWord } from "@src/server/db/dictsdb";
 import jsMind from "jsmind";
-import { BookCategory, detectBookCategory } from "@src/util/book";
+import { BookCategory } from "@src/util/book";
 
 export default function Comments(props: {
-  bookName?: string;
+  bookCategory: BookCategory;
   paragraph?: string;
 }) {
   const { currentBookId, paragraph } = useSelector(
     (state: RootState) => state.readers
   );
   const commentIptRef = useRef<HTMLInputElement>();
-  const bookCategory = detectBookCategory(props.bookName ?? "");
   const [comments, setComments] = useState<IComment[]>([]);
   const onCommentBoxMouseEnter = useCallback(() => {
     commentIptRef.current.focus();
@@ -100,13 +103,13 @@ export default function Comments(props: {
       onMouseEnter={() => onCommentBoxMouseEnter()}
       onMouseLeave={() => onCommentBoxMouseLeave()}
     >
-      {bookCategory === BookCategory.Stock && (
+      {props.bookCategory === BookCategory.Stock && (
         <StockShortcutsRenderer
           text={props.paragraph}
           onClick={onShortcutClick}
         />
       )}
-      {bookCategory === BookCategory.Wordbook && (
+      {props.bookCategory === BookCategory.Wordbook && (
         <WordbookShortcutsRenderer
           text={props.paragraph}
           onClick={onShortcutClick}
@@ -241,7 +244,9 @@ function CommentRenderer(props: { text: string }) {
         <CommentStockTimeline data={data as string} source="自选股新闻" />
       )}
       {type === "info" && <CommentStockInfo data={data as string} />}
-      {type === "etymology" && <CommentWordEtymology data={data as string} source="词源" />}
+      {type === "etymology" && (
+        <CommentWordEtymology data={data as string} source="词源" />
+      )}
       {type === "root" && (
         <CommentWordRoot data={data as string} source="词根树" />
       )}
