@@ -18,8 +18,8 @@ export type StockFormatType =
   | "news"
   | "cashflow"
   | "info";
-export type WordFormatType = "def" | "mind";
-export type TextFormatType = BaseFormatType | StockFormatType | WordFormatType;
+export type WordbookFormatType = "etymology" | "root";
+export type TextFormatType = BaseFormatType | StockFormatType | WordbookFormatType;
 
 export interface CommentInfo {
   type: TextFormatType;

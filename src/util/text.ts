@@ -1,5 +1,5 @@
 import { saveWord } from "@src/server/controller/wordController";
-import { CommentInfo, Img, Link, TextDataType, TextFormatType, WordFormatType } from "./types";
+import { CommentInfo, Img, Link, TextDataType, TextFormatType, WordbookFormatType } from "./types";
 import { addWord } from "./word";
 
 interface Parser<T = TextDataType> {
@@ -74,16 +74,16 @@ const StockInfoParser: Parser<string> = {
   resolve: (match) => [match[1], StockInfoParser.type],
 };
 
-const WordDefParser: Parser<string> = {
-  type: "def",
-  reg: /^#(.*)#DEF$/,
-  resolve: (match) => [match[1], WordDefParser.type],
+const WordEtymologyParser: Parser<string> = {
+  type: "etymology",
+  reg: /^#(.*)#ETYMOLOGY$/,
+  resolve: (match) => [match[1], WordEtymologyParser.type],
 };
 
-const WordMindParser: Parser<string> = {
-  type: "mind",
-  reg: /^#(.*)#MIND$/,
-  resolve: (match) => [match[1], WordMindParser.type],
+const WordRootParser: Parser<string> = {
+  type: "root",
+  reg: /^#(.*)#ROOT$/,
+  resolve: (match) => [match[1], WordRootParser.type],
 };
 
 const parsers: Parser[] = [
@@ -96,8 +96,8 @@ const parsers: Parser[] = [
   StockAnnouncementParser,
   StockNewsParser,
   StockInfoParser,
-  WordDefParser,
-  WordMindParser,
+  WordEtymologyParser,
+  WordRootParser,
 ];
 
 export function getCommentInfo(text: string): CommentInfo {
@@ -166,13 +166,13 @@ export const StockShortcuts: StockShortcut[] = [
   },
 ];
 
-interface WordsShortcut {
-  type: "dicts" | "addDef" | WordFormatType
+interface WordbookShortcut {
+  type: "dicts" | "fill" | WordbookFormatType
   action?: (word: string) => any;
   generate?: (word: string) => string;
 }
 
-export const WordsShortcuts: WordsShortcut[] = [
+export const WordbookShortcuts: WordbookShortcut[] = [
   {
     type: "dicts",
     action: (word) => {
@@ -190,7 +190,7 @@ export const WordsShortcuts: WordsShortcut[] = [
     },
   },
   {
-    type: "addDef",
+    type: "fill",
     action: (word) => {
       const info = window.prompt("Please enter the definition of the word");
 
@@ -200,11 +200,11 @@ export const WordsShortcuts: WordsShortcut[] = [
     },
   },
   {
-    type: "def",
-    generate: (word) => `#${word}#DEF`,
+    type: "etymology",
+    generate: (word) => `#${word}#ETYMOLOGY`,
   },
   {
-    type: "mind",
-    generate: (word) => `#${word}#MIND`,
+    type: "root",
+    generate: (word) => `#${word}#ROOT`,
   }
 ];

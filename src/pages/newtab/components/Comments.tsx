@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/reducers";
 import { CloseOutlined } from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
-import { getCommentInfo, StockShortcuts, WordsShortcuts } from "@src/util/text";
+import { getCommentInfo, StockShortcuts, WordbookShortcuts } from "@src/util/text";
 import { Img, Link, Result } from "@src/util/types";
 import {
   getStockCashflow,
@@ -28,6 +28,7 @@ import dayjs from "dayjs";
 import { queryByName } from "@src/server/service/wordService";
 import { IWord } from "@src/server/db/dictsdb";
 import jsMind from "jsmind";
+import { BookCategory, detectBookCategory } from "@src/util/book";
 
 export default function Comments(props: {
   bookName?: string;
@@ -37,8 +38,7 @@ export default function Comments(props: {
     (state: RootState) => state.readers
   );
   const commentIptRef = useRef<HTMLInputElement>();
-  const isStock = props.bookName?.indexOf("股票") !== -1;
-  const isWords = props.bookName?.indexOf("GRE") !== -1;
+  const bookCategory = detectBookCategory(props.bookName ?? "");
   const [comments, setComments] = useState<IComment[]>([]);
   const onCommentBoxMouseEnter = useCallback(() => {
     commentIptRef.current.focus();
@@ -100,14 +100,14 @@ export default function Comments(props: {
       onMouseEnter={() => onCommentBoxMouseEnter()}
       onMouseLeave={() => onCommentBoxMouseLeave()}
     >
-      {isStock && (
+      {bookCategory === BookCategory.Stock && (
         <StockShortcutsRenderer
           text={props.paragraph}
           onClick={onShortcutClick}
         />
       )}
-      {isWords && (
-        <WordsShortcutsRenderer
+      {bookCategory === BookCategory.Wordbook && (
+        <WordbookShortcutsRenderer
           text={props.paragraph}
           onClick={onShortcutClick}
         />
@@ -167,13 +167,13 @@ function StockShortcutsRenderer(props: {
   );
 }
 
-function WordsShortcutsRenderer(props: {
+function WordbookShortcutsRenderer(props: {
   text: string;
   onClick: (text: string) => void;
 }) {
   return (
     <div className="stock-shortcuts">
-      {WordsShortcuts.map((item) => (
+      {WordbookShortcuts.map((item) => (
         <Button
           type="link"
           className="stock-shortcut-btn"
@@ -241,9 +241,9 @@ function CommentRenderer(props: { text: string }) {
         <CommentStockTimeline data={data as string} source="自选股新闻" />
       )}
       {type === "info" && <CommentStockInfo data={data as string} />}
-      {type === "def" && <CommentWordDef data={data as string} source="词源" />}
-      {type === "mind" && (
-        <CommentWordMind data={data as string} source="词根树" />
+      {type === "etymology" && <CommentWordEtymology data={data as string} source="词源" />}
+      {type === "root" && (
+        <CommentWordRoot data={data as string} source="词根树" />
       )}
       {type === "text" && <>{data}</>}
     </>
@@ -358,7 +358,7 @@ function CommentStockInfo(props: { data: string }) {
   );
 }
 
-function CommentWordDef(props: { data: string; source: string }) {
+function CommentWordEtymology(props: { data: string; source: string }) {
   const [word, setWord] = useState<IWord>({
     name: props.data,
     info: JSON.stringify({ nodes: [], etymology: "" }),
@@ -380,7 +380,7 @@ function CommentWordDef(props: { data: string; source: string }) {
   );
 }
 
-function CommentWordMind(props: { data: string; source: string }) {
+function CommentWordRoot(props: { data: string; source: string }) {
   const [word, setWord] = useState<IWord>({
     name: props.data,
     info: JSON.stringify({ nodes: [], etymology: "" }),
