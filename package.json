@@ -57,6 +57,7 @@
     "dexie": "^3.2.2",
     "dexie-export-import": "^1.0.0-rc.2",
     "downloadjs": "^1.4.7",
+    "jsmind": "^0.5.2",
     "lodash": "^4.17.15",
     "rc-slider": "^10.1.1",
     "rc-upload": "^4.3.4",

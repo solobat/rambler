@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/reducers";
 import { CloseOutlined } from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
-import { getCommentInfo, StockShortcuts } from "@src/util/text";
+import { getCommentInfo, StockShortcuts, WordsShortcuts } from "@src/util/text";
 import { Img, Link, Result } from "@src/util/types";
 import {
   getStockCashflow,
@@ -25,6 +25,9 @@ import { fixNumber } from "@src/util/number";
 import { FieldsMap, sortComments } from "@src/util/data";
 import { Button } from "antd";
 import dayjs from "dayjs";
+import { queryByName } from "@src/server/service/wordService";
+import { IWord } from "@src/server/db/dictsdb";
+import jsMind from "jsmind";
 
 export default function Comments(props: {
   bookName?: string;
@@ -35,6 +38,7 @@ export default function Comments(props: {
   );
   const commentIptRef = useRef<HTMLInputElement>();
   const isStock = props.bookName?.indexOf("股票") !== -1;
+  const isWords = props.bookName?.indexOf("GRE") !== -1;
   const [comments, setComments] = useState<IComment[]>([]);
   const onCommentBoxMouseEnter = useCallback(() => {
     commentIptRef.current.focus();
@@ -65,7 +69,7 @@ export default function Comments(props: {
   const onCommentInputKeyPress = useCallback(
     (event) => {
       if (event.key === "Enter") {
-        onSubmit(event.target.value)
+        onSubmit(event.target.value);
       }
     },
     [currentBookId, paragraph]
@@ -98,6 +102,12 @@ export default function Comments(props: {
     >
       {isStock && (
         <StockShortcutsRenderer
+          text={props.paragraph}
+          onClick={onShortcutClick}
+        />
+      )}
+      {isWords && (
+        <WordsShortcutsRenderer
           text={props.paragraph}
           onClick={onShortcutClick}
         />
@@ -157,6 +167,33 @@ function StockShortcutsRenderer(props: {
   );
 }
 
+function WordsShortcutsRenderer(props: {
+  text: string;
+  onClick: (text: string) => void;
+}) {
+  return (
+    <div className="stock-shortcuts">
+      {WordsShortcuts.map((item) => (
+        <Button
+          type="link"
+          className="stock-shortcut-btn"
+          key={item.type}
+          onClick={() => {
+            if (item.action) {
+              item.action(props.text);
+            }
+            if (item.generate) {
+              props.onClick(item.generate(props.text));
+            }
+          }}
+        >
+          {item.type.toUpperCase()}
+        </Button>
+      ))}
+    </div>
+  );
+}
+
 interface CommentProps {
   comment: IComment;
   onDeleteClick: (comment: IComment) => void;
@@ -204,6 +241,10 @@ function CommentRenderer(props: { text: string }) {
         <CommentStockTimeline data={data as string} source="自选股新闻" />
       )}
       {type === "info" && <CommentStockInfo data={data as string} />}
+      {type === "def" && <CommentWordDef data={data as string} source="词源" />}
+      {type === "mind" && (
+        <CommentWordMind data={data as string} source="词根树" />
+      )}
       {type === "text" && <>{data}</>}
     </>
   );
@@ -231,17 +272,15 @@ function CommentStockDaily(props: { data: string }) {
       getStockDaily(token, props.data).then((result) => {
         const line = result.lines[0] ?? [];
         const text = result.fields
-          .map(
-            (item, index) => {
-              if (item === 'total_mv') {
-                const val = fixNumber(Number(line[index]) * 10000);
+          .map((item, index) => {
+            if (item === "total_mv") {
+              const val = fixNumber(Number(line[index]) * 10000);
 
-                return `${FieldsMap[item]}: ${val}`
-              } else {
-                return `${FieldsMap[item]}: ${Number(line[index]).toFixed(3)}`;
-              }
-            } 
-          )
+              return `${FieldsMap[item]}: ${val}`;
+            } else {
+              return `${FieldsMap[item]}: ${Number(line[index]).toFixed(3)}`;
+            }
+          })
           .join("; ");
 
         setInfo(text);
@@ -266,10 +305,7 @@ function CommentStockTimeline(props: { data: string; source: string }) {
   };
 
   return (
-    <CommentStockInfoBlock
-      label={props.source}
-      onVisibleChange={onVisibleChange}
-    >
+    <CommentInfoBlock label={props.source} onVisibleChange={onVisibleChange}>
       {list.map((item) => (
         <div
           className="info-item"
@@ -277,11 +313,11 @@ function CommentStockTimeline(props: { data: string; source: string }) {
           dangerouslySetInnerHTML={{ __html: item.text }}
         ></div>
       ))}
-    </CommentStockInfoBlock>
+    </CommentInfoBlock>
   );
 }
 
-const raw = (val: string | number) => val
+const raw = (val: string | number) => val;
 function CommentStockInfo(props: { data: string }) {
   const [info, setInfo] = useState({});
 
@@ -292,13 +328,19 @@ function CommentStockInfo(props: { data: string }) {
       });
     }
   };
-  const infoKeys: Array<[string, string, (val: string | number) => string | number]> = [
+  const infoKeys: Array<
+    [string, string, (val: string | number) => string | number]
+  > = [
     ["provincial_name", "所属省份", raw],
     ["classi_name", "所有制", raw],
     ["actual_controller", "实际控制人", raw],
     ["main_operation_business", "主营业务", raw],
     ["org_cn_introduction", "公司简介", raw],
-    ["listed_date", "上市时间", (val: number) => dayjs(val).format('YYYY-MM-DD')]
+    [
+      "listed_date",
+      "上市时间",
+      (val: number) => dayjs(val).format("YYYY-MM-DD"),
+    ],
   ];
   const list = infoKeys.map((pair) => ({
     label: pair[1],
@@ -306,17 +348,76 @@ function CommentStockInfo(props: { data: string }) {
   }));
 
   return (
-    <CommentStockInfoBlock label="公司信息" onVisibleChange={onVisibleChange}>
+    <CommentInfoBlock label="公司信息" onVisibleChange={onVisibleChange}>
       {list.map((item) => (
         <div className="info-item" key={item.label}>
           {item.label}: {item.text}
         </div>
       ))}
-    </CommentStockInfoBlock>
+    </CommentInfoBlock>
   );
 }
 
-function CommentStockInfoBlock(props: {
+function CommentWordDef(props: { data: string; source: string }) {
+  const [word, setWord] = useState<IWord>({
+    name: props.data,
+    info: JSON.stringify({ nodes: [], etymology: "" }),
+  });
+  const info = JSON.parse(word.info);
+
+  const onVisibleChange = (visible) => {
+    if (visible) {
+      queryByName(props.data).then((word) => {
+        setWord(word);
+      });
+    }
+  };
+
+  return (
+    <CommentInfoBlock label={props.source} onVisibleChange={onVisibleChange}>
+      {info.etymology ?? "--"}
+    </CommentInfoBlock>
+  );
+}
+
+function CommentWordMind(props: { data: string; source: string }) {
+  const [word, setWord] = useState<IWord>({
+    name: props.data,
+    info: JSON.stringify({ nodes: [], etymology: "" }),
+  });
+  const [desc, setDesc] = useState("请选择");
+
+  const options = {
+    container: "jsmind_container",
+    theme: "primary",
+    editable: false,
+  };
+
+  useEffect(() => {
+    queryByName(props.data).then((word) => {
+      setWord(word);
+      const jm = new jsMind(options);
+      const info = JSON.parse(word.info);
+
+      jm.show(info.nodes[0]);
+      jm.add_event_listener((type, data) => {
+        if (type === jsMind.event_type.select) {
+          const detail = jm.get_node(data.node);
+          setDesc(detail?.data?.describe);
+        }
+      });
+    });
+  }, []);
+
+  return (
+    <div className="jsmind-wrap">
+      <div className="jsmind-describe">{desc}</div>
+      <div id="jsmind_container"></div>
+    </div>
+  );
+}
+
+function CommentInfoBlock(props: {
   label: string;
   children?: React.ReactNode;
   onVisibleChange: (visible: boolean) => void;
