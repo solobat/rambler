@@ -19,7 +19,7 @@ export default function useEditBtn(defaultText = '', onDone) {
     onDoneRef.current(text);
   }, [text, dispatch]);
   const onEditCancel = useCallback(() => {
-    dispatch({ type: SET_EDITING, payload: true});
+    dispatch({ type: SET_EDITING, payload: false});
     setText(defaultText);
   }, [defaultText, dispatch]);
   const onTextChange = useCallback((e) => {

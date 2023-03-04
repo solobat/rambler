@@ -159,9 +159,10 @@ function StockShortcutsRenderer(props: {
           type="link"
           className="stock-shortcut-btn"
           key={item.type}
-          onClick={() =>
+          onClick={(event) => {
+            event.currentTarget.blur();
             props.onClick(generateStockShortcut(props.text, item.generate))
-          }
+          }}
         >
           {item.type.toUpperCase()}
         </Button>
@@ -181,7 +182,8 @@ function WordbookShortcutsRenderer(props: {
           type="link"
           className="stock-shortcut-btn"
           key={item.type}
-          onClick={() => {
+          onClick={(event) => {
+            event.currentTarget.blur(); 
             if (item.action) {
               item.action(props.text);
             }

@@ -32,6 +32,13 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
   }, [paragraph.id]);
   const { editing, textEditing, onEditStart,
     onEditDoneClick, onEditCancel, onTextChange } = useEditBtn(text, onEditDone);
+  const onKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
+    if (event.metaKey && event.key === 'Enter')  {
+      onEditDoneClick();
+    } else if (event.key === 'Escape') {
+      onEditCancel();
+    }
+  }
 
   return (
     <div className={c(['paragraph-container', `bookcate-${props.bookCategory}`])}>
@@ -68,7 +75,7 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
       <div className={spanCursor >= 0 ? "paragraph-text cursor-active" : "paragraph-text"} ref={paragraphRef}>
         {
           editing ? 
-          <Input.TextArea value={textEditing} onChange={onTextChange} autoSize /> :
+          <Input.TextArea value={textEditing} onChange={onTextChange} autoFocus autoSize onKeyDown={onKeyDown} /> :
           <Text text={text} cursor={spanCursor} />
         }
       </div>
