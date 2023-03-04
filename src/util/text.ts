@@ -86,6 +86,12 @@ const WordRootParser: Parser<string> = {
   resolve: (match) => [match[1], WordRootParser.type],
 };
 
+const WordFigureParser: Parser<string> = {
+  type: "figure",
+  reg: /^#(.*)#FIGURE$/,
+  resolve: (match) => [match[1], WordFigureParser.type],
+};
+
 const parsers: Parser[] = [
   LinkParser,
   ImgParser,
@@ -98,6 +104,7 @@ const parsers: Parser[] = [
   StockInfoParser,
   WordEtymologyParser,
   WordRootParser,
+  WordFigureParser
 ];
 
 export function getCommentInfo(text: string): CommentInfo {
@@ -206,5 +213,9 @@ export const WordbookShortcuts: WordbookShortcut[] = [
   {
     type: "root",
     generate: (word) => `#${word}#ROOT`,
+  },
+  {
+    type: "figure",
+    generate: (word) => `#${word}#FIGURE`
   }
 ];

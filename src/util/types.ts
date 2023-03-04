@@ -18,7 +18,7 @@ export type StockFormatType =
   | "news"
   | "cashflow"
   | "info";
-export type WordbookFormatType = "etymology" | "root";
+export type WordbookFormatType = "etymology" | "root" | "figure";
 export type TextFormatType = BaseFormatType | StockFormatType | WordbookFormatType;
 
 export interface CommentInfo {

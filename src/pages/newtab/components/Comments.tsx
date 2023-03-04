@@ -161,7 +161,7 @@ function StockShortcutsRenderer(props: {
           key={item.type}
           onClick={(event) => {
             event.currentTarget.blur();
-            props.onClick(generateStockShortcut(props.text, item.generate))
+            props.onClick(generateStockShortcut(props.text, item.generate));
           }}
         >
           {item.type.toUpperCase()}
@@ -183,7 +183,7 @@ function WordbookShortcutsRenderer(props: {
           className="stock-shortcut-btn"
           key={item.type}
           onClick={(event) => {
-            event.currentTarget.blur(); 
+            event.currentTarget.blur();
             if (item.action) {
               item.action(props.text);
             }
@@ -251,6 +251,9 @@ function CommentRenderer(props: { text: string }) {
       )}
       {type === "root" && (
         <CommentWordRoot data={data as string} source="词根树" />
+      )}
+      {type === "figure" && (
+        <CommentWordFigure data={data as string} source="示意图" />
       )}
       {type === "text" && <>{data}</>}
     </>
@@ -387,6 +390,28 @@ function CommentWordEtymology(props: { data: string; source: string }) {
   );
 }
 
+function CommentWordFigure(props: { data: string; source: string }) {
+  const [word, setWord] = useState<IWord>({
+    name: props.data,
+    info: JSON.stringify({ nodes: [], etymology: "", img: null }),
+  });
+  const info = JSON.parse(word.info);
+
+  const onVisibleChange = (visible) => {
+    if (visible) {
+      queryByName(props.data).then((word) => {
+        setWord(word);
+      });
+    }
+  };
+
+  return (
+    <CommentInfoBlock label={props.source} onVisibleChange={onVisibleChange}>
+      {info.img ? <img src={`http://${info.img}`} alt="figure" /> : "--"}
+    </CommentInfoBlock>
+  );
+}
+
 function CommentWordRoot(props: { data: string; source: string }) {
   const [word, setWord] = useState<IWord>({
     name: props.data,
@@ -430,9 +455,10 @@ function CommentInfoBlock(props: {
   onVisibleChange: (visible: boolean) => void;
 }) {
   const [show, { toggle }] = useToggle(false);
-  const onClick = () => {
+  const onClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     toggle();
     props.onVisibleChange(!show);
+    event.currentTarget.blur(); 
   };
 
   return (
