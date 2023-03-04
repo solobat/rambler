@@ -1,14 +1,15 @@
 import { IParagraph } from "@src/server/db/database";
-import { isParameter } from "typescript";
 
 export enum BookCategory {
   Stock = "stock",
   Wordbook = "wordbook",
   Daily = 'daily',
+  Question = 'question',
   Normal = "normal",
 }
 const stockIdentifiers = ["stock", "股票"];
 const wordIdentifiers = ["GRE", "单词", "Word", "TOEFL"];
+const questionIdentifiers = ['问题', 'Question'];
 
 interface BookCategoryMapItem {
   cate: BookCategory;
@@ -27,6 +28,10 @@ const BookCategoryMap: BookCategoryMapItem[] = [
   {
     cate: BookCategory.Daily,
     reg: /\d{4}/
+  },
+  {
+    cate: BookCategory.Question,
+    reg: arr2reg(questionIdentifiers)
   },
   {
     cate: BookCategory.Normal,
@@ -51,6 +56,8 @@ export function resolveBookFilter(cate: BookCategory): BookFilterFunc | null {
   switch (cate) {
     case BookCategory.Stock:
       return (paragraph: IParagraph) => /T[0-4]/.test(paragraph.text)
+    case BookCategory.Question:
+      return (paragraph: IParagraph) => !paragraph.text.startsWith('-')
     default:
       return null;
   }

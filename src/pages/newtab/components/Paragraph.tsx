@@ -5,7 +5,7 @@ import ShareIcons from './ShareIcons';
 import Slider from 'rc-slider';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/reducers';
-import { ADD_HISTORY, INC_CURSOR, SET_CURSOR, UPDATE_PARAGRAH_TEXT } from '../redux/actionTypes';
+import { ADD_HISTORY, INC_CURSOR, SET_CURSOR, SET_FILTER, UPDATE_PARAGRAH_TEXT } from '../redux/actionTypes';
 import { CheckOutlined, CloseOutlined, FilterOutlined, FormOutlined } from '@ant-design/icons';
 import Input from 'antd/es/input';
 import useEditBtn from '../../../hooks/useEditBtn';
@@ -36,7 +36,7 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
     onEditDoneClick, onEditCancel, onTextChange } = useEditBtn(text, onEditDone);
   const onFilterToggle = () => {
     setBookFilter(!filter);
-    dispatch({ type: SET_CURSOR, payload: !filter })
+    dispatch({ type: SET_FILTER, payload: !filter })
   }
   const onKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
     if (event.metaKey && event.key === 'Enter')  {

@@ -2,8 +2,13 @@ import { SESSION_STORAGE } from "@src/common/constant";
 
 export function getBookFilter() {
   const key = `${SESSION_STORAGE.BOOK_FILTER}`;
+  const val =  window.sessionStorage.getItem(key);
 
-  return window.sessionStorage.getItem(key) === "1";
+  if (val) {
+    return val === "1"
+  } else {
+    return true
+  }
 }
 
 export function setBookFilter(filter: boolean) {
