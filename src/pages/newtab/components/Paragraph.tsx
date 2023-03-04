@@ -6,16 +6,18 @@ import Slider from 'rc-slider';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/reducers';
 import { ADD_HISTORY, INC_CURSOR, SET_CURSOR, UPDATE_PARAGRAH_TEXT } from '../redux/actionTypes';
-import { CheckOutlined, CloseOutlined, FormOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, FilterOutlined, FormOutlined } from '@ant-design/icons';
 import Input from 'antd/es/input';
 import useEditBtn from '../../../hooks/useEditBtn';
 import { updateParagraphText } from '../redux/actions/reader';
 import { BookCategory } from '@src/util/book';
 import c from 'classnames';
+import classNames from 'classnames';
+import { setBookFilter } from '@src/util/storage';
 
 export default function Paragraph(props: {bookCategory: BookCategory}) {
   const dispatch = useDispatch();
-  const { paragraph, currentBook, cursor, spanCursor } = useSelector((state: RootState) => state.readers);
+  const { paragraph, currentBook, cursor, spanCursor, filter } = useSelector((state: RootState) => state.readers);
   const paragraphRef = useRef();
   const onSlideChange = useCallback((newIndex) => {
     dispatch({ type: SET_CURSOR, payload: newIndex });
@@ -32,6 +34,10 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
   }, [paragraph.id]);
   const { editing, textEditing, onEditStart,
     onEditDoneClick, onEditCancel, onTextChange } = useEditBtn(text, onEditDone);
+  const onFilterToggle = () => {
+    setBookFilter(!filter);
+    dispatch({ type: SET_CURSOR, payload: !filter })
+  }
   const onKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
     if (event.metaKey && event.key === 'Enter')  {
       onEditDoneClick();
@@ -69,7 +75,10 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
             <CheckOutlined className="icon icon-edit-done" onClick={onEditDoneClick}/>
             <CloseOutlined className="icon icon-edit-cancel" onClick={onEditCancel}/>
           </> :
-          <FormOutlined className="icon icon-edit-start" onClick={onEditStart}/>
+          <>
+            <FormOutlined className="icon icon-edit-start" onClick={onEditStart}/>
+            <FilterOutlined className={classNames(['icon', 'icon-filter-toggle', {'icon-filter-active': filter}])} onClick={onFilterToggle} />
+          </>
         }
       </div>
       <div className={spanCursor >= 0 ? "paragraph-text cursor-active" : "paragraph-text"} ref={paragraphRef}>

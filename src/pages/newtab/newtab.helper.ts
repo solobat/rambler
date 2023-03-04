@@ -17,6 +17,7 @@ import {
   UPDATE_SEARCHBOX_VISIBLE,
 } from "./redux/actionTypes";
 import { SESSION_STORAGE } from "@src/common/constant";
+import { BookFilterFunc } from "@src/util/book";
 
 function isKeyValid(target) {
   if (
@@ -185,7 +186,7 @@ export const i18nMsg = {
   commentHere: chrome.i18n.getMessage("comment_here"),
 };
 
-export function loadBook(dispatch: Dispatch, bookId: number) {
+export function loadBook(dispatch: Dispatch, bookId: number, filter: BookFilterFunc | null) {
   bookController.info(bookId).then(async (resp) => {
     if (resp.code === Code.OK.code) {
       const book: IBook = resp.data;
@@ -194,7 +195,7 @@ export function loadBook(dispatch: Dispatch, bookId: number) {
       if (book.mode === BookMode.INORDER) {
         cursor = await getBookCursor(bookId);
       } else {
-        cursor = getRandomIndex(book.paragraphCount);
+        cursor = await resolveBookRandomIndex(bookId, book.paragraphCount, filter);
       }
 
       dispatch({
@@ -213,6 +214,17 @@ export function loadBook(dispatch: Dispatch, bookId: number) {
       toast.error(resp.message);
     }
   });
+}
+
+async function resolveBookRandomIndex(bookId: number, total: number, filter: BookFilterFunc | null) {
+  if (filter) {
+    const res = await paragraphController.getListByBook(bookId);
+    const indexArr = res.data.filter(filter).map(item => item.index);
+
+    return indexArr[getRandomIndex(indexArr.length)];
+  } else {
+    return getRandomIndex(total)
+  }
 }
 
 export function loadParagraph(

@@ -1,3 +1,6 @@
+import { IParagraph } from "@src/server/db/database";
+import { isParameter } from "typescript";
+
 export enum BookCategory {
   Stock = "stock",
   Wordbook = "wordbook",
@@ -35,4 +38,15 @@ export function detectBookCategory(name: string) {
   );
 
   return match.cate;
+}
+
+export type BookFilterFunc = (paragraph: IParagraph) => boolean
+
+export function resolveBookFilter(cate: BookCategory): BookFilterFunc | null {
+  switch (cate) {
+    case BookCategory.Stock:
+      return (paragraph: IParagraph) => /T[0-4]/.test(paragraph.text)
+    default:
+      return null;
+  }
 }

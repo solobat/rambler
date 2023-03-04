@@ -1,22 +1,33 @@
-import { IBook, IParagraph } from '../../../../server/db/database';
-import { ADD_HISTORY, RESET_HISTORY, SET_CURRENT_BOOK, SET_CURRENT_BOOKID,
-  SET_CURSOR, SET_PARAGRAPH, SET_SHORTCUTS_MODAL_VISIBLE, UPDATE_PARAGRAH_TEXT,
-  SET_BOOK_LOADED, 
+import { getBookFilter } from "@src/util/storage";
+import { IBook, IParagraph } from "../../../../server/db/database";
+import {
+  ADD_HISTORY,
+  RESET_HISTORY,
+  SET_CURRENT_BOOK,
+  SET_CURRENT_BOOKID,
+  SET_CURSOR,
+  SET_PARAGRAPH,
+  SET_SHORTCUTS_MODAL_VISIBLE,
+  UPDATE_PARAGRAH_TEXT,
+  SET_BOOK_LOADED,
   SET_SPAN_CURSOR,
   INC_CURSOR,
-  SET_EDITING} from '../actionTypes';
-import { Action, ReaderState } from '../types';
+  SET_EDITING,
+  SET_FILTER,
+} from "../actionTypes";
+import { Action, ReaderState } from "../types";
 
 const initialState: ReaderState = {
   bookLoaded: false,
   currentBookId: 0,
-  editing: false, 
+  editing: false,
   currentBook: null,
   paragraph: null,
   cursor: 0,
   history: [],
   shortcutsModalVisible: false,
-  spanCursor: -1, 
+  spanCursor: -1,
+  filter: getBookFilter()
 };
 
 const MAX_HISTORY_LENGTH = 1024;
@@ -43,17 +54,20 @@ export default function (state = initialState, action: Action) {
       return { ...state };
     case SET_CURSOR:
       state.cursor = action.payload;
-      state.spanCursor = -1; 
+      state.spanCursor = -1;
       return { ...state };
     case SET_EDITING:
       state.editing = action.payload;
-      return { ...state }
+      return { ...state };
     case INC_CURSOR:
       state.cursor += 1;
       state.spanCursor = 0;
-      return {...state};
+      return { ...state };
     case SET_SPAN_CURSOR:
       state.spanCursor = action.payload;
+      return { ...state };
+    case SET_FILTER:
+      state.filter = action.payload;
       return { ...state };
     case RESET_HISTORY:
       state.history = [];
@@ -70,8 +84,8 @@ export default function (state = initialState, action: Action) {
     case UPDATE_PARAGRAH_TEXT:
       state.paragraph = {
         ...state.paragraph,
-        text: action.payload
-      }
+        text: action.payload,
+      };
 
       return { ...state };
     default:

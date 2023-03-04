@@ -21,6 +21,12 @@ export async function updateText(id, text) {
   }
 }
 
+export async function getListByBook(bookId: number): Promise<Response<IParagraph[]>> {
+  let result = await paragraphService.queryByBook(bookId);
+  
+  return Response.ok(result);
+}
+
 export async function queryByIndex(bookId: number, index: number): Promise<Response<IParagraph> | Response<null>> {
   if (bookId && typeof index === 'number') {
     const result = await paragraphService.queryByIndex(bookId, index);

@@ -15,6 +15,7 @@ export interface ReaderState {
   shortcutsModalVisible: boolean;
   spanCursor: number; 
   editing: boolean;
+  filter: boolean;
 }
 
 export interface CommentsState {

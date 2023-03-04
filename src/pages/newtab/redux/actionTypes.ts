@@ -5,6 +5,7 @@ export const SET_CURSOR = 'setCursor';
 export const SET_EDITING = 'setEditing';
 export const INC_CURSOR = 'incCursor';
 export const SET_SPAN_CURSOR = 'setSpanCursor';
+export const SET_FILTER = 'setFilter';
 export const UPDATE_SEARCHBOX_VISIBLE = 'updateSearchboxVisible';
 export const UPDATE_ALLOW_COMMENT = 'updateAllowComment';
 export const RESET_HISTORY = 'resetHistory';

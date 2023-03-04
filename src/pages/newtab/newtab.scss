@@ -205,6 +205,14 @@ body {
   .icon {
     margin-bottom: 10px;
   }
+  
+  .icon-filter-toggle {
+    opacity: 0.5;
+
+    &.icon-filter-active {
+      opacity: 1;
+    }
+  }
 }
 
 .share-icons {

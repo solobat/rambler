@@ -4,7 +4,8 @@ export const STORAGE_LOCAL = {
 }
 
 export const SESSION_STORAGE = {
-    CURRENT_BOOK_ID: 'current_book_id' 
+    CURRENT_BOOK_ID: 'current_book_id',
+    BOOK_FILTER: "book_filter"
 }
 
 export const SOLID_COLORS = [

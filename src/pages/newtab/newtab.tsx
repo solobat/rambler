@@ -1,32 +1,38 @@
-import * as React from 'react';
-import { useCallback, useEffect } from 'react';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import store from './redux/store';
-import { ToastContainer } from 'react-toastify';
-import { useEventListener } from 'ahooks';
+import * as React from "react";
+import { useCallback, useEffect } from "react";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import store from "./redux/store";
+import { ToastContainer } from "react-toastify";
+import { useEventListener } from "ahooks";
 
-import { APP_ACTIONS } from '../../common/constant';
-import { onDbUpdate } from '../../helper/db.helper';
-import { isAutoSync } from '../../helper/sync';
-import { noticeBg } from '../../helper/event';
+import { APP_ACTIONS } from "../../common/constant";
+import { onDbUpdate } from "../../helper/db.helper";
+import { isAutoSync } from "../../helper/sync";
+import { noticeBg } from "../../helper/event";
 
-import TxtUpload from './components/TxtUpload';
-import SearchBox from './components/SearchBox';
-import TopbarTools from './components/TopbarTools';
-import Comments from './components/Comments';
-import Paragraph from './components/Paragraph';
-import BottombarTools from './components/BottombarTools';
+import TxtUpload from "./components/TxtUpload";
+import SearchBox from "./components/SearchBox";
+import TopbarTools from "./components/TopbarTools";
+import Comments from "./components/Comments";
+import Paragraph from "./components/Paragraph";
+import BottombarTools from "./components/BottombarTools";
 
-import { keydownEventHandler, loadBook, loadParagraph, initBook, recordCursor } from './newtab.helper';
+import {
+  keydownEventHandler,
+  loadBook,
+  loadParagraph,
+  initBook,
+  recordCursor,
+} from "./newtab.helper";
 
-import 'react-toastify/dist/ReactToastify.css';
-import 'rc-slider/assets/index.css';
-import './newtab.scss';
-import { RootState } from './redux/reducers';
-import { RESET_HISTORY } from './redux/actionTypes';
-import ShortcutsModal from './components/ShortcutsModal';
-import { getFileShortName } from '@src/util/file';
-import { detectBookCategory } from '@src/util/book';
+import "react-toastify/dist/ReactToastify.css";
+import "rc-slider/assets/index.css";
+import "./newtab.scss";
+import { RootState } from "./redux/reducers";
+import { RESET_HISTORY } from "./redux/actionTypes";
+import ShortcutsModal from "./components/ShortcutsModal";
+import { getFileShortName } from "@src/util/file";
+import { detectBookCategory, resolveBookFilter } from "@src/util/book";
 
 declare global {
   interface Window {
@@ -69,17 +75,21 @@ function Container() {
     bookLoaded,
     spanCursor,
     editing,
+    filter,
   } = useSelector((state: RootState) => state.readers);
   const { allowComment } = useSelector((state: RootState) => state.comments);
   const { searchBoxVisible } = useSelector((state: RootState) => state.search);
   const commentsVisible = paragraph && allowComment;
-  const bookCategory = detectBookCategory(currentBook?.name ?? '');
+  const bookCategory = detectBookCategory(currentBook?.name ?? "");
+  const bookFilterFunc = React.useMemo(() => {
+    return filter ? resolveBookFilter(bookCategory) : null;
+  }, [bookCategory, filter]);
 
   useEffect(() => {
     if (currentBookId) {
-      loadBook(dispatch, currentBookId);
+      loadBook(dispatch, currentBookId, bookFilterFunc);
     }
-  }, [currentBookId]);
+  }, [currentBookId, bookFilterFunc]);
 
   useEffect(() => {
     if (currentBook && bookLoaded) {
@@ -102,13 +112,19 @@ function Container() {
   const onKeydown = useCallback(
     (event: React.KeyboardEvent) => {
       if (!editing) {
-        keydownEventHandler(event, dispatch, currentBook, paragraph, spanCursor);
+        keydownEventHandler(
+          event,
+          dispatch,
+          currentBook,
+          paragraph,
+          spanCursor
+        );
       }
     },
-    [currentBook, paragraph, spanCursor, editing],
+    [currentBook, paragraph, spanCursor, editing]
   );
 
-  useEventListener('keydown', onKeydown, {
+  useEventListener("keydown", onKeydown, {
     target: document,
   });
 
@@ -126,7 +142,9 @@ function Container() {
     <>
       {searchBoxVisible ? <SearchBox /> : null}
       {paragraph ? <Paragraph bookCategory={bookCategory} /> : null}
-      {commentsVisible ? <Comments paragraph={paragraph?.text} bookCategory={bookCategory} /> : null}
+      {commentsVisible ? (
+        <Comments paragraph={paragraph?.text} bookCategory={bookCategory} />
+      ) : null}
     </>
   );
 }
