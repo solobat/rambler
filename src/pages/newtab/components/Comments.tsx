@@ -10,9 +10,12 @@ import { RootState } from "../redux/reducers";
 import { CloseOutlined } from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
 import {
+  DailyShortcuts,
   getCommentInfo,
   StockShortcuts,
+  TableRowRenders,
   WordbookShortcuts,
+  WSCNInvestCalendarRenders,
 } from "@src/util/text";
 import { Img, Link, Result } from "@src/util/types";
 import {
@@ -33,6 +36,7 @@ import { queryByName } from "@src/server/service/wordService";
 import { IWord } from "@src/server/db/dictsdb";
 import jsMind from "jsmind";
 import { BookCategory } from "@src/util/book";
+import { getInvestCalendar } from "@src/server/service/wscnService";
 
 export default function Comments(props: {
   bookCategory: BookCategory;
@@ -111,6 +115,12 @@ export default function Comments(props: {
       )}
       {props.bookCategory === BookCategory.Wordbook && (
         <WordbookShortcutsRenderer
+          text={props.paragraph}
+          onClick={onShortcutClick}
+        />
+      )}
+      {props.bookCategory === BookCategory.Daily && (
+        <DailyShortcutsRenderer
           text={props.paragraph}
           onClick={onShortcutClick}
         />
@@ -199,6 +209,31 @@ function WordbookShortcutsRenderer(props: {
   );
 }
 
+function DailyShortcutsRenderer(props: {
+  text: string;
+  onClick: (text: string) => void;
+}) {
+  return (
+    <div className="stock-shortcuts">
+      {DailyShortcuts.map((item) => (
+        <Button
+          type="link"
+          className="stock-shortcut-btn"
+          key={item.type}
+          onClick={(event) => {
+            event.currentTarget.blur();
+            if (item.generate) {
+              props.onClick(item.generate(props.text));
+            }
+          }}
+        >
+          {item.type.toUpperCase()}
+        </Button>
+      ))}
+    </div>
+  );
+}
+
 interface CommentProps {
   comment: IComment;
   onDeleteClick: (comment: IComment) => void;
@@ -254,6 +289,9 @@ function CommentRenderer(props: { text: string }) {
       )}
       {type === "figure" && (
         <CommentWordFigure data={data as string} source="示意图" />
+      )}
+      {type === "invest" && (
+        <CommentDailyInvest data={data as string} source="投资历" />
       )}
       {type === "text" && <>{data}</>}
     </>
@@ -458,7 +496,7 @@ function CommentInfoBlock(props: {
   const onClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     toggle();
     props.onVisibleChange(!show);
-    event.currentTarget.blur(); 
+    event.currentTarget.blur();
   };
 
   return (
@@ -508,12 +546,41 @@ function CommentStockData(props: {
   );
 }
 
+function CommentDailyInvest(props: { data: string; source: string }) {
+  const [info, setInfo] = useState({ fields: [], lines: [] });
+  const [bodyVisible, { toggle }] = useToggle(false);
+  const date = props.data.match(/\d+/g).join("/");
+
+  useEffect(() => {
+    getInvestCalendar(date).then((result) => {
+      setInfo(result);
+    });
+  }, [date, bodyVisible]);
+
+  return (
+    <>
+      {info && (
+        <SimpleTable
+          fields={info.fields}
+          lines={info.lines}
+          visible={bodyVisible}
+          onVisible={toggle}
+          renders={WSCNInvestCalendarRenders}
+        />
+      )}
+    </>
+  );
+}
+
 function SimpleTable(props: {
   fields: string[];
   lines: Array<Array<any>>;
   visible: boolean;
   onVisible: () => void;
+  renders?: TableRowRenders;
 }) {
+  const { renders = {} } = props;
+
   return (
     <table className="simp-tb">
       <thead onClick={() => props.onVisible()}>
@@ -527,9 +594,14 @@ function SimpleTable(props: {
         <tbody>
           {props.lines.map((line, index) => (
             <tr key={index}>
-              {line.map((item, iIndex) => (
-                <td key={iIndex}>{fixNumber(item)}</td>
-              ))}
+              {line.map((item, iIndex) => {
+                const render = renders[props.fields[iIndex]];
+                return (
+                  <td key={iIndex}>
+                    {render ? render(item) : fixNumber(item)}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

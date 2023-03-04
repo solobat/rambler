@@ -77,7 +77,11 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
           </> :
           <>
             <FormOutlined className="icon icon-edit-start" onClick={onEditStart}/>
-            <FilterOutlined className={classNames(['icon', 'icon-filter-toggle', {'icon-filter-active': filter}])} onClick={onFilterToggle} />
+           {
+            props.bookCategory !== BookCategory.Normal && 
+              <FilterOutlined className={classNames(['icon', 'icon-filter-toggle', {'icon-filter-active': filter}])} 
+                onClick={onFilterToggle} />
+           } 
           </>
         }
       </div>

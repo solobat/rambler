@@ -1,3 +1,5 @@
+import { baseRequest } from "./base";
+
 const baseURI = "https://xueqiu.com";
 const stockBaseURI = "https://stock.xueqiu.com";
 const APIList = {
@@ -32,13 +34,4 @@ function baseListRequest(
   return baseRequest(`${APIList.Timeline}?${str}`).then((res) => {
     return res.list ?? [];
   });
-}
-
-function baseRequest(url: string) {
-  return fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then((res) => res.json());
 }

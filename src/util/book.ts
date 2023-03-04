@@ -4,6 +4,7 @@ import { isParameter } from "typescript";
 export enum BookCategory {
   Stock = "stock",
   Wordbook = "wordbook",
+  Daily = 'daily',
   Normal = "normal",
 }
 const stockIdentifiers = ["stock", "股票"];
@@ -22,6 +23,10 @@ const BookCategoryMap: BookCategoryMapItem[] = [
   {
     cate: BookCategory.Wordbook,
     reg: arr2reg(wordIdentifiers),
+  },
+  {
+    cate: BookCategory.Daily,
+    reg: /\d{4}/
   },
   {
     cate: BookCategory.Normal,

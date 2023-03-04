@@ -19,7 +19,12 @@ export type StockFormatType =
   | "cashflow"
   | "info";
 export type WordbookFormatType = "etymology" | "root" | "figure";
-export type TextFormatType = BaseFormatType | StockFormatType | WordbookFormatType;
+export type DailyFormatType = "invest";
+export type TextFormatType =
+  | BaseFormatType
+  | StockFormatType
+  | WordbookFormatType
+  | DailyFormatType;
 
 export interface CommentInfo {
   type: TextFormatType;

@@ -1,5 +1,14 @@
 import { saveWord } from "@src/server/controller/wordController";
-import { CommentInfo, Img, Link, TextDataType, TextFormatType, WordbookFormatType } from "./types";
+import dayjs from "dayjs";
+import {
+  CommentInfo,
+  DailyFormatType,
+  Img,
+  Link,
+  TextDataType,
+  TextFormatType,
+  WordbookFormatType,
+} from "./types";
 import { addWord } from "./word";
 
 interface Parser<T = TextDataType> {
@@ -92,6 +101,12 @@ const WordFigureParser: Parser<string> = {
   resolve: (match) => [match[1], WordFigureParser.type],
 };
 
+const DailyInvestParser: Parser<string> = {
+  type: "invest",
+  reg: /^#(.*)#INVEST$/,
+  resolve: (match) => [match[1], DailyInvestParser.type],
+};
+
 const parsers: Parser[] = [
   LinkParser,
   ImgParser,
@@ -104,7 +119,8 @@ const parsers: Parser[] = [
   StockInfoParser,
   WordEtymologyParser,
   WordRootParser,
-  WordFigureParser
+  WordFigureParser,
+  DailyInvestParser,
 ];
 
 export function getCommentInfo(text: string): CommentInfo {
@@ -174,7 +190,7 @@ export const StockShortcuts: StockShortcut[] = [
 ];
 
 interface WordbookShortcut {
-  type: "dicts" | "fill" | WordbookFormatType
+  type: "dicts" | "fill" | WordbookFormatType;
   action?: (word: string) => any;
   generate?: (word: string) => string;
 }
@@ -216,6 +232,35 @@ export const WordbookShortcuts: WordbookShortcut[] = [
   },
   {
     type: "figure",
-    generate: (word) => `#${word}#FIGURE`
-  }
+    generate: (word) => `#${word}#FIGURE`,
+  },
 ];
+
+interface DailyShortcut {
+  type: DailyFormatType;
+  generate?: (date: string) => string;
+}
+
+export const DailyShortcuts: DailyShortcut[] = [
+  {
+    type: "invest",
+    generate: (date) => `#${date}#INVEST`,
+  },
+];
+
+export interface TableRowRenders {
+  [key: string]: (value: string | number) => React.ReactNode;
+}
+
+export const WSCNInvestCalendarRenders: TableRowRenders = {
+  public_date: (value: number) => dayjs(value * 1000).format("HH:mm"),
+  importance: (value: number) => `${value}星`,
+  wscn_ticker: (value: string) => (
+    <a
+      target="_blank"
+      href={`https://wallstreetcn.com/data-analyse/${value}/DXY.OTC`}
+    >
+      详情
+    </a>
+  ),
+};

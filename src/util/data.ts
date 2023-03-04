@@ -1,6 +1,17 @@
 import { IComment } from "@src/server/db/database";
 
-export const FieldsMap = {
+const WSCNFieldsMap = {
+  public_date: "时间",
+  country: "地区",
+  title: "事件",
+  importance: "重要性",
+  actual: "今值",
+  forecast: "预期",
+  previous: "前值",
+  wscn_ticker: "详情",
+};
+
+const TushareFieldsMap = {
   roe: "ROE",
   close: "收盘价",
   volume_ratio: "量比",
@@ -40,6 +51,11 @@ export const FieldsMap = {
   loss_fv_chg: "公允价值变动损失",
   invest_loss: "投资损失",
   decr_inventories: "存货的减少",
+};
+
+export const FieldsMap = {
+  ...TushareFieldsMap,
+  ...WSCNFieldsMap,
 };
 
 export function sortComments(list: IComment[]) {
