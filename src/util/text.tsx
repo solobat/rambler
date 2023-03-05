@@ -353,7 +353,7 @@ export const WSCNInvestCalendarRenders: TableRowRenders = {
 
 function sendMsgToIHelpers(action: string, value: string) {
   chrome.runtime.sendMessage(
-    "cdombiofmnhpmohkhhkccejnfmodnfjb",
+    import.meta.env.VITE_APP_IHELPERS_ID,
     {
       action: "globalEventEmitted",
       data: {
