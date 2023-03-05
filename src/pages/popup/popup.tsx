@@ -102,12 +102,17 @@ export default class Popup extends React.Component<AppProps, AppState> {
   }
 
   render() {
+    const docsLink = 'https://rambler.const.app';
+  
     return (
       <div className="popupContainer">
         <div className="app-title">
           <a className="logo-wrap" href={newTabUrl} target="_blank">
             <i className="icon-app"></i>
             <div className="text">Rambler</div>
+          </a>
+          <a className="docs-link" href={docsLink} target="_blank">
+            <i className="icon-docs"></i>
           </a>
         </div>
         <label className="show-all-wrap" htmlFor="show-all">
