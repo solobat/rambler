@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import {
   CommentInfo,
   DailyFormatType,
+  EnglishFormatType,
   Img,
   Link,
   TextDataType,
@@ -199,17 +200,7 @@ export const WordbookShortcuts: WordbookShortcut[] = [
   {
     type: "dicts",
     action: (word) => {
-      chrome.runtime.sendMessage(
-        "cdombiofmnhpmohkhhkccejnfmodnfjb",
-        {
-          action: "globalEventEmitted",
-          data: {
-            action: "translate",
-            payload: { value: word },
-          },
-        },
-        () => {}
-      );
+      sendMsgToIHelpers('translate', word);
     },
   },
   {
@@ -248,6 +239,20 @@ export const DailyShortcuts: DailyShortcut[] = [
   },
 ];
 
+interface EnglishShortcut {
+  type: EnglishFormatType;
+  action?: (paragraph: string) => any;
+}
+
+export const EnglishShortcuts: EnglishShortcut[] = [
+  {
+    type: 'correct',
+    action: (paragraph) => {
+      sendMsgToIHelpers('correct', `这名英语写得有问题吗：${paragraph}`);
+    }
+  }
+]
+
 export interface TableRowRenders {
   [key: string]: (value: string | number) => React.ReactNode;
 }
@@ -264,3 +269,17 @@ export const WSCNInvestCalendarRenders: TableRowRenders = {
     </a>
   ),
 };
+
+function sendMsgToIHelpers(action: string, value: string) {
+  chrome.runtime.sendMessage(
+    "cdombiofmnhpmohkhhkccejnfmodnfjb",
+    {
+      action: "globalEventEmitted",
+      data: {
+        action,
+        payload: { value },
+      },
+    },
+    () => {}
+  );
+}

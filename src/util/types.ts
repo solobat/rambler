@@ -20,11 +20,13 @@ export type StockFormatType =
   | "info";
 export type WordbookFormatType = "etymology" | "root" | "figure";
 export type DailyFormatType = "invest";
+export type EnglishFormatType = "correct";
 export type TextFormatType =
   | BaseFormatType
   | StockFormatType
   | WordbookFormatType
-  | DailyFormatType;
+  | DailyFormatType
+  | EnglishFormatType;
 
 export interface CommentInfo {
   type: TextFormatType;

@@ -12,6 +12,7 @@ import {
   SET_CURRENT_BOOK,
   SET_CURRENT_BOOKID,
   SET_CURSOR,
+  SET_EDITING,
   SET_PARAGRAPH,
   SET_SPAN_CURSOR,
   UPDATE_SEARCHBOX_VISIBLE,
@@ -37,6 +38,7 @@ const KEY_CODE = {
   NEXT: ["ArrowRight", "ArrowDown", "l"],
   OPEN_SEARCH_BOX: ["f"],
   CLOSE_SEARCH_BOX: ["Escape"],
+  Edit: ['i', 'a'],
   PREV_SPAN: ['k'],
   NEXT_SPAN: ["j"],
   BACK: ["u"],
@@ -119,6 +121,9 @@ export function keydownEventHandler(
       const index = getNextParagraphIndex(paragraph, currentBook, false);
 
       dispatch({ type: SET_CURSOR, payload: index });
+    } else if (KEY_CODE.Edit.indexOf(key) !== -1) {
+      event.preventDefault();
+      dispatch({ type: SET_EDITING, payload: true});
     } else if (KEY_CODE.PREV_SPAN.indexOf(key) !== -1) {
       dispatch({ type: SET_SPAN_CURSOR, payload: spanCursor - 1})
     } else if (KEY_CODE.NEXT_SPAN.indexOf(key) !== -1) {

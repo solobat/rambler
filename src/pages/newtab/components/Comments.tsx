@@ -11,6 +11,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
 import {
   DailyShortcuts,
+  EnglishShortcuts,
   getCommentInfo,
   StockShortcuts,
   TableRowRenders,
@@ -125,6 +126,12 @@ export default function Comments(props: {
           onClick={onShortcutClick}
         />
       )}
+      {props.bookCategory === BookCategory.English && (
+        <EnglishShortcutsRenderer
+          text={props.paragraph}
+          onClick={onShortcutClick}
+        />
+      )} 
       <div className="comment-input-box">
         <input
           type="text"
@@ -199,6 +206,31 @@ function WordbookShortcutsRenderer(props: {
             }
             if (item.generate) {
               props.onClick(item.generate(props.text));
+            }
+          }}
+        >
+          {item.type.toUpperCase()}
+        </Button>
+      ))}
+    </div>
+  );
+}
+
+function EnglishShortcutsRenderer(props: {
+  text: string;
+  onClick: (text: string) => void;
+}) {
+  return (
+    <div className="stock-shortcuts">
+      {EnglishShortcuts.map((item) => (
+        <Button
+          type="link"
+          className="stock-shortcut-btn"
+          key={item.type}
+          onClick={(event) => {
+            event.currentTarget.blur();
+            if (item.action) {
+              item.action(props.text);
             }
           }}
         >

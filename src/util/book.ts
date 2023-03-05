@@ -5,11 +5,13 @@ export enum BookCategory {
   Wordbook = "wordbook",
   Daily = 'daily',
   Question = 'question',
+  English = 'english',
   Normal = "normal",
 }
 const stockIdentifiers = ["stock", "股票"];
 const wordIdentifiers = ["GRE", "单词", "Word", "TOEFL"];
 const questionIdentifiers = ['问题', 'Question'];
+const englishIdentifiers = ['English', '英语'];
 
 interface BookCategoryMapItem {
   cate: BookCategory;
@@ -32,6 +34,10 @@ const BookCategoryMap: BookCategoryMapItem[] = [
   {
     cate: BookCategory.Question,
     reg: arr2reg(questionIdentifiers)
+  },
+  {
+    cate: BookCategory.English,
+    reg: arr2reg(englishIdentifiers)
   },
   {
     cate: BookCategory.Normal,
@@ -57,6 +63,7 @@ export function resolveBookFilter(cate: BookCategory): BookFilterFunc | null {
     case BookCategory.Stock:
       return (paragraph: IParagraph) => /T[0-4]/.test(paragraph.text)
     case BookCategory.Question:
+    case BookCategory.English:
       return (paragraph: IParagraph) => !paragraph.text.startsWith('-')
     default:
       return null;
