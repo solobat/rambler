@@ -1,0 +1,8 @@
+{
+  "entryPoints": [
+    "src/util/book.ts",
+    "src/util/text.tsx",
+    "src/util/types.ts",
+  ],
+  "out": "docs"
+}

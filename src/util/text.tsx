@@ -10,15 +10,20 @@ import {
   TextFormatType,
   WordbookFormatType,
 } from "./types";
-import { addWord } from "./word";
 
-interface Parser<T = TextDataType> {
+export interface Parser<T = TextDataType> {
   type: TextFormatType;
   reg: RegExp;
   resolve: (match: RegExpMatchArray) => [T, TextFormatType];
 }
 
-const LinkParser: Parser<Link> = {
+/**
+ * @template
+ * ```
+ * [{label}]({url})
+ * ```
+ */
+export const LinkParser: Parser<Link> = {
   type: "link",
   reg: /^\[(.*)\]\((.*)\)$/,
   resolve: (match) => [
@@ -30,7 +35,13 @@ const LinkParser: Parser<Link> = {
   ],
 };
 
-const ImgParser: Parser<Img> = {
+/**
+ * @template
+ * ```
+ * ![{name}]({url})
+ * ```
+ */
+export const ImgParser: Parser<Img> = {
   type: "img",
   reg: /^!\[(.*)\]\((.*)\)$/,
   resolve: (match) => [
@@ -42,73 +53,139 @@ const ImgParser: Parser<Img> = {
   ],
 };
 
-const StockDailyParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * ${code.ex}$
+ * ```
+ */
+export const StockDailyParser: Parser<string> = {
   type: "daily",
   reg: /^\$(.*)\$$/,
   resolve: (match) => [match[1], StockDailyParser.type],
 };
 
-const StockIndicatorsParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * %{code.ex}%
+ * ```
+ */
+export const StockIndicatorsParser: Parser<string> = {
   type: "indicators",
   reg: /^%(.*)%$/,
   resolve: (match) => [match[1], StockIndicatorsParser.type],
 };
 
-const StockIncomeParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * %{code.ex}%INCOME
+ * ```
+ */
+export const StockIncomeParser: Parser<string> = {
   type: "income",
   reg: /^%(.*)%INCOME$/,
   resolve: (match) => [match[1], StockIncomeParser.type],
 };
 
-const StockCashflowParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * %{code.ex}%CASHFLOW
+ * ```
+ */
+export const StockCashflowParser: Parser<string> = {
   type: "cashflow",
   reg: /^%(.*)%CASHFLOW$/,
   resolve: (match) => [match[1], StockCashflowParser.type],
 };
 
-const StockAnnouncementParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * #{code.ex}#ANN
+ * ```
+ */
+export const StockAnnouncementParser: Parser<string> = {
   type: "ann",
   reg: /^#(.*)#ANN$/,
   resolve: (match) => [match[1], StockAnnouncementParser.type],
 };
 
-const StockNewsParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * #{code.ex}#NEWS
+ * ```
+ */
+export const StockNewsParser: Parser<string> = {
   type: "news",
   reg: /^#(.*)#NEWS$/,
   resolve: (match) => [match[1], StockNewsParser.type],
 };
 
-const StockInfoParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * #{code.ex}#INFO
+ * ```
+ */
+export const StockInfoParser: Parser<string> = {
   type: "info",
   reg: /^#(.*)#INFO$/,
   resolve: (match) => [match[1], StockInfoParser.type],
 };
 
-const WordEtymologyParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * #{word}#ETYMOLOGY
+ * ```
+ */
+export const WordEtymologyParser: Parser<string> = {
   type: "etymology",
   reg: /^#(.*)#ETYMOLOGY$/,
   resolve: (match) => [match[1], WordEtymologyParser.type],
 };
 
-const WordRootParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * #{word}#ROOT
+ * ```
+ */
+export const WordRootParser: Parser<string> = {
   type: "root",
   reg: /^#(.*)#ROOT$/,
   resolve: (match) => [match[1], WordRootParser.type],
 };
 
-const WordFigureParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * #{word}#FIGURE
+ * ```
+ */
+export const WordFigureParser: Parser<string> = {
   type: "figure",
   reg: /^#(.*)#FIGURE$/,
   resolve: (match) => [match[1], WordFigureParser.type],
 };
 
-const DailyInvestParser: Parser<string> = {
+/**
+ * @template
+ * ```
+ * #{date}#INVEST
+ * ```
+ */
+export const DailyInvestParser: Parser<string> = {
   type: "invest",
   reg: /^#(.*)#INVEST$/,
   resolve: (match) => [match[1], DailyInvestParser.type],
 };
 
-const parsers: Parser[] = [
+export const parsers: Parser[] = [
   LinkParser,
   ImgParser,
   StockDailyParser,
@@ -150,7 +227,7 @@ function applyParser(
   return null;
 }
 
-interface StockShortcut {
+export interface StockShortcut {
   type: TextFormatType | "xueqiu";
   generate: (code: string, ex: string) => string;
 }
@@ -190,7 +267,11 @@ export const StockShortcuts: StockShortcut[] = [
   },
 ];
 
-interface WordbookShortcut {
+/**
+ * `dicts`: Search for the word on dicts.cn website;<br />
+ * `fill`: Copy and paste the JSON data for the word from dicts.cn into the prompt dialog;
+ */
+export interface WordbookShortcut {
   type: "dicts" | "fill" | WordbookFormatType;
   action?: (word: string) => any;
   generate?: (word: string) => string;
@@ -200,7 +281,7 @@ export const WordbookShortcuts: WordbookShortcut[] = [
   {
     type: "dicts",
     action: (word) => {
-      sendMsgToIHelpers('translate', word);
+      sendMsgToIHelpers("translate", word);
     },
   },
   {
@@ -227,7 +308,7 @@ export const WordbookShortcuts: WordbookShortcut[] = [
   },
 ];
 
-interface DailyShortcut {
+export interface DailyShortcut {
   type: DailyFormatType;
   generate?: (date: string) => string;
 }
@@ -239,19 +320,19 @@ export const DailyShortcuts: DailyShortcut[] = [
   },
 ];
 
-interface EnglishShortcut {
+export interface EnglishShortcut {
   type: EnglishFormatType;
   action?: (paragraph: string) => any;
 }
 
 export const EnglishShortcuts: EnglishShortcut[] = [
   {
-    type: 'correct',
+    type: "correct",
     action: (paragraph) => {
-      sendMsgToIHelpers('correct', `这名英语写得有问题吗：${paragraph}`);
-    }
-  }
-]
+      sendMsgToIHelpers("correct", `这名英语写得有问题吗：${paragraph}`);
+    },
+  },
+];
 
 export interface TableRowRenders {
   [key: string]: (value: string | number) => React.ReactNode;

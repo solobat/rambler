@@ -1,5 +1,8 @@
 import { IParagraph } from "@src/server/db/database";
 
+/**
+ * @enum
+ */
 export enum BookCategory {
   Stock = "stock",
   Wordbook = "wordbook",
@@ -8,10 +11,23 @@ export enum BookCategory {
   English = 'english',
   Normal = "normal",
 }
-const stockIdentifiers = ["stock", "股票"];
-const wordIdentifiers = ["GRE", "单词", "Word", "TOEFL"];
-const questionIdentifiers = ['问题', 'Question'];
-const englishIdentifiers = ['English', '英语'];
+
+/**
+ * ["stock", "股票"]
+ */
+export const stockIdentifiers = ["stock", "股票"];
+/**
+ * ["GRE", "单词", "Word", "TOEFL"]
+ */
+export const wordIdentifiers = ["GRE", "单词", "Word", "TOEFL"];
+/**
+ * ['问题', 'Question']
+ */
+export const questionIdentifiers = ['问题', 'Question'];
+/**
+ * ['English', '英语']
+ */
+export const englishIdentifiers = ['English', '英语'];
 
 interface BookCategoryMapItem {
   cate: BookCategory;
