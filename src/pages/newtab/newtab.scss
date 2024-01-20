@@ -167,12 +167,14 @@ body {
 
   &.cursor-active {
     span {
-      opacity: 0.4;
+      opacity: 0.2;
       transition: all 200ms ease-in;
+      filter: blur(2.5px);
 
       &.is-active {
         font-weight: 700;
         opacity: 1;
+        filter: none;
       }
     }
   }
