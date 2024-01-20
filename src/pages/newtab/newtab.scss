@@ -154,7 +154,7 @@ body {
   text-align: justify;
   max-height: 312px;
   overflow: auto;
- 
+
   .bookcate-wordbook & {
     font-size: 56px;
     font-weight: 600;
@@ -162,7 +162,7 @@ body {
 
   .bookcate-stock & {
     font-size: 24px;
-    font-weight: 600; 
+    font-weight: 600;
   }
 
   &.cursor-active {
@@ -171,10 +171,14 @@ body {
       transition: all 200ms ease-in;
       filter: blur(2.5px);
 
+      &.is-past,
       &.is-active {
-        font-weight: 700;
         opacity: 1;
         filter: none;
+      }
+
+      &.is-active {
+        font-weight: 700;
       }
     }
   }
@@ -207,7 +211,7 @@ body {
   .icon {
     margin-bottom: 10px;
   }
-  
+
   .icon-filter-toggle {
     opacity: 0.5;
 

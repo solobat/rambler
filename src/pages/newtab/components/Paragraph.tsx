@@ -169,20 +169,28 @@ function Text(props: { text: string; cursor: number }) {
   return (
     <>
       {total.map((item, index) => (
-        <span className={index <= props.cursor ? "is-active" : ""}>
-          {item}
-        </span>
+        <span className={getClsName(index, props.cursor)}>{item}</span>
       ))}
     </>
   );
 }
 
-function splitText(text: string, punctuations = `,，。.?？;!！；…“”`): string[] {
+function getClsName(index: number, cursor: number) {
+  if (index === cursor) {
+    return "is-active";
+  } else if (index < cursor) {
+    return "is-past";
+  } else {
+    return "";
+  }
+}
+
+function splitText(text: string, punctuations = `,，。.?？;!！；…`): string[] {
   const escapedPunctuations = punctuations.replace(
     /[-\/\\^$*+?.()|[\]{}]/g,
     "\\$&"
   );
-  
+
   const regex = new RegExp(`([${escapedPunctuations}])`, "g");
 
   const arr = text.split(regex);
@@ -191,7 +199,7 @@ function splitText(text: string, punctuations = `,，。.?？;!！；…“”`)
   const total = arr.reduce(
     (memo, item, index) => {
       if (index % 2 !== 0) {
-        if (memo.temp.length + item.length >= 10 || !',，:：'.includes(item)) {
+        if (memo.temp.length + item.length >= 10 || !",，:：".includes(item)) {
           memo.total.push(`${memo.temp}${item}`);
           memo.temp = "";
         } else {
