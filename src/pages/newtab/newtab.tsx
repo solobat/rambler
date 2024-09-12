@@ -7,7 +7,6 @@ import { useEventListener } from "ahooks";
 
 import { APP_ACTIONS } from "../../common/constant";
 import { onDbUpdate } from "../../helper/db.helper";
-import { isAutoSync } from "../../helper/sync";
 import { noticeBg } from "../../helper/event";
 
 import TxtUpload from "./components/TxtUpload";
@@ -129,13 +128,7 @@ function Container() {
   });
 
   useEffect(() => {
-    onDbUpdate(() => {
-      if (isAutoSync()) {
-        noticeBg({
-          action: APP_ACTIONS.START_SYNC,
-        });
-      }
-    });
+    onDbUpdate(() => {});
   }, []);
 
   return (

@@ -1,8 +1,7 @@
 import reloadOnUpdate from "virtual:reload-on-update-in-background-script";
-import Sync from '../../helper/sync';
-import { create as createNotice } from '../../helper/notifications';
-import { APP_ACTIONS } from '../../common/constant';
-import { BackMsg, PageMsg } from '../../common/types';
+import { create as createNotice } from "../../helper/notifications";
+import { APP_ACTIONS } from "../../common/constant";
+import { BackMsg, PageMsg } from "../../common/types";
 
 reloadOnUpdate("pages/background");
 
@@ -12,17 +11,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   let isResponseAsync = false;
 
   if (request.popupMounted) {
-    console.log('eventPage notified that Popup.tsx has mounted.');
+    console.log("eventPage notified that Popup.tsx has mounted.");
   }
 
   return isResponseAsync;
 });
 
-let sync = new Sync();
-
 function msgHandler(req: PageMsg, sender, resp) {
   let { action, data, callbackId } = req;
-  console.log('msgHandler -> req', req);
+  console.log("msgHandler -> req", req);
 
   function handler(results, isAsync = false) {
     const msg: BackMsg = {
@@ -37,29 +34,10 @@ function msgHandler(req: PageMsg, sender, resp) {
   }
 
   if (action === APP_ACTIONS.IMPORT_DATA) {
-    init();
-    handler('');
-  } else if (action === APP_ACTIONS.START_SYNC) {
-    sync.tryStartSync();
-    handler('');
-  } else if (action === APP_ACTIONS.STOP_SYNC) {
-    sync.stopSync();
-    handler('');
+    handler("");
   }
 }
 
-['onMessage', 'onMessageExternal'].forEach((msgType) => {
+["onMessage", "onMessageExternal"].forEach((msgType) => {
   chrome.runtime[msgType].addListener(msgHandler);
 });
-
-function initSync() {
-  sync.on('received', () => {
-    createNotice('Data Sync', 'The latest data has been synced from the cloud', chrome.runtime.getURL('/img/success.png'));
-  });
-}
-
-function init() {
-  initSync();
-}
-
-init();

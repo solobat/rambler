@@ -1,15 +1,21 @@
-import { db } from '../db/database';
-import Paragraph from '../model/Paragraph';
+import { ParagraphData } from "@src/util/file";
+import { db } from "../db/database";
+import Paragraph from "../model/Paragraph";
 
-export function save(bookId: number, text: string, index: number) {
-  const paragraph: Paragraph = new Paragraph(text, index, bookId);
+export function save(
+  bookId: number,
+  text: string,
+  index: number,
+  type = "content"
+) {
+  const paragraph: Paragraph = new Paragraph(text, index, bookId, type);
 
   return db.paragraphs.put(paragraph);
 }
 
-export function bulkSave(bookId: number, texts: string[]) {
-  const paragraphs = texts.map((text, index) => {
-    return new Paragraph(text, index, bookId);
+export function bulkSave(bookId: number, items: ParagraphData[]) {
+  const paragraphs = items.map((item, index) => {
+    return new Paragraph(item.text, index, bookId, item.type);
   });
 
   return db.paragraphs.bulkPut(paragraphs);
@@ -23,9 +29,11 @@ export function queryByIndex(bookId: number, index: number) {
 }
 
 export function queryByBook(bookId: number) {
-  return db.paragraphs.where({
-    bookId,
-  }).toArray();
+  return db.paragraphs
+    .where({
+      bookId,
+    })
+    .toArray();
 }
 
 export function update(key, changes) {
@@ -42,7 +50,7 @@ export function search(bookId: number, text: string) {
 }
 
 export function deleteByBookId(bookId: number) {
-  return db.paragraphs.where('bookId').equals(bookId).delete();
+  return db.paragraphs.where("bookId").equals(bookId).delete();
 }
 
 export function getAll() {

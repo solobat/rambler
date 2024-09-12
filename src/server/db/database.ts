@@ -8,9 +8,9 @@ export class RamblerDatabase extends Dexie {
   constructor() {
     super('RamblerDatabase');
 
-    this.version(1).stores({
+    this.version(2).stores({
       books: '++id, name, size, createTime, paragraphCount, mode, cursor',
-      paragraphs: '++id, bookId, [bookId+index], text, likeCount',
+      paragraphs: '++id, bookId, [bookId+index], text, likeCount, type',
       comments: '++id, [bookId+paragraphId], text, createTime',
     });
   }
@@ -31,6 +31,7 @@ export interface IParagraph {
   bookId: number;
   text: string;
   index: number;
+  type: string;
   likeCount?: number;
 }
 

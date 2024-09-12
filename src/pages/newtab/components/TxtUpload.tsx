@@ -1,27 +1,30 @@
-import * as React from 'react';
-import { useContext } from 'react';
-import { sliceFileToParagraphs } from '../../../util/file';
-import { i18nMsg } from '../newtab.helper';
-import * as bookController from '../../../server/controller/bookController';
-import { toast } from 'react-toastify';
-import Upload from 'rc-upload';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/reducers';
-import { SET_CURRENT_BOOKID, SET_CURSOR } from '../redux/actionTypes';
-import { SESSION_STORAGE } from '@src/common/constant';
+import * as React from "react";
+import { useContext } from "react";
+import { ParagraphData, sliceFileToParagraphs } from "../../../util/file";
+import { i18nMsg } from "../newtab.helper";
+import * as bookController from "../../../server/controller/bookController";
+import { toast } from "react-toastify";
+import Upload from "rc-upload";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/reducers";
+import { SET_CURRENT_BOOKID, SET_CURSOR } from "../redux/actionTypes";
+import { SESSION_STORAGE } from "@src/common/constant";
 
 export default function TxtUpload() {
   const dispatch = useDispatch();
   const uploaderProps = {
-    accept: 'text/plain',
+    accept: "text/plain",
     beforeUpload(file) {
-      sliceFileToParagraphs(file).then((resp: string[]) => {
+      sliceFileToParagraphs(file).then((resp: ParagraphData[]) => {
         bookController.saveBook(file, resp).then((resp) => {
           if (resp.code === 0) {
             const bookId: number = resp.data;
 
             bookController.setCurrentBook(bookId);
-            window.sessionStorage.setItem(SESSION_STORAGE.CURRENT_BOOK_ID, String(bookId)); 
+            window.sessionStorage.setItem(
+              SESSION_STORAGE.CURRENT_BOOK_ID,
+              String(bookId)
+            );
             dispatch({ type: SET_CURRENT_BOOKID, payload: bookId });
             dispatch({ type: SET_CURSOR, payload: 0 });
 

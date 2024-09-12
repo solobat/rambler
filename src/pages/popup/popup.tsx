@@ -6,7 +6,6 @@ import * as Code from "../../server/common/code";
 import Book from "../../server/model/Book";
 import { BookMode } from "../../server/enum/Book";
 import { onDbUpdate } from "../../helper/db.helper";
-import { isAutoSync } from "../../helper/sync";
 import { noticeBg } from "../../helper/event";
 import { APP_ACTIONS } from "../../common/constant";
 
@@ -46,13 +45,7 @@ export default class Popup extends React.Component<AppProps, AppState> {
     bookController.getCurrentBook().then((id) => {
       this.loadBook(id);
     });
-    onDbUpdate(() => {
-      if (isAutoSync()) {
-        noticeBg({
-          action: APP_ACTIONS.START_SYNC,
-        });
-      }
-    });
+    onDbUpdate(() => {});
   }
 
   onShowAllChanged() {
@@ -102,8 +95,8 @@ export default class Popup extends React.Component<AppProps, AppState> {
   }
 
   render() {
-    const docsLink = 'https://rambler.const.app';
-  
+    const docsLink = "https://rambler.const.app";
+
     return (
       <div className="popupContainer">
         <div className="app-title">
@@ -116,7 +109,7 @@ export default class Popup extends React.Component<AppProps, AppState> {
           </a>
         </div>
         <label className="show-all-wrap" htmlFor="show-all">
-          ALL 
+          ALL
           <input
             id="show-all"
             type="checkbox"

@@ -1,4 +1,4 @@
-import { IParagraph, db } from '../db/database';
+import { IParagraph, db } from "../db/database";
 
 export default class Paragraph implements IParagraph {
   id: number;
@@ -6,11 +6,20 @@ export default class Paragraph implements IParagraph {
   text: string;
   index: number;
   createTime: number;
+  type: string;
 
-  constructor(text: string, index: number, bookId: number, createTime?: number, id?: number) {
+  constructor(
+    text: string,
+    index: number,
+    bookId: number,
+    type: string,
+    createTime?: number,
+    id?: number
+  ) {
     this.text = text;
     this.index = index;
     this.bookId = bookId;
+    this.type = type;
     if (createTime) {
       this.createTime = createTime;
     } else {
