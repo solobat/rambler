@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { ParagraphData, sliceFileToParagraphs } from "../../../util/file";
 import { i18nMsg } from "../newtab.helper";
 import * as bookController from "../../../server/controller/bookController";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import Upload from "rc-upload";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/reducers";
@@ -28,9 +28,9 @@ export default function TxtUpload() {
             dispatch({ type: SET_CURRENT_BOOKID, payload: bookId });
             dispatch({ type: SET_CURSOR, payload: 0 });
 
-            toast.success(i18nMsg.uploadDone);
+            message.success(i18nMsg.uploadDone);
           } else {
-            toast.error(resp.message);
+            message.error(resp.message);
           }
         });
       });

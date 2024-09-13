@@ -2,12 +2,9 @@ import * as React from "react";
 import { useCallback, useEffect } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "./redux/store";
-import { ToastContainer } from "react-toastify";
 import { useEventListener } from "ahooks";
 
-import { APP_ACTIONS } from "../../common/constant";
 import { onDbUpdate } from "../../helper/db.helper";
-import { noticeBg } from "../../helper/event";
 
 import TxtUpload from "./components/TxtUpload";
 import SearchBox from "./components/SearchBox";
@@ -24,7 +21,6 @@ import {
   recordCursor,
 } from "./newtab.helper";
 
-import "react-toastify/dist/ReactToastify.css";
 import "rc-slider/assets/index.css";
 import "./newtab.scss";
 import { RootState } from "./redux/reducers";
@@ -57,7 +53,6 @@ function App() {
       <TxtUpload />
       <TopbarTools />
       <Container />
-      <ToastContainer autoClose={3000} hideProgressBar={true} />
       <BottombarTools />
       <ShortcutsModal />
     </div>

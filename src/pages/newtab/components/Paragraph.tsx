@@ -6,19 +6,22 @@ import Slider from 'rc-slider';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/reducers';
 import { ADD_HISTORY, INC_CURSOR, SET_CURSOR, SET_FILTER, UPDATE_PARAGRAH_TEXT } from '../redux/actionTypes';
-import { CheckOutlined, CloseOutlined, FilterOutlined, FormOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, FilterOutlined, FormOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import Input from 'antd/es/input';
+import Modal from 'antd/es/modal';
 import useEditBtn from '../../../hooks/useEditBtn';
 import { updateParagraphText } from '../redux/actions/reader';
 import { BookCategory } from '@src/util/book';
 import c from 'classnames';
 import classNames from 'classnames';
 import { setBookFilter } from '@src/util/storage';
+import TableOfContents from './TableOfContents';
 
 export default function Paragraph(props: {bookCategory: BookCategory}) {
   const dispatch = useDispatch();
   const { paragraph, currentBook, cursor, spanCursor, filter } = useSelector((state: RootState) => state.readers);
   const paragraphRef = useRef();
+  const [tocVisible, setTocVisible] = useState(false);
   const onSlideChange = useCallback((newIndex) => {
     dispatch({ type: SET_CURSOR, payload: newIndex });
     dispatch({ type: ADD_HISTORY, payload: newIndex });
@@ -44,6 +47,14 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
     } else if (event.key === 'Escape') {
       onEditCancel();
     }
+  }
+
+  const showTOC = () => {
+    setTocVisible(true);
+  }
+
+  const hideTOC = () => {
+    setTocVisible(false);
   }
 
   return (
@@ -77,6 +88,7 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
           </> :
           <>
             <FormOutlined className="icon icon-edit-start" onClick={onEditStart}/>
+            <UnorderedListOutlined className="icon icon-toc" onClick={showTOC}/>
            {
             props.bookCategory !== BookCategory.Normal && 
               <FilterOutlined className={classNames(['icon', 'icon-filter-toggle', {'icon-filter-active': filter}])} 
@@ -94,6 +106,14 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
       </div>
       <p className="book-name">{currentBook ? `-- ${pureBookName}` : ''}</p>
       <ShareIcons />
+      <Modal
+        title="Chapters"
+        open={tocVisible}
+        onCancel={hideTOC}
+        footer={null}
+      >
+        <TableOfContents onClose={hideTOC} />
+      </Modal>
     </div>
   );
 }

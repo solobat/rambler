@@ -2,7 +2,6 @@ import { saveWord } from "@src/server/controller/wordController";
 import dayjs from "dayjs";
 import {
   CommentInfo,
-  DailyFormatType,
   EnglishFormatType,
   Img,
   Link,
@@ -56,90 +55,6 @@ export const ImgParser: Parser<Img> = {
 /**
  * @template
  * ```
- * ${code.ex}$
- * ```
- */
-export const StockDailyParser: Parser<string> = {
-  type: "daily",
-  reg: /^\$(.*)\$$/,
-  resolve: (match) => [match[1], StockDailyParser.type],
-};
-
-/**
- * @template
- * ```
- * %{code.ex}%
- * ```
- */
-export const StockIndicatorsParser: Parser<string> = {
-  type: "indicators",
-  reg: /^%(.*)%$/,
-  resolve: (match) => [match[1], StockIndicatorsParser.type],
-};
-
-/**
- * @template
- * ```
- * %{code.ex}%INCOME
- * ```
- */
-export const StockIncomeParser: Parser<string> = {
-  type: "income",
-  reg: /^%(.*)%INCOME$/,
-  resolve: (match) => [match[1], StockIncomeParser.type],
-};
-
-/**
- * @template
- * ```
- * %{code.ex}%CASHFLOW
- * ```
- */
-export const StockCashflowParser: Parser<string> = {
-  type: "cashflow",
-  reg: /^%(.*)%CASHFLOW$/,
-  resolve: (match) => [match[1], StockCashflowParser.type],
-};
-
-/**
- * @template
- * ```
- * #{code.ex}#ANN
- * ```
- */
-export const StockAnnouncementParser: Parser<string> = {
-  type: "ann",
-  reg: /^#(.*)#ANN$/,
-  resolve: (match) => [match[1], StockAnnouncementParser.type],
-};
-
-/**
- * @template
- * ```
- * #{code.ex}#NEWS
- * ```
- */
-export const StockNewsParser: Parser<string> = {
-  type: "news",
-  reg: /^#(.*)#NEWS$/,
-  resolve: (match) => [match[1], StockNewsParser.type],
-};
-
-/**
- * @template
- * ```
- * #{code.ex}#INFO
- * ```
- */
-export const StockInfoParser: Parser<string> = {
-  type: "info",
-  reg: /^#(.*)#INFO$/,
-  resolve: (match) => [match[1], StockInfoParser.type],
-};
-
-/**
- * @template
- * ```
  * #{word}#ETYMOLOGY
  * ```
  */
@@ -173,32 +88,12 @@ export const WordFigureParser: Parser<string> = {
   resolve: (match) => [match[1], WordFigureParser.type],
 };
 
-/**
- * @template
- * ```
- * #{date}#INVEST
- * ```
- */
-export const DailyInvestParser: Parser<string> = {
-  type: "invest",
-  reg: /^#(.*)#INVEST$/,
-  resolve: (match) => [match[1], DailyInvestParser.type],
-};
-
 export const parsers: Parser[] = [
   LinkParser,
   ImgParser,
-  StockDailyParser,
-  StockIndicatorsParser,
-  StockIncomeParser,
-  StockCashflowParser,
-  StockAnnouncementParser,
-  StockNewsParser,
-  StockInfoParser,
   WordEtymologyParser,
   WordRootParser,
   WordFigureParser,
-  DailyInvestParser,
 ];
 
 export function getCommentInfo(text: string): CommentInfo {
@@ -227,46 +122,6 @@ function applyParser(
   return null;
 }
 
-export interface StockShortcut {
-  type: TextFormatType | "xueqiu";
-  generate: (code: string, ex: string) => string;
-}
-export const StockShortcuts: StockShortcut[] = [
-  {
-    type: "daily",
-    generate: (code, ex) => `$${code}.${ex}$`,
-  },
-  {
-    type: "indicators",
-    generate: (code, ex) => `%${code}.${ex}%`,
-  },
-  {
-    type: "income",
-    generate: (code, ex) => `%${code}.${ex}%INCOME`,
-  },
-  {
-    type: "cashflow",
-    generate: (code, ex) => `%${code}.${ex}%CASHFLOW`,
-  },
-  {
-    type: "news",
-    generate: (code, ex) => `#${ex.toUpperCase()}${code}#NEWS`,
-  },
-  {
-    type: "ann",
-    generate: (code, ex) => `#${ex.toUpperCase()}${code}#ANN`,
-  },
-  {
-    type: "info",
-    generate: (code, ex) => `#${ex.toUpperCase()}${code}#INFO`,
-  },
-  {
-    type: "xueqiu",
-    generate: (code, ex) =>
-      `[雪球](https://xueqiu.com/S/${ex.toUpperCase()}${code})`,
-  },
-];
-
 /**
  * `dicts`: Search for the word on dicts.cn website;<br />
  * `fill`: Copy and paste the JSON data for the word from dicts.cn into the prompt dialog;
@@ -287,7 +142,7 @@ export const WordbookShortcuts: WordbookShortcut[] = [
   {
     type: "fill",
     action: (word) => {
-      const info = window.prompt("Please enter the definition of the word");
+      const info = window.prompt("请输入单词的定义");
 
       if (info) {
         saveWord(word, info);
@@ -308,18 +163,6 @@ export const WordbookShortcuts: WordbookShortcut[] = [
   },
 ];
 
-export interface DailyShortcut {
-  type: DailyFormatType;
-  generate?: (date: string) => string;
-}
-
-export const DailyShortcuts: DailyShortcut[] = [
-  {
-    type: "invest",
-    generate: (date) => `#${date}#INVEST`,
-  },
-];
-
 export interface EnglishShortcut {
   type: EnglishFormatType;
   action?: (paragraph: string) => any;
@@ -329,7 +172,7 @@ export const EnglishShortcuts: EnglishShortcut[] = [
   {
     type: "correct",
     action: (paragraph) => {
-      sendMsgToIHelpers("correct", `这名英语写得有问题吗：${paragraph}`);
+      sendMsgToIHelpers("correct", `这段英语写得有问题吗：${paragraph}`);
     },
   },
 ];
@@ -337,19 +180,6 @@ export const EnglishShortcuts: EnglishShortcut[] = [
 export interface TableRowRenders {
   [key: string]: (value: string | number) => React.ReactNode;
 }
-
-export const WSCNInvestCalendarRenders: TableRowRenders = {
-  public_date: (value: number) => dayjs(value * 1000).format("HH:mm"),
-  importance: (value: number) => `${value}星`,
-  wscn_ticker: (value: string) => (
-    <a
-      target="_blank"
-      href={`https://wallstreetcn.com/data-analyse/${value}/DXY.OTC`}
-    >
-      详情
-    </a>
-  ),
-};
 
 function sendMsgToIHelpers(action: string, value: string) {
   chrome.runtime.sendMessage(

@@ -4,7 +4,6 @@ import { IParagraph } from "@src/server/db/database";
  * @enum
  */
 export enum BookCategory {
-  Stock = "stock",
   Wordbook = "wordbook",
   Daily = 'daily',
   Question = 'question',
@@ -12,10 +11,6 @@ export enum BookCategory {
   Normal = "normal",
 }
 
-/**
- * ["stock", "股票"]
- */
-export const stockIdentifiers = ["stock", "股票"];
 /**
  * ["GRE", "单词", "Word", "TOEFL"]
  */
@@ -35,10 +30,6 @@ interface BookCategoryMapItem {
 }
 
 const BookCategoryMap: BookCategoryMapItem[] = [
-  {
-    cate: BookCategory.Stock,
-    reg: arr2reg(stockIdentifiers),
-  },
   {
     cate: BookCategory.Wordbook,
     reg: arr2reg(wordIdentifiers),
@@ -76,8 +67,6 @@ export type BookFilterFunc = (paragraph: IParagraph) => boolean
 
 export function resolveBookFilter(cate: BookCategory): BookFilterFunc | null {
   switch (cate) {
-    case BookCategory.Stock:
-      return (paragraph: IParagraph) => /T[0-4]/.test(paragraph.text)
     case BookCategory.Question:
     case BookCategory.English:
       return (paragraph: IParagraph) => !paragraph.text.startsWith('-')

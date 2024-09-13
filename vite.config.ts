@@ -6,6 +6,8 @@ import customDynamicImport from "./utils/plugins/custom-dynamic-import";
 import addHmr from "./utils/plugins/add-hmr";
 import manifest from "./manifest";
 import notifier from "node-notifier";
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
 const root = resolve(__dirname, "src");
 const pagesDir = resolve(root, "pages");
@@ -68,6 +70,14 @@ export default defineConfig({
           return `assets/[ext]/${name}.chunk.[ext]`;
         },
       },
+    },
+  },
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss,
+        autoprefixer,
+      ],
     },
   },
 });

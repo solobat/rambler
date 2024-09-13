@@ -4,7 +4,7 @@ import { KEYCODE } from "./types";
 import * as Code from "../../server/common/code";
 import { BookMode } from "../../server/enum/Book";
 import { getRandomIndex } from "../../util/common";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import * as paragraphController from "../../server/controller/paragraphController";
 import { Dispatch } from "redux";
 import {
@@ -216,7 +216,7 @@ export function loadBook(dispatch: Dispatch, bookId: number, filter: BookFilterF
         payload: true,
       });
     } else {
-      toast.error(resp.message);
+      message.error(resp.message);
     }
   });
 }
@@ -250,7 +250,7 @@ export function loadParagraph(
         // this.paragraphRef.current.scrollTo(0, 0);
       });
     } else {
-      toast.error(resp.message);
+      message.error(resp.message);
     }
   });
 }
