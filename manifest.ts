@@ -25,7 +25,6 @@ const manifest: chrome.runtime.ManifestV3 = {
   },
   permissions: ["storage", "notifications"],
   optional_permissions: ["background"],
-  host_permissions: ["http://*/*", "https://*/*"],
   web_accessible_resources: [
     {
       resources: [

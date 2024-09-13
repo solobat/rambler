@@ -6,7 +6,7 @@ rm -fr dist/
 
 # build
 echo "Compiling....."
-yarn build || { echo "Compilation failed, please check and try again"; exit 1; }
+pnpm build || { echo "Compilation failed, please check and try again"; exit 1; }
 
 zip -r rambler.zip dist/
 
