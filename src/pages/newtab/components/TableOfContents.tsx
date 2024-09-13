@@ -36,7 +36,6 @@ const TableOfContents: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   return (
     <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-gray-200">Contents</h2>
       <div className="max-h-[60vh] overflow-y-auto">
         <ul className="space-y-2">
           {tocItems.map((item) => (

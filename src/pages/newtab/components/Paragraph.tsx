@@ -20,7 +20,8 @@ import TableOfContents from './TableOfContents';
 export default function Paragraph(props: {bookCategory: BookCategory}) {
   const dispatch = useDispatch();
   const { paragraph, currentBook, cursor, spanCursor, filter } = useSelector((state: RootState) => state.readers);
-  const paragraphRef = useRef();
+  const paragraphRef = useRef<HTMLDivElement>(null);
+  const toolsRef = useRef<HTMLDivElement>(null);
   const [tocVisible, setTocVisible] = useState(false);
   const onSlideChange = useCallback((newIndex) => {
     dispatch({ type: SET_CURSOR, payload: newIndex });
@@ -57,6 +58,12 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
     setTocVisible(false);
   }
 
+  useEffect(() => {
+    if (paragraphRef.current && toolsRef.current) {
+      toolsRef.current.style.height = `${paragraphRef.current.offsetHeight}px`;
+    }
+  }, [text, editing]);
+
   return (
     <div className={c(['paragraph-container', `bookcate-${props.bookCategory}`])}>
       <div className="process">
@@ -79,7 +86,7 @@ export default function Paragraph(props: {bookCategory: BookCategory}) {
           }}
         />
       </div>
-      <div className="paragraph-tools">
+      <div className="paragraph-tools" ref={toolsRef}>
         {
           editing ? 
           <>
