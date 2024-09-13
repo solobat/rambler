@@ -1,6 +1,6 @@
 {
   "name": "rambler",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "random reading",
   "scripts": {
     "build": "tsc --noEmit && vite build",
@@ -70,7 +70,6 @@
     "react-redux": "^8.0.5",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
-    "text-encoding": "^0.7.0",
-    "webdav": "^4.11.2"
+    "text-encoding": "^0.7.0"
   }
 }
