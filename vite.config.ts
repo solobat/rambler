@@ -5,6 +5,7 @@ import makeManifest from "./utils/plugins/make-manifest";
 import customDynamicImport from "./utils/plugins/custom-dynamic-import";
 import addHmr from "./utils/plugins/add-hmr";
 import manifest from "./manifest";
+import notifier from "node-notifier";
 
 const root = resolve(__dirname, "src");
 const pagesDir = resolve(root, "pages");
@@ -16,6 +17,18 @@ const isDev = process.env.__DEV__ === "true";
 
 // ENABLE HMR IN BACKGROUND SCRIPT
 const enableHmrInBackgroundScript = true;
+
+function buildNotifierPlugin() {
+  return {
+    name: 'build-notifier',
+    closeBundle() {
+      notifier.notify({
+        title: 'Build Completed',
+        message: 'Your project has been built successfully!'
+      });
+    }
+  }
+}
 
 export default defineConfig({
   resolve: {
@@ -30,6 +43,7 @@ export default defineConfig({
     makeManifest(manifest),
     customDynamicImport(),
     addHmr({ background: enableHmrInBackgroundScript, view: true }),
+    buildNotifierPlugin(),
   ],
   publicDir,
   build: {
