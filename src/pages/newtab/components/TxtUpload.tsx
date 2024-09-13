@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useContext } from "react";
-import { ParagraphData, sliceFileToParagraphs } from "../../../util/file";
 import { i18nMsg } from "../newtab.helper";
 import * as bookController from "../../../server/controller/bookController";
 import { message } from "antd";
@@ -9,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/reducers";
 import { SET_CURRENT_BOOKID, SET_CURSOR } from "../redux/actionTypes";
 import { SESSION_STORAGE } from "@src/common/constant";
+import { sliceFileToParagraphs, ParagraphData } from "@src/util/paragraph";
 
 export default function TxtUpload() {
   const dispatch = useDispatch();

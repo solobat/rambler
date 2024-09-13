@@ -61,98 +61,15 @@ async function checkEncoding(buffer: ArrayBuffer): Promise<string> {
   return "UTF-8";
 }
 
-const chapterReg = /^(第.*?[章节]|chapter|\d+\.|\d+、|\d+\s+).*$/i;
-const contentStartReg = /^(目录|序|前言|引言|contents)/i;
-const authorReg = /^作者|译者|著|译/;
-
-function notEmpty(str: string): boolean {
-  return str.trim() !== "";
-}
-
-async function readFile(file: File): Promise<string> {
+export async function readFile(file: File): Promise<string> {
   const buffer = await file.arrayBuffer();
   const encoding = await checkEncoding(buffer);
   const decoder = new TextDecoder(encoding);
   return decoder.decode(buffer);
 }
 
-export interface ParagraphData {
-  type: "chapter" | "content" | "author" | "preContent";
-  text: string;
-}
-
-export async function sliceFileToParagraphs(
-  file: File
-): Promise<ParagraphData[]> {
-  const text = await readFile(file);
-
-  if (!text) {
-    return [];
-  }
-
-  const lines = text.split("\n").filter(notEmpty);
-  const result: ParagraphData[] = [];
-
-  let section: "preContent" | "contents" | "mainContent" = "preContent";
-  let currentChapter = "";
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-
-    if (section === "preContent") {
-      if (contentStartReg.test(line)) {
-        section = "contents";
-      } else if (authorReg.test(line)) {
-        result.push({ type: "author", text: line });
-      } else {
-        result.push({ type: "preContent", text: line });
-      }
-    } else if (section === "contents") {
-      if (chapterReg.test(line) || isLikelyChapterTitle(line)) {
-        section = "mainContent";
-        currentChapter = line;
-      }
-    } else if (section === "mainContent") {
-      if (chapterReg.test(line) || isLikelyChapterTitle(line)) {
-        if (currentChapter) {
-          result.push({ type: "chapter", text: currentChapter });
-        }
-        currentChapter = line;
-      } else {
-        if (currentChapter) {
-          result.push({ type: "chapter", text: currentChapter });
-          currentChapter = "";
-        }
-        result.push({ type: "content", text: line });
-      }
-    }
-  }
-
-  if (currentChapter) {
-    result.push({ type: "chapter", text: currentChapter });
-  }
-
-  return result;
-}
-
 export function getFileShortName(name: string): string {
   const arr = name.split(".");
   arr.pop();
   return arr.join(".");
-}
-
-function isLikelyChapterTitle(line: string): boolean {
-  if (line.length > 30) {
-    return false;
-  }
-
-  if (line.includes("章") || line.includes("节") || line.includes("篇")) {
-    return true;
-  }
-
-  if (/^\d+/.test(line)) {
-    return true;
-  }
-
-  return false;
 }

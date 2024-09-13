@@ -26,6 +26,7 @@ function buildNotifierPlugin() {
     closeBundle() {
       notifier.notify({
         title: 'Build Completed',
+        icon: path.resolve(publicDir, 'icon.png'),
         message: 'Your project has been built successfully!'
       });
     }
