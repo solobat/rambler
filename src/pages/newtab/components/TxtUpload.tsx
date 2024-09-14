@@ -1,17 +1,15 @@
 import * as React from "react";
-import { useContext } from "react";
 import { i18nMsg } from "../newtab.helper";
 import * as bookController from "../../../server/controller/bookController";
 import { message } from "antd";
 import Upload from "rc-upload";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/reducers";
-import { SET_CURRENT_BOOKID, SET_CURSOR } from "../redux/actionTypes";
 import { SESSION_STORAGE } from "@src/common/constant";
 import { sliceFileToParagraphs, ParagraphData } from "@src/util/paragraph";
+import useReaderStore from "../store/modules/reader";
 
 export default function TxtUpload() {
-  const dispatch = useDispatch();
+  const { setCurrentBookId, setCursor } = useReaderStore();
+
   const uploaderProps = {
     accept: "text/plain",
     beforeUpload(file) {
@@ -25,8 +23,8 @@ export default function TxtUpload() {
               SESSION_STORAGE.CURRENT_BOOK_ID,
               String(bookId)
             );
-            dispatch({ type: SET_CURRENT_BOOKID, payload: bookId });
-            dispatch({ type: SET_CURSOR, payload: 0 });
+            setCurrentBookId(bookId);
+            setCursor(0);
 
             message.success(i18nMsg.uploadDone);
           } else {

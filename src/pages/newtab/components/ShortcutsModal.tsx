@@ -1,9 +1,7 @@
 import Modal from 'antd/lib/modal/Modal';
 import * as React from 'react';
-import { useContext, useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { SET_SHORTCUTS_MODAL_VISIBLE } from '../redux/actionTypes';
-import { RootState } from '../redux/reducers';
+import { useCallback } from 'react'
+import useReaderStore from '../store/modules/reader';
 
 interface KeyItemType {
   label: string;
@@ -22,24 +20,21 @@ const keyItems: KeyItemType[] = [
 ]
 
 export default function ShortcutsModal() {
-  const visible = useSelector((state: RootState) => state.readers.shortcutsModalVisible);
-  const dispatch = useDispatch();
+  const { shortcutsModalVisible, setShortcutsModalVisible } = useReaderStore();
+  
   const onCancel = useCallback(() => {
-    dispatch({
-      type: SET_SHORTCUTS_MODAL_VISIBLE,
-      payload: false
-    })
-  }, []);
+    setShortcutsModalVisible(false);
+  }, [setShortcutsModalVisible]);
 
   return (
     <Modal
       title="Shortcuts"
       closable={false}
       footer={null}
-      visible={visible}
+      open={shortcutsModalVisible}
       onCancel={onCancel}
       >
-      { keyItems.map((item, index) => <KeyItem  key={index} item={item} /> )}
+      { keyItems.map((item, index) => <KeyItem key={index} item={item} /> )}
     </Modal>
   )
 }

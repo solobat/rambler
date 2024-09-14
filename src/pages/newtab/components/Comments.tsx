@@ -5,8 +5,6 @@ import * as commentController from "../../../server/controller/commentController
 import * as Code from "../../../server/common/code";
 import { message } from "antd";
 import { IComment, IParagraph } from "../../../server/db/database";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/reducers";
 import { CloseOutlined } from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
 import {
@@ -18,14 +16,13 @@ import { Img, Link } from "@src/util/types";
 import { sortComments } from "@src/util/data";
 import { Button } from "antd";
 import { BookCategory } from "@src/util/book";
+import useReaderStore from "../store/modules/reader";
 
 export default function Comments(props: {
   bookCategory: BookCategory;
   paragraph?: string;
 }) {
-  const { currentBookId, paragraph } = useSelector(
-    (state: RootState) => state.readers
-  );
+  const { currentBookId, paragraph } = useReaderStore();
   const commentIptRef = useRef<HTMLInputElement>();
   const [comments, setComments] = useState<IComment[]>([]);
   const onCommentBoxMouseEnter = useCallback(() => {

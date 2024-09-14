@@ -1,27 +1,27 @@
-import { SET_EDITING } from '@src/pages/newtab/redux/actionTypes';
-import { RootState } from '@src/pages/newtab/redux/reducers';
-import { useBoolean } from 'ahooks';
-import { useContext, useState, useRef, useCallback, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, useRef, useCallback } from 'react';
+import useReaderStore from '@src/pages/newtab/store/modules/reader';
 
 export default function useEditBtn(defaultText = '', onDone) {
-  const dispatch = useDispatch();
-  const { editing } = useSelector((state: RootState) => state.readers); 
+  const { editing, setEditing } = useReaderStore();
   const onDoneRef = useRef(onDone);
   onDoneRef.current = onDone;
   const [text, setText] = useState(defaultText);
+
   const onEditStart = useCallback(() => {
     setText(defaultText);
-    dispatch({ type: SET_EDITING, payload: true});
-  }, [defaultText, dispatch]);
+    setEditing(true);
+  }, [defaultText, setEditing]);
+
   const onEditDoneClick = useCallback(() => {
-    dispatch({ type: SET_EDITING, payload: false});
+    setEditing(false);
     onDoneRef.current(text);
-  }, [text, dispatch]);
+  }, [text, setEditing]);
+
   const onEditCancel = useCallback(() => {
-    dispatch({ type: SET_EDITING, payload: false});
+    setEditing(false);
     setText(defaultText);
-  }, [defaultText, dispatch]);
+  }, [defaultText, setEditing]);
+
   const onTextChange = useCallback((e) => {
     setText(e.target.value);
   }, []);

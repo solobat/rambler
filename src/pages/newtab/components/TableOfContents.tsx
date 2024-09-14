@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../redux/reducers";
-import { IParagraph } from "../../../server/db/database";
 import { loadParagraph } from "../newtab.helper";
 import { getChapters } from "@src/server/controller/paragraphController";
+import useReaderStore from "../store/modules/reader";
 
 interface TOCItem {
   index: number;
@@ -12,10 +10,7 @@ interface TOCItem {
 
 const TableOfContents: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [tocItems, setTocItems] = useState<TOCItem[]>([]);
-  const { currentBook, bookLoaded, cursor } = useSelector(
-    (state: RootState) => state.readers
-  );
-  const dispatch = useDispatch();
+  const { currentBook, bookLoaded, cursor, setParagraph } = useReaderStore();
 
   useEffect(() => {
     if (currentBook && bookLoaded) {
@@ -29,7 +24,7 @@ const TableOfContents: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const handleTOCItemClick = (index: number) => {
     if (currentBook) {
-      loadParagraph(dispatch, currentBook, index);
+      loadParagraph(currentBook, index, setParagraph);
       onClose();
     }
   };

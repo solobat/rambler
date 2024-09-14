@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useCallback, useEffect } from "react";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import store from "./redux/store";
 import { useEventListener } from "ahooks";
 
 import { onDbUpdate } from "../../helper/db.helper";
@@ -23,11 +21,12 @@ import {
 
 import "rc-slider/assets/index.css";
 import "./newtab.scss";
-import { RootState } from "./redux/reducers";
-import { RESET_HISTORY } from "./redux/actionTypes";
 import ShortcutsModal from "./components/ShortcutsModal";
 import { getFileShortName } from "@src/util/file";
 import { detectBookCategory, resolveBookFilter } from "@src/util/book";
+import useReaderStore from "./store/modules/reader";
+import useCommentsStore from "./store/modules/comments";
+import useSearchStore from "./store/modules/search";
 
 declare global {
   interface Window {
@@ -40,11 +39,7 @@ declare global {
 }
 
 export default function Root() {
-  return (
-    <Provider store={store}>
-      <App />
-    </Provider>
-  );
+  return <App />;
 }
 
 function App() {
@@ -60,7 +55,6 @@ function App() {
 }
 
 function Container() {
-  const dispatch = useDispatch();
   const {
     paragraph,
     currentBookId,
@@ -70,8 +64,18 @@ function Container() {
     spanCursor,
     editing,
     filter,
-  } = useSelector((state: RootState) => state.readers);
-  const { allowComment } = useSelector((state: RootState) => state.comments);
+    setCursor,
+    setCurrentBookId,
+    setEditing,
+    setSpanCursor,
+    setCurrentBook,
+    setBookLoaded,
+    setFilter,
+    resetHistory,
+    setParagraph,
+  } = useReaderStore();
+  const { setSearchBoxVisible } = useSearchStore();
+  const { allowComment } = useCommentsStore();
   const commentsVisible = paragraph && allowComment;
   const bookCategory = detectBookCategory(currentBook?.name ?? "");
   const bookFilterFunc = React.useMemo(() => {
@@ -80,41 +84,51 @@ function Container() {
 
   useEffect(() => {
     if (currentBookId) {
-      loadBook(dispatch, currentBookId, bookFilterFunc);
+      loadBook(
+        currentBookId,
+        bookFilterFunc,
+        setCurrentBook,
+        setBookLoaded,
+        setCursor
+      );
     }
-  }, [currentBookId, bookFilterFunc]);
+  }, [currentBookId, bookFilterFunc, setCurrentBook, setBookLoaded]);
 
   useEffect(() => {
     if (currentBook && bookLoaded) {
-      loadParagraph(dispatch, currentBook, cursor);
+      loadParagraph(currentBook, cursor, setParagraph);
       recordCursor(currentBook.id, cursor);
     }
-  }, [currentBook, cursor, bookLoaded]);
+  }, [currentBook, cursor, bookLoaded, setCursor]);
+
   useEffect(() => {
-    dispatch({ type: RESET_HISTORY });
+    resetHistory();
 
     if (currentBook && currentBook.name) {
       document.title = getFileShortName(currentBook.name);
     }
-  }, [currentBook]);
+  }, [currentBook, resetHistory]);
 
   useEffect(() => {
-    initBook(dispatch);
-  }, []);
+    initBook(setCurrentBookId);
+  }, [setCurrentBook, setBookLoaded, setCursor]);
 
   const onKeydown = useCallback(
     (event: React.KeyboardEvent) => {
       if (!editing) {
         keydownEventHandler(
           event,
-          dispatch,
           currentBook,
           paragraph,
-          spanCursor
+          spanCursor,
+          setCursor,
+          setEditing,
+          setSpanCursor,
+          setSearchBoxVisible
         );
       }
     },
-    [currentBook, paragraph, spanCursor, editing]
+    [currentBook, paragraph, spanCursor, editing, setCursor, setFilter]
   );
 
   useEventListener("keydown", onKeydown, {

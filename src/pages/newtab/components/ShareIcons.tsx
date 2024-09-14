@@ -1,20 +1,19 @@
 import * as React from 'react';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { generateUrl, getValidNetworks, Network, NetworkOption } from '../../../common/socialShare';
 import { getPureBookName } from '../newtab.helper';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/reducers';
+import useReaderStore from '../store/modules/reader';
 
 const networks = getValidNetworks();
 
 export default function ShareIcons() {
-  const { paragraph, currentBook } = useSelector((state: RootState) => state.readers);
+  const { paragraph, currentBook } = useReaderStore();
   const [selectedText, setSelectedText] = useState('');
   const sharedText = useMemo(() => {
     if (selectedText) {
       return selectedText;
     } else {
-      return paragraph.text;
+      return paragraph?.text || '';
     }
   }, [paragraph, selectedText]);
   const onShareHover = useCallback(() => {

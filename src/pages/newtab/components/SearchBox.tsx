@@ -3,21 +3,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import * as paragraphController from "../../../server/controller/paragraphController";
 import * as Code from "../../../server/common/code";
 import { IParagraph } from "../../../server/db/database";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/reducers";
-import {
-  ADD_HISTORY,
-  SET_CURSOR,
-  UPDATE_SEARCHBOX_VISIBLE,
-} from "../redux/actionTypes";
 import { Modal, Input, InputRef } from "antd";
+import useSearchStore from "../store/modules/search";
+import useReaderStore from "../store/modules/reader";
 
 export default function SearchBox() {
-  const dispatch = useDispatch();
-  const { searchBoxVisible } = useSelector((state: RootState) => state.search);
-  const currentBookId = useSelector(
-    (state: RootState) => state.readers.currentBookId
-  );
+  const { searchBoxVisible, setSearchBoxVisible } = useSearchStore();
+  const { currentBookId, setCursor, addHistory } = useReaderStore();
   const [keywords, setKeywords] = useState("");
   const searchIptRef = useRef<InputRef>(null);
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
@@ -47,13 +39,13 @@ export default function SearchBox() {
   };
 
   const onSearchResultClick = useCallback((result: IParagraph) => {
-    dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: false });
-    dispatch({ type: SET_CURSOR, payload: result.index });
-    dispatch({ type: ADD_HISTORY, payload: result.index });
-  }, []);
+    setSearchBoxVisible(false);
+    setCursor(result.index);
+    addHistory(result.index);
+  }, [setSearchBoxVisible, setCursor, addHistory]);
 
   const handleCancel = () => {
-    dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: false });
+    setSearchBoxVisible(false);
   };
 
   return (

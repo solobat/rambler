@@ -6,19 +6,10 @@ import { BookMode } from "../../server/enum/Book";
 import { getRandomIndex } from "../../util/common";
 import { message } from "antd";
 import * as paragraphController from "../../server/controller/paragraphController";
-import { Dispatch } from "redux";
-import {
-  SET_BOOK_LOADED,
-  SET_CURRENT_BOOK,
-  SET_CURRENT_BOOKID,
-  SET_CURSOR,
-  SET_EDITING,
-  SET_PARAGRAPH,
-  SET_SPAN_CURSOR,
-  UPDATE_SEARCHBOX_VISIBLE,
-} from "./redux/actionTypes";
 import { SESSION_STORAGE } from "@src/common/constant";
 import { BookFilterFunc } from "@src/util/book";
+import useReaderStore from "./store/modules/reader";
+import useSearchStore from "./store/modules/search";
 
 function isKeyValid(target) {
   if (
@@ -38,8 +29,8 @@ const KEY_CODE = {
   NEXT: ["ArrowRight", "ArrowDown", "l"],
   OPEN_SEARCH_BOX: ["f"],
   CLOSE_SEARCH_BOX: ["Escape"],
-  Edit: ['i', 'a'],
-  PREV_SPAN: ['k'],
+  Edit: ["i", "a"],
+  PREV_SPAN: ["k"],
   NEXT_SPAN: ["j"],
   BACK: ["u"],
   FORWARD: ["n"],
@@ -103,40 +94,41 @@ export function getPureBookName(fix: boolean, currentBook: IBook) {
 
 export function keydownEventHandler(
   event: React.KeyboardEvent,
-  dispatch,
   currentBook: IBook,
   paragraph: IParagraph,
-  spanCursor: number
+  spanCursor: number,
+  setCursor: (cursor: number) => void,
+  setEditing: (editing: boolean) => void,
+  setSpanCursor: (spanCursor: number) => void,
+  setSearchBoxVisible: (visible: boolean) => void
 ) {
   const key = event.key;
 
   if (isKeyValid(event.target)) {
     if (KEY_CODE.REFRESH.indexOf(key) !== -1) {
-      // this.loadBook(this.state.currentBookId);
+      // 刷新逻辑
     } else if (KEY_CODE.PREV.indexOf(key) !== -1) {
       const index = getPrevParagraphIndex(paragraph, false);
-
-      dispatch({ type: SET_CURSOR, payload: index });
+      setCursor(index);
     } else if (KEY_CODE.NEXT.indexOf(key) !== -1) {
       const index = getNextParagraphIndex(paragraph, currentBook, false);
-
-      dispatch({ type: SET_CURSOR, payload: index });
+      setCursor(index);
     } else if (KEY_CODE.Edit.indexOf(key) !== -1) {
       event.preventDefault();
-      dispatch({ type: SET_EDITING, payload: true});
+      setEditing(true);
     } else if (KEY_CODE.PREV_SPAN.indexOf(key) !== -1) {
-      dispatch({ type: SET_SPAN_CURSOR, payload: spanCursor - 1})
+      setSpanCursor(spanCursor - 1);
     } else if (KEY_CODE.NEXT_SPAN.indexOf(key) !== -1) {
-      dispatch({ type: SET_SPAN_CURSOR, payload: spanCursor + 1})
+      setSpanCursor(spanCursor + 1);
     } else if (KEY_CODE.OPEN_SEARCH_BOX.indexOf(key) !== -1) {
       event.preventDefault();
-      dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: true });
+      setSearchBoxVisible(true);
     } else if (KEY_CODE.CLOSE_SEARCH_BOX.indexOf(key) !== -1) {
-      dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: false });
+      setSearchBoxVisible(false);
     } else if (KEY_CODE.BACK.indexOf(key) !== -1) {
-      // this.goback();
+      // 后退逻辑
     } else if (KEY_CODE.FORWARD.indexOf(key) !== -1) {
-      // this.goforward();
+      // 前进逻辑
     }
   }
 }
@@ -191,7 +183,13 @@ export const i18nMsg = {
   commentHere: chrome.i18n.getMessage("comment_here"),
 };
 
-export function loadBook(dispatch: Dispatch, bookId: number, filter: BookFilterFunc | null) {
+export function loadBook(
+  bookId: number,
+  filter: BookFilterFunc | null,
+  setCurrentBook: (book: IBook) => void,
+  setBookLoaded: (loaded: boolean) => void,
+  setCursor: (cursor: number) => void
+) {
   bookController.info(bookId).then(async (resp) => {
     if (resp.code === Code.OK.code) {
       const book: IBook = resp.data;
@@ -200,54 +198,50 @@ export function loadBook(dispatch: Dispatch, bookId: number, filter: BookFilterF
       if (book.mode === BookMode.INORDER) {
         cursor = await getBookCursor(bookId);
       } else {
-        cursor = await resolveBookRandomIndex(bookId, book.paragraphCount, filter);
+        cursor = await resolveBookRandomIndex(
+          bookId,
+          book.paragraphCount,
+          filter
+        );
       }
 
-      dispatch({
-        type: SET_CURRENT_BOOK,
-        payload: book,
-      });
-      dispatch({
-        type: SET_CURSOR,
-        payload: cursor,
-      });
-      dispatch({
-        type: SET_BOOK_LOADED,
-        payload: true,
-      });
+      setCurrentBook(book);
+      setCursor(cursor);
+      setBookLoaded(true);
     } else {
       message.error(resp.message);
     }
   });
 }
 
-async function resolveBookRandomIndex(bookId: number, total: number, filter: BookFilterFunc | null) {
+async function resolveBookRandomIndex(
+  bookId: number,
+  total: number,
+  filter: BookFilterFunc | null
+) {
   if (filter) {
     const res = await paragraphController.getListByBook(bookId);
-    const indexArr = res.data.filter(filter).map(item => item.index);
+    const indexArr = res.data.filter(filter).map((item) => item.index);
 
     return indexArr[getRandomIndex(indexArr.length)];
   } else {
-    return getRandomIndex(total)
+    return getRandomIndex(total);
   }
 }
 
 export function loadParagraph(
-  dispatch: React.Dispatch<any>,
   currentBook: IBook,
-  cursor: number
+  cursor: number,
+  setParagraph: (paragraph: IParagraph) => void
 ) {
   const fixedIndex = getFixedParagraphIndex(currentBook, cursor);
   const currentBookId = currentBook.id;
 
   paragraphController.queryByIndex(currentBookId, fixedIndex).then((resp) => {
     if (resp.code === Code.OK.code) {
-      dispatch({
-        type: SET_PARAGRAPH,
-        payload: resp.data,
-      });
+      setParagraph(resp.data);
       requestAnimationFrame(() => {
-        // this.paragraphRef.current.scrollTo(0, 0);
+        // 滚动逻辑
       });
     } else {
       message.error(resp.message);
@@ -255,24 +249,29 @@ export function loadParagraph(
   });
 }
 
-export function initBook(dispatch: React.Dispatch<any>) {
+export function initBook(setCurrentBookId: (id: number) => void) {
   getCurrentBookId().then((id) => {
     if (id) {
-      dispatch({ type: SET_CURRENT_BOOKID, payload: id });
+      setCurrentBookId(id);
     }
   });
 }
 
 function getCurrentBookId() {
-  const localId = window.sessionStorage.getItem(SESSION_STORAGE.CURRENT_BOOK_ID);
+  const localId = window.sessionStorage.getItem(
+    SESSION_STORAGE.CURRENT_BOOK_ID
+  );
 
   if (localId) {
-    return Promise.resolve(Number(localId))
+    return Promise.resolve(Number(localId));
   } else {
     return bookController.getCurrentBook().then((id) => {
-      window.sessionStorage.setItem(SESSION_STORAGE.CURRENT_BOOK_ID, String(id));
+      window.sessionStorage.setItem(
+        SESSION_STORAGE.CURRENT_BOOK_ID,
+        String(id)
+      );
 
-      return id
-    })
+      return id;
+    });
   }
 }

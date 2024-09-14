@@ -6,42 +6,30 @@ import {
   MacCommandOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/reducers";
-import {
-  SET_SHORTCUTS_MODAL_VISIBLE,
-  UPDATE_ALLOW_COMMENT,
-  UPDATE_SEARCHBOX_VISIBLE,
-} from "../redux/actionTypes";
 import { useFullscreen } from "ahooks";
+import useCommentsStore from "../store/modules/comments";
+import useSearchStore from "../store/modules/search";
+import useReaderStore from "../store/modules/reader";
 
 export default function BottombarTools() {
-  const dispatch = useDispatch();
-  const allowComment = useSelector(
-    (state: RootState) => state.comments.allowComment
-  );
+  const { allowComment, updateAllowComment } = useCommentsStore();
+  const { searchBoxVisible, setSearchBoxVisible } = useSearchStore();
+  const { setShortcutsModalVisible } = useReaderStore();
   const [isFullscreen, { toggleFull }] = useFullscreen(
     document.documentElement
   );
+
   const onCommentBtnClick = useCallback(() => {
-    dispatch({
-      type: UPDATE_ALLOW_COMMENT,
-      payload: !allowComment,
-    });
-  }, [allowComment]);
+    updateAllowComment(!allowComment);
+  }, [allowComment, updateAllowComment]);
+
   const onShortcutsBtnClick = useCallback(() => {
-    dispatch({
-      type: SET_SHORTCUTS_MODAL_VISIBLE,
-      payload: true,
-    });
-  }, []);
-  const searchBoxVisible = useSelector(
-    (state: RootState) => state.search.searchBoxVisible
-  );
+    setShortcutsModalVisible(true);
+  }, [setShortcutsModalVisible]);
 
   const onSearchBtnClick = useCallback(() => {
-    dispatch({ type: UPDATE_SEARCHBOX_VISIBLE, payload: !searchBoxVisible });
-  }, [searchBoxVisible]);
+    setSearchBoxVisible(!searchBoxVisible);
+  }, [searchBoxVisible, setSearchBoxVisible]);
 
   return (
     <div className="bottom-right-tools">
