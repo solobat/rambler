@@ -10,10 +10,6 @@ const manifest: chrome.runtime.ManifestV3 = {
   chrome_url_overrides: {
     newtab: "src/pages/newtab/index.html",
   },
-  background: {
-    service_worker: "src/pages/background/index.js",
-    type: "module",
-  },
   action: {
     default_popup: "src/pages/popup/index.html",
     default_icon: "icon16.png",
@@ -23,8 +19,7 @@ const manifest: chrome.runtime.ManifestV3 = {
     "48": "icon48.png",
     "128": "icon128.png",
   },
-  permissions: ["storage", "notifications"],
-  optional_permissions: ["background"],
+  permissions: ["storage"],
   web_accessible_resources: [
     {
       resources: [

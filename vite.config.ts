@@ -6,8 +6,8 @@ import customDynamicImport from "./utils/plugins/custom-dynamic-import";
 import addHmr from "./utils/plugins/add-hmr";
 import manifest from "./manifest";
 import notifier from "node-notifier";
-import tailwindcss from 'tailwindcss';
-import autoprefixer from 'autoprefixer';
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
 
 const root = resolve(__dirname, "src");
 const pagesDir = resolve(root, "pages");
@@ -17,20 +17,17 @@ const publicDir = resolve(__dirname, "public");
 
 const isDev = process.env.__DEV__ === "true";
 
-// ENABLE HMR IN BACKGROUND SCRIPT
-const enableHmrInBackgroundScript = true;
-
 function buildNotifierPlugin() {
   return {
-    name: 'build-notifier',
+    name: "build-notifier",
     closeBundle() {
       notifier.notify({
-        title: 'Build Completed',
-        icon: path.resolve(publicDir, 'icon.png'),
-        message: 'Your project has been built successfully!'
+        title: "Build Completed",
+        icon: path.resolve(publicDir, "icon.png"),
+        message: "Your project has been built successfully!",
       });
-    }
-  }
+    },
+  };
 }
 
 export default defineConfig({
@@ -45,7 +42,7 @@ export default defineConfig({
     react(),
     makeManifest(manifest),
     customDynamicImport(),
-    addHmr({ background: enableHmrInBackgroundScript, view: true }),
+    addHmr({ view: true }),
     buildNotifierPlugin(),
   ],
   publicDir,
@@ -54,7 +51,6 @@ export default defineConfig({
     sourcemap: isDev,
     rollupOptions: {
       input: {
-        background: resolve(pagesDir, "background", "index.ts"),
         newtab: resolve(pagesDir, "newtab", "index.html"),
         popup: resolve(pagesDir, "popup", "index.html"),
         options: resolve(pagesDir, "options", "index.html"),
@@ -75,10 +71,7 @@ export default defineConfig({
   },
   css: {
     postcss: {
-      plugins: [
-        tailwindcss,
-        autoprefixer,
-      ],
+      plugins: [tailwindcss, autoprefixer],
     },
   },
 });

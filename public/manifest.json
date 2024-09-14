@@ -8,10 +8,6 @@
   "chrome_url_overrides": {
     "newtab": "src/pages/newtab/index.html"
   },
-  "background": {
-    "service_worker": "src/pages/background/index.js",
-    "type": "module"
-  },
   "action": {
     "default_popup": "src/pages/popup/index.html",
     "default_icon": "icon16.png"
@@ -22,11 +18,7 @@
     "128": "icon128.png"
   },
   "permissions": [
-    "storage",
-    "notifications"
-  ],
-  "optional_permissions": [
-    "background"
+    "storage"
   ],
   "web_accessible_resources": [
     {
