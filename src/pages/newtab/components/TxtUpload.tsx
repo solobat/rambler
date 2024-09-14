@@ -1,17 +1,18 @@
 import * as React from "react";
 import { i18nMsg } from "../newtab.helper";
 import * as bookController from "../../../server/controller/bookController";
-import { message } from "antd";
-import Upload from "rc-upload";
+import { message, Upload } from "antd";
 import { SESSION_STORAGE } from "@src/common/constant";
 import { sliceFileToParagraphs, ParagraphData } from "@src/util/paragraph";
 import useReaderStore from "../store/modules/reader";
+import { UploadProps } from "antd/es/upload";
 
 export default function TxtUpload() {
   const { setCurrentBookId, setCursor } = useReaderStore();
 
-  const uploaderProps = {
+  const uploaderProps: UploadProps = {
     accept: "text/plain",
+    showUploadList: false,
     beforeUpload(file) {
       sliceFileToParagraphs(file).then((resp: ParagraphData[]) => {
         bookController.saveBook(file, resp).then((resp) => {

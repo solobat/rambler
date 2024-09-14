@@ -1,19 +1,40 @@
-import { db } from '../server/db/database';
-import { exportDB, importInto } from 'dexie-export-import';
-import download from 'downloadjs';
-import dayjs from 'dayjs';
-import { throttle } from 'lodash';
+import { db } from "../server/db/database";
+import { exportDB, importInto } from "dexie-export-import";
+
+function throttle(func, delay) {
+  let lastCall = 0;
+  return function (...args) {
+    const now = new Date().getTime();
+    if (now - lastCall < delay) {
+      return;
+    }
+    lastCall = now;
+    return func(...args);
+  };
+}
+
+function download(blob, filename, mimeType) {
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.type = mimeType;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+}
 
 export async function exportAndDownload() {
   const blob = await exportDB(db);
 
-  download(blob, 'rambler-export.json', 'application/json');
+  download(blob, "rambler-export.json", "application/json");
 }
 
 function readBlob(blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onabort = (ev) => reject(new Error('file read aborted'));
+    reader.onabort = (ev) => reject(new Error("file read aborted"));
     reader.onerror = (event) => reject(event.target.error);
     reader.onload = (event) => resolve(event.target.result);
     reader.readAsText(blob);
@@ -33,8 +54,8 @@ export async function importDBFile(blob) {
 }
 
 export function onDbUpdate(callback) {
-  const dbNames = ['books', 'paragraphs', 'comments'];
-  const eventNames = ['creating', 'updating', 'deleting'];
+  const dbNames = ["books", "paragraphs", "comments"];
+  const eventNames = ["creating", "updating", "deleting"];
   const unbindFns = [];
   const cb = throttle(callback, 1000);
 

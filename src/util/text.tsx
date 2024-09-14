@@ -1,5 +1,4 @@
 import { saveWord } from "@src/server/controller/wordController";
-import dayjs from "dayjs";
 import {
   CommentInfo,
   EnglishFormatType,

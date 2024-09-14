@@ -9,7 +9,7 @@ import {
 } from "react";
 import { getPureBookName } from "../newtab.helper";
 import ShareIcons from "./ShareIcons";
-import Slider from "rc-slider";
+import { Slider } from "antd";
 import {
   CheckOutlined,
   CloseOutlined,
@@ -104,18 +104,11 @@ export default function Paragraph(props: { bookCategory: BookCategory }) {
           value={cursor}
           min={0}
           max={currentBook.paragraphCount}
+          tooltip={{ open: false }}
           onChange={onSlideChange}
-          railStyle={{
-            height: "2px",
-            borderRadius: "0",
-          }}
-          trackStyle={{
-            height: "2px",
-            borderRadius: "0",
-          }}
-          handleStyle={{
-            borderRadius: "0",
-          }}
+          railStyle={{ backgroundColor: "rgba(0, 0, 0, 0.1)" }}
+          trackStyle={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+          handleStyle={{ borderColor: "rgba(0, 0, 0, 0.3)" }}
         />
       </div>
       <div className="paragraph-tools" ref={toolsRef}>

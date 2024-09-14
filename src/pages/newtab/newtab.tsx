@@ -19,7 +19,6 @@ import {
   recordCursor,
 } from "./newtab.helper";
 
-import "rc-slider/assets/index.css";
 import "./newtab.scss";
 import ShortcutsModal from "./components/ShortcutsModal";
 import { getFileShortName } from "@src/util/file";

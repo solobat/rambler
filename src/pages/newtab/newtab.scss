@@ -4,8 +4,12 @@
 
 html,
 body {
-  width: initial !important;
-  height: initial !important;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--newtab-background-color);
 }
 
 body {
@@ -17,6 +21,12 @@ body {
   * {
     box-sizing: inherit;
   }
+}
+
+.newtab-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .file-uploader {
