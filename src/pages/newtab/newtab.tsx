@@ -72,7 +72,6 @@ function Container() {
     filter,
   } = useSelector((state: RootState) => state.readers);
   const { allowComment } = useSelector((state: RootState) => state.comments);
-  const { searchBoxVisible } = useSelector((state: RootState) => state.search);
   const commentsVisible = paragraph && allowComment;
   const bookCategory = detectBookCategory(currentBook?.name ?? "");
   const bookFilterFunc = React.useMemo(() => {
@@ -128,7 +127,7 @@ function Container() {
 
   return (
     <>
-      {searchBoxVisible ? <SearchBox /> : null}
+      <SearchBox />
       {paragraph ? <Paragraph bookCategory={bookCategory} /> : null}
       {commentsVisible ? (
         <Comments paragraph={paragraph?.text} bookCategory={bookCategory} />
