@@ -6,7 +6,7 @@ import * as Code from "../common/code";
 import { IBook, IParagraph, db } from "../db/database";
 import TheFirstAndLastFreedom from "../../assets/text/The-first-and-last-freedom";
 import { BookMode } from "../enum/Book";
-import { ParagraphData } from "@src/util/file";
+import { ParagraphData } from "@src/util/paragraph";
 
 export async function saveBook(
   file: File,

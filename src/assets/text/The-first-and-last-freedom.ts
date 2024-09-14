@@ -1,4 +1,4 @@
-import { ParagraphData } from "@src/util/file";
+import { ParagraphData } from "@src/util/paragraph";
 
 const texts = [
   'Foreword',
