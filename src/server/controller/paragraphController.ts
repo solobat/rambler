@@ -33,7 +33,7 @@ export async function getChapters(bookId: number): Promise<Response<IParagraph[]
   let uniqueChapters = new Map();
   
   chapters.forEach(chapter => {
-    let chapterName = chapter.text.replace(/\s*\d+$/, '');
+    let chapterName = chapter.text.replace(/\s+/g, '').replace(/\d+$/, '');
     uniqueChapters.set(chapterName, chapter);
   });
   

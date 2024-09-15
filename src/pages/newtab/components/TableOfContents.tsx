@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { loadParagraph } from "../newtab.helper";
 import { getChapters } from "@src/server/controller/paragraphController";
 import useReaderStore from "../store/modules/reader";
@@ -38,7 +38,7 @@ const TableOfContents: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     return -1;
   };
 
-  const currentChapterIndex = getCurrentChapterIndex();
+  const currentChapterIndex = useMemo(() => getCurrentChapterIndex(), [cursor, tocItems]);
 
   return (
     <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-md mx-auto">

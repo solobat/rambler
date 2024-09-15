@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@ant-design/icons':
-        specifier: ^4.2.2
-        version: 4.8.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       ahooks:
         specifier: ^2.7.0
         version: 2.10.14(react@18.2.0)
@@ -160,19 +157,6 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@ant-design/colors@6.0.0':
-    resolution: {integrity: sha512-qAZRvPzfdWHtfameEGP2Qvuf838NhergR35o+EuVyB5XvSA98xod5r4utvi4TJ3ywmevm290g9nsCG5MryrdWQ==}
-
-  '@ant-design/icons-svg@4.4.2':
-    resolution: {integrity: sha512-vHbT+zJEVzllwP+CM+ul7reTEfBR0vgxFe7+lREAsAA7YGsYpboiq2sQNeQeRvh09GfQgs/GyFEvZpJ9cLXpXA==}
-
-  '@ant-design/icons@4.8.3':
-    resolution: {integrity: sha512-HGlIQZzrEbAhpJR6+IGdzfbPym94Owr6JZkJ2QCCnOkPVIWMO2xgIVcOKnl8YcpijIo39V7l2qQL5fmtw56cMw==}
-    engines: {node: '>=8'}
-    peerDependencies:
-      react: '>=16.0.0'
-      react-dom: '>=16.0.0'
-
   '@babel/code-frame@7.24.7':
     resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
     engines: {node: '>=6.9.0'}
@@ -285,10 +269,6 @@ packages:
   '@babel/types@7.25.6':
     resolution: {integrity: sha512-/l42B1qxpG6RdfYf343Uw1vmDjeNhneUXtzhojE7pDgfpEypmRhI6j1kr17XCVv4Cgl9HdAiQY2x0GwKm7rWCw==}
     engines: {node: '>=6.9.0'}
-
-  '@ctrl/tinycolor@3.6.1':
-    resolution: {integrity: sha512-SITSV6aIXsuVNV3f3O0f2n/cgyEDWoSqtZMYiAmcsYHydcKrOz3gUxB/iXd/Qf08+IZX4KpgNbvUdMBmWz+kcA==}
-    engines: {node: '>=10'}
 
   '@esbuild/android-arm@0.15.18':
     resolution: {integrity: sha512-5GT+kcs2WVGjVs7+boataCkO5Fg0y4kCjzkB5bAip7H4jfnOS3dA6KPiww9W1OEKTKeAcUVhdZGvgI65OXmUnw==}
@@ -1623,9 +1603,6 @@ packages:
   lodash.throttle@4.1.1:
     resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
 
-  lodash@4.17.21:
-    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
@@ -1909,12 +1886,6 @@ packages:
 
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
-
-  rc-util@5.43.0:
-    resolution: {integrity: sha512-AzC7KKOXFqAdIBqdGWepL9Xn7cm3vnAmjlHqUnoQaTMZYhM4VlXGLkkHHxj/BZ7Td0+SOPKB4RGPboBVKT9htw==}
-    peerDependencies:
-      react: '>=16.9.0'
-      react-dom: '>=16.9.0'
 
   react-dom@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
@@ -2501,23 +2472,6 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@ant-design/colors@6.0.0':
-    dependencies:
-      '@ctrl/tinycolor': 3.6.1
-
-  '@ant-design/icons-svg@4.4.2': {}
-
-  '@ant-design/icons@4.8.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
-    dependencies:
-      '@ant-design/colors': 6.0.0
-      '@ant-design/icons-svg': 4.4.2
-      '@babel/runtime': 7.25.6
-      classnames: 2.5.1
-      lodash: 4.17.21
-      rc-util: 5.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.24.7
@@ -2672,8 +2626,6 @@ snapshots:
       '@babel/helper-string-parser': 7.24.8
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
-
-  '@ctrl/tinycolor@3.6.1': {}
 
   '@esbuild/android-arm@0.15.18':
     optional: true
@@ -4155,8 +4107,6 @@ snapshots:
 
   lodash.throttle@4.1.1: {}
 
-  lodash@4.17.21: {}
-
   loose-envify@1.4.0:
     dependencies:
       js-tokens: 4.0.0
@@ -4423,13 +4373,6 @@ snapshots:
   randombytes@2.1.0:
     dependencies:
       safe-buffer: 5.2.1
-
-  rc-util@5.43.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
-    dependencies:
-      '@babel/runtime': 7.25.6
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-is: 18.3.1
 
   react-dom@18.2.0(react@18.2.0):
     dependencies:
