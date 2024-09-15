@@ -22,7 +22,6 @@ import Modal from "antd/es/modal";
 import useEditBtn from "../../../hooks/useEditBtn";
 import { BookCategory } from "@src/util/book";
 import c from "classnames";
-import classNames from "classnames";
 import { setBookFilter } from "@src/util/storage";
 import TableOfContents from "./TableOfContents";
 import useReaderStore from "../store/modules/reader";
@@ -135,7 +134,7 @@ export default function Paragraph(props: { bookCategory: BookCategory }) {
             />
             {props.bookCategory !== BookCategory.Normal && (
               <FilterOutlined
-                className={classNames([
+                className={c([
                   "icon",
                   "icon-filter-toggle",
                   { "icon-filter-active": filter },

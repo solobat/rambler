@@ -28,7 +28,16 @@ export async function getListByBook(bookId: number): Promise<Response<IParagraph
 }
 
 export async function getChapters(bookId: number): Promise<Response<IParagraph[]>> {
-  let result = (await paragraphService.queryByBook(bookId)).filter(p => p.type === 'chapter');
+  let chapters = (await paragraphService.queryByBook(bookId)).filter(p => p.type === 'chapter');
+  
+  let uniqueChapters = new Map();
+  
+  chapters.forEach(chapter => {
+    let chapterName = chapter.text.replace(/\s*\d+$/, '');
+    uniqueChapters.set(chapterName, chapter);
+  });
+  
+  let result = Array.from(uniqueChapters.values());
   
   return Response.ok(result);
 }
