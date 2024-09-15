@@ -112,9 +112,6 @@ export function keydownEventHandler(
     } else if (KEY_CODE.NEXT.indexOf(key) !== -1) {
       const index = getNextParagraphIndex(paragraph, currentBook, false);
       setCursor(index);
-    } else if (KEY_CODE.Edit.indexOf(key) !== -1) {
-      event.preventDefault();
-      setEditing(true);
     } else if (KEY_CODE.PREV_SPAN.indexOf(key) !== -1) {
       setSpanCursor(spanCursor - 1);
     } else if (KEY_CODE.NEXT_SPAN.indexOf(key) !== -1) {

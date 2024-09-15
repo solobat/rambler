@@ -108,6 +108,7 @@ export default function Comments(props: {
           type="text"
           ref={commentIptRef}
           placeholder={i18nMsg.commentHere}
+          className="input input-sm input-bordered"
           onKeyDown={onCommentInputKeyPress}
         />
       </div>
