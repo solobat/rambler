@@ -26,6 +26,7 @@ import { detectBookCategory, resolveBookFilter } from "@src/util/book";
 import useReaderStore from "./store/modules/reader";
 import useCommentsStore from "./store/modules/comments";
 import useSearchStore from "./store/modules/search";
+import { ToastProvider } from "./components/Toast";
 
 declare global {
   interface Window {
@@ -43,13 +44,15 @@ export default function Root() {
 
 function App() {
   return (
-    <div className="newtab-container">
-      <TxtUpload />
-      <TopbarTools />
-      <Container />
-      <BottombarTools />
-      <ShortcutsModal />
-    </div>
+    <ToastProvider>
+      <div className="newtab-container">
+        <TxtUpload />
+        <TopbarTools />
+        <Container />
+        <BottombarTools />
+        <ShortcutsModal />
+      </div>
+    </ToastProvider>
   );
 }
 

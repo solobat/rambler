@@ -1,46 +1,74 @@
 import * as React from "react";
 import { i18nMsg } from "../newtab.helper";
 import * as bookController from "../../../server/controller/bookController";
-import { message, Upload } from "antd";
 import { SESSION_STORAGE } from "@src/common/constant";
 import { sliceFileToParagraphs, ParagraphData } from "@src/util/paragraph";
 import useReaderStore from "../store/modules/reader";
-import { UploadProps } from "antd/es/upload";
+import { useToast } from "./Toast";
 
 export default function TxtUpload() {
   const { setCurrentBookId, setCursor } = useReaderStore();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const { addToast } = useToast();
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        const paragraphs = await sliceFileToParagraphs(file);
+        const resp = await bookController.saveBook(file, paragraphs);
 
-  const uploaderProps: UploadProps = {
-    accept: "text/plain",
-    showUploadList: false,
-    beforeUpload(file) {
-      sliceFileToParagraphs(file).then((resp: ParagraphData[]) => {
-        bookController.saveBook(file, resp).then((resp) => {
-          if (resp.code === 0) {
-            const bookId: number = resp.data;
+        if (resp.code === 0) {
+          const bookId: number = resp.data;
 
-            bookController.setCurrentBook(bookId);
-            window.sessionStorage.setItem(
-              SESSION_STORAGE.CURRENT_BOOK_ID,
-              String(bookId)
-            );
-            setCurrentBookId(bookId);
-            setCursor(0);
+          await bookController.setCurrentBook(bookId);
+          window.sessionStorage.setItem(
+            SESSION_STORAGE.CURRENT_BOOK_ID,
+            String(bookId)
+          );
+          setCurrentBookId(bookId);
+          setCursor(0);
 
-            message.success(i18nMsg.uploadDone);
-          } else {
-            message.error(resp.message);
-          }
+          addToast({
+            message: i18nMsg.uploadDone,
+            type: "success",
+          });
+        } else {
+          addToast({
+            message: resp.message,
+            type: "error",
+          });
+        }
+      } catch (error) {
+        console.error("上传文件时发生错误:", error);
+        addToast({
+          message: "上传文件失败，请重试。",
+          type: "error",
         });
-      });
+      }
+    }
+  };
 
-      return false;
-    },
+  const handleClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
-    <Upload {...uploaderProps} className="file-uploader">
-      <a>{i18nMsg.uploadTxt}</a>
-    </Upload>
+    <div className="relative inline-block">
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="text/plain"
+        className="hidden"
+      />
+      <button
+        onClick={handleClick}
+        className="btn btn-outline btn-default opacity-70 hover:opacity-100 btn-sm m-2"
+      >
+        {i18nMsg.uploadTxt}
+      </button>
+    </div>
   );
 }
