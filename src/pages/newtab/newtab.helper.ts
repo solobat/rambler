@@ -4,7 +4,6 @@ import { KEYCODE } from "./types";
 import * as Code from "../../server/common/code";
 import { BookMode } from "../../server/enum/Book";
 import { getRandomIndex } from "../../util/common";
-import { message } from "antd";
 import * as paragraphController from "../../server/controller/paragraphController";
 import { SESSION_STORAGE } from "@src/common/constant";
 import { BookFilterFunc } from "@src/util/book";
@@ -209,7 +208,7 @@ export function loadBook(
       setCursor(cursor);
       setBookLoaded(true);
     } else {
-      message.error(resp.message);
+      console.error(resp.message);
     }
   });
 }
@@ -244,7 +243,7 @@ export function loadParagraph(
         // 滚动逻辑
       });
     } else {
-      message.error(resp.message);
+      console.error(resp.message);
     }
   });
 }

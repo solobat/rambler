@@ -1,5 +1,3 @@
-@import "antd/dist/antd.css";
-@import 'antd/dist/antd.dark.css';
 @import "@assets/style/theme.scss";
 
 html,
@@ -27,27 +25,6 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-}
-
-.file-uploader {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  border: 1px solid #ccc;
-  padding: 2px 5px;
-  color: #ddd;
-  cursor: pointer;
-  font-size: 12px;
-  opacity: 0.3;
-  transition: all 200ms ease-in;
-
-  &:hover {
-    opacity: 1;
-  }
-
-  a {
-    color: #ddd;
-  }
 }
 
 .top-right-tools {
@@ -301,35 +278,6 @@ body {
 
     &:hover {
       border-color: rgba(255, 255, 255, 0.3);
-    }
-  }
-}
-
-.comments {
-  margin: 0 auto;
-  padding: 10px;
-  width: 70vw;
-  height: 200px;
-  overflow: auto;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 12px;
-
-  .comment-item {
-    position: relative;
-    line-height: 20px;
-
-    .icon-del {
-      position: absolute;
-      left: -8px;
-      top: 6px;
-      font-size: 8px;
-      opacity: 0.7;
-      transition: all 200ms;
-      cursor: pointer;
-
-      &:hover {
-        opacity: 1;
-      }
     }
   }
 }

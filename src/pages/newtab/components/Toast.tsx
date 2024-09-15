@@ -5,6 +5,7 @@ interface ToastProps {
   type: "info" | "success" | "warning" | "error";
   duration?: number;
 }
+
 const Toast: React.FC<ToastProps & { onClose: () => void }> = ({
   message,
   type,
@@ -73,6 +74,8 @@ const ToastContainer: React.FC = () => {
     throw new Error("useToast 必须在 ToastProvider 内使用");
   }
   const { toasts, removeToast } = context;
+
+  if (toasts.length === 0) return null;
 
   return (
     <div className="toast toast-top toast-end">

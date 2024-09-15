@@ -53,7 +53,6 @@ export default defineConfig({
       input: {
         newtab: resolve(pagesDir, "newtab", "index.html"),
         popup: resolve(pagesDir, "popup", "index.html"),
-        options: resolve(pagesDir, "options", "index.html"),
       },
       output: {
         entryFileNames: "src/pages/[name]/index.js",

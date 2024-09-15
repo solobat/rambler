@@ -1,7 +1,7 @@
 import * as React from "react";
 import { getMode, NewtabMode, setBgColor, setMode } from "../newtab.helper";
 import { SOLID_COLORS } from "../../../common/constant";
-import { ReadOutlined, SettingOutlined } from "@ant-design/icons";
+import { SettingIcon, ReadIcon } from "@src/assets/Icons";
 
 export default function TopbarTools() {
   return (
@@ -72,12 +72,12 @@ function ModeBtn() {
   return (
     <>
       {mode === "read" ? (
-        <SettingOutlined
+        <SettingIcon
           className="icon icon-mode icon-mode-read"
           onClick={() => onClick("setting")}
         />
       ) : (
-        <ReadOutlined
+        <ReadIcon
           className="icon icon-mode icon-mode-setting"
           onClick={() => onClick("read")}
         />

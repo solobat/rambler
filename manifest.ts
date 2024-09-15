@@ -6,7 +6,6 @@ const manifest: chrome.runtime.ManifestV3 = {
   version: packageJson.version,
   description: "__MSG_extDesc__",
   default_locale: "en",
-  options_page: "src/pages/options/index.html",
   chrome_url_overrides: {
     newtab: "src/pages/newtab/index.html",
   },

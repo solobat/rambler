@@ -9,6 +9,7 @@ export enum BookCategory {
   Question = 'question',
   English = 'english',
   Normal = "normal",
+  Stk = "stk",
 }
 
 /**

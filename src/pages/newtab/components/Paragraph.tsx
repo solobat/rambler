@@ -9,22 +9,20 @@ import {
 } from "react";
 import { getPureBookName } from "../newtab.helper";
 import ShareIcons from "./ShareIcons";
-import { Slider } from "antd";
-import {
-  CheckOutlined,
-  CloseOutlined,
-  FilterOutlined,
-  FormOutlined,
-  UnorderedListOutlined,
-} from "@ant-design/icons";
-import Input from "antd/es/input";
-import Modal from "antd/es/modal";
-import useEditBtn from "../../../hooks/useEditBtn";
 import { BookCategory } from "@src/util/book";
 import c from "classnames";
 import { setBookFilter } from "@src/util/storage";
 import TableOfContents from "./TableOfContents";
 import useReaderStore from "../store/modules/reader";
+import Modal from "./Modal";
+import useEditBtn from "@src/hooks/useEditBtn";
+import {
+  EditDoneIcon,
+  EditCancelIcon,
+  EditStartIcon,
+  TocIcon,
+  FilterIcon,
+} from "@src/assets/Icons";
 
 export default function Paragraph(props: { bookCategory: BookCategory }) {
   const {
@@ -95,82 +93,66 @@ export default function Paragraph(props: { bookCategory: BookCategory }) {
 
   return (
     <div
-      className={c(["paragraph-container", `bookcate-${props.bookCategory}`])}
+      className={c([
+        "relative w-[70vw] mx-auto mt-[46px] text-left text-[#d0d3d8]",
+        `bookcate-${props.bookCategory}`,
+      ])}
     >
-      <div className="process">
-        <Slider
-          defaultValue={paragraph.index}
-          value={cursor}
+      <div className="py-5 opacity-0 transition-opacity duration-200 ease-in hover:opacity-100">
+        <input
+          type="range"
           min={0}
           max={currentBook.paragraphCount}
-          tooltip={{ open: false }}
-          onChange={onSlideChange}
-          railStyle={{ backgroundColor: "rgba(0, 0, 0, 0.1)" }}
-          trackStyle={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
-          handleStyle={{ borderColor: "rgba(0, 0, 0, 0.3)" }}
+          value={cursor}
+          className="range range-xs"
+          step="1"
+          onChange={(e) => onSlideChange(parseInt(e.target.value))}
         />
       </div>
-      <div className="paragraph-tools" ref={toolsRef}>
+      <div
+        className="absolute z-10 top-[60px] -left-5 transition-opacity duration-200 ease-in opacity-0 hover:opacity-100 flex flex-col"
+        ref={toolsRef}
+      >
         {editing ? (
           <>
-            <CheckOutlined
-              className="icon icon-edit-done"
-              onClick={onEditDoneClick}
-            />
-            <CloseOutlined
-              className="icon icon-edit-cancel"
-              onClick={onEditCancel}
-            />
+            <EditDoneIcon onClick={onEditDoneClick} />
+            <EditCancelIcon onClick={onEditCancel} />
           </>
         ) : (
           <>
-            <FormOutlined
-              className="icon icon-edit-start"
-              onClick={onEditStart}
-            />
-            <UnorderedListOutlined
-              className="icon icon-toc"
-              onClick={showTOC}
-            />
+            <EditStartIcon onClick={onEditStart} />
+            <TocIcon onClick={showTOC} />
             {props.bookCategory !== BookCategory.Normal && (
-              <FilterOutlined
-                className={c([
-                  "icon",
-                  "icon-filter-toggle",
-                  { "icon-filter-active": filter },
-                ])}
-                onClick={onFilterToggle}
-              />
+              <FilterIcon onClick={onFilterToggle} isActive={filter} />
             )}
           </>
         )}
       </div>
       <div
-        className={
-          spanCursor >= 0 ? "paragraph-text cursor-active" : "paragraph-text"
-        }
+        className={c([
+          "text-base leading-relaxed font-sans text-justify max-h-[312px] overflow-auto",
+          props.bookCategory === "wordbook" ? "text-[56px] font-semibold" : "",
+          props.bookCategory === "stk" ? "text-2xl font-semibold" : "",
+        ])}
         ref={paragraphRef}
       >
         {editing ? (
-          <Input.TextArea
+          <textarea
+            className="w-full p-2 border border-gray-300 rounded"
             value={textEditing}
             onChange={onTextChange}
             autoFocus
-            autoSize
             onKeyDown={onKeyDown}
           />
         ) : (
           <Text text={text} cursor={spanCursor} />
         )}
       </div>
-      <p className="book-name">{currentBook ? `-- ${pureBookName}` : ""}</p>
+      <p className="text-right italic mr-8 opacity-50">
+        {currentBook ? `-- ${pureBookName}` : ""}
+      </p>
       <ShareIcons />
-      <Modal
-        title="Chapters"
-        open={tocVisible}
-        onCancel={hideTOC}
-        footer={null}
-      >
+      <Modal title="章节" isOpen={tocVisible} onClose={hideTOC}>
         <TableOfContents onClose={hideTOC} />
       </Modal>
     </div>
@@ -181,7 +163,7 @@ function Text(props: { text: string; cursor: number }) {
   const { incCursor } = useReaderStore();
   const arr = props.text.split(/([,，。.?？;!！；])/g);
   arr.push("");
-
+  const cursorActive = props.cursor >= 0;
   const total = arr.reduce(
     (memo, item, index) => {
       if (index % 2 !== 0) {
@@ -205,7 +187,15 @@ function Text(props: { text: string; cursor: number }) {
   return (
     <>
       {total.map((item, index) => (
-        <span className={index === props.cursor ? "is-active" : ""}>
+        <span
+          className={c(
+            "transition-all duration-200 ease-in",
+            cursorActive && index !== props.cursor
+              ? "opacity-20 blur-sm"
+              : "opacity-100 blur-none",
+            index === props.cursor && "font-bold"
+          )}
+        >
           {item}
         </span>
       ))}

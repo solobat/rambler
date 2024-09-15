@@ -13,7 +13,7 @@ function throttle(func, delay) {
   };
 }
 
-function download(blob, filename, mimeType) {
+export function download(blob, filename, mimeType) {
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;

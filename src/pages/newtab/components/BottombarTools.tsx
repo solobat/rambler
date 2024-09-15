@@ -1,20 +1,21 @@
 import { useCallback } from "react";
-import {
-  CommentOutlined,
-  FullscreenExitOutlined,
-  FullscreenOutlined,
-  MacCommandOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
 import { useFullscreen } from "ahooks";
 import useCommentsStore from "../store/modules/comments";
 import useSearchStore from "../store/modules/search";
 import useReaderStore from "../store/modules/reader";
+import { exportCommentsAsTxt } from "@src/helper/book";
+import {
+  IconComment,
+  IconShortcuts,
+  IconFullscreen,
+  IconSearch,
+  IconExport,
+} from "@src/assets/Icons";
 
 export default function BottombarTools() {
   const { allowComment, updateAllowComment } = useCommentsStore();
   const { searchBoxVisible, setSearchBoxVisible } = useSearchStore();
-  const { setShortcutsModalVisible } = useReaderStore();
+  const { setShortcutsModalVisible, currentBookId } = useReaderStore();
   const [isFullscreen, { toggleFull }] = useFullscreen(
     document.documentElement
   );
@@ -31,32 +32,22 @@ export default function BottombarTools() {
     setSearchBoxVisible(!searchBoxVisible);
   }, [searchBoxVisible, setSearchBoxVisible]);
 
+  const onExportBtnClick = useCallback(() => {
+    exportCommentsAsTxt(currentBookId);
+  }, [currentBookId]);
+
   return (
     <div className="bottom-right-tools">
-      <CommentOutlined
-        style={{ color: "#fff", fontSize: "20px" }}
-        className={[
-          "icon icon-comment",
-          allowComment ? "icon-comment-enable" : "icon-comment-disable",
-        ].join(" ")}
+      <IconComment
+        className={`icon icon-comment ${
+          allowComment ? "icon-comment-enable" : "icon-comment-disable"
+        }`}
         onClick={onCommentBtnClick}
       />
-      <MacCommandOutlined
-        className="icon icon-shortcuts"
-        onClick={onShortcutsBtnClick}
-      />
-      {isFullscreen ? (
-        <FullscreenExitOutlined
-          className="icon icon-fullscreen"
-          onClick={toggleFull}
-        />
-      ) : (
-        <FullscreenOutlined
-          className="icon icon-fullscreen"
-          onClick={toggleFull}
-        />
-      )}
-      <SearchOutlined className="icon icon-search" onClick={onSearchBtnClick} />
+      <IconShortcuts onClick={onShortcutsBtnClick} />
+      <IconFullscreen isFullscreen={isFullscreen} onClick={toggleFull} />
+      <IconSearch onClick={onSearchBtnClick} />
+      <IconExport onClick={onExportBtnClick} />
     </div>
   );
 }

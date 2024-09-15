@@ -3,9 +3,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { i18nMsg } from "../newtab.helper";
 import * as commentController from "../../../server/controller/commentController";
 import * as Code from "../../../server/common/code";
-import { message } from "antd";
 import { IComment, IParagraph } from "../../../server/db/database";
-import { CloseOutlined } from "@ant-design/icons";
 import { useHover, useToggle } from "ahooks";
 import {
   EnglishShortcuts,
@@ -14,14 +12,16 @@ import {
 } from "@src/util/text";
 import { Img, Link } from "@src/util/types";
 import { sortComments } from "@src/util/data";
-import { Button } from "antd";
 import { BookCategory } from "@src/util/book";
 import useReaderStore from "../store/modules/reader";
+import { useToast } from "./Toast";
+import { CloseIcon } from "@src/assets/Icons";
 
 export default function Comments(props: {
   bookCategory: BookCategory;
   paragraph?: string;
 }) {
+  const { addToast } = useToast();
   const { currentBookId, paragraph } = useReaderStore();
   const commentIptRef = useRef<HTMLInputElement>();
   const [comments, setComments] = useState<IComment[]>([]);
@@ -44,7 +44,10 @@ export default function Comments(props: {
             console.log("save successfully");
             loadComments(setComments, currentBookId, paragraph);
           } else {
-            message.error(resp.message);
+            addToast({
+              message: resp.message,
+              type: "error",
+            });
           }
         });
     } else {
@@ -65,7 +68,10 @@ export default function Comments(props: {
         if (resp.code === Code.OK.code) {
           loadComments(setComments, currentBookId, paragraph);
         } else {
-          message.error(resp.message);
+          addToast({
+            message: resp.message,
+            type: "error",
+          });
         }
       });
     },
@@ -81,7 +87,7 @@ export default function Comments(props: {
 
   return (
     <div
-      className="comment-container"
+      className="fixed h-64 left-24 right-24 bottom-0 transition-all duration-200 ease-in"
       onMouseEnter={() => onCommentBoxMouseEnter()}
       onMouseLeave={() => onCommentBoxMouseLeave()}
     >
@@ -105,7 +111,7 @@ export default function Comments(props: {
           onKeyDown={onCommentInputKeyPress}
         />
       </div>
-      <div className="comments">
+      <div className="mx-auto p-2.5 w-[70vw] h-50 overflow-auto text-white/60 text-xs">
         {comments.map((comment, index) => {
           return (
             <Comment
@@ -127,9 +133,8 @@ function WordbookShortcutsRenderer(props: {
   return (
     <div className="stk-shortcuts">
       {WordbookShortcuts.map((item) => (
-        <Button
-          type="link"
-          className="stk-shortcut-btn"
+        <button
+          className="btn btn-link stk-shortcut-btn"
           key={item.type}
           onClick={(event) => {
             event.currentTarget.blur();
@@ -142,7 +147,7 @@ function WordbookShortcutsRenderer(props: {
           }}
         >
           {item.type.toUpperCase()}
-        </Button>
+        </button>
       ))}
     </div>
   );
@@ -155,9 +160,8 @@ function EnglishShortcutsRenderer(props: {
   return (
     <div className="stk-shortcuts">
       {EnglishShortcuts.map((item) => (
-        <Button
-          type="link"
-          className="stk-shortcut-btn"
+        <button
+          className="btn btn-link stk-shortcut-btn"
           key={item.type}
           onClick={(event) => {
             event.currentTarget.blur();
@@ -167,7 +171,7 @@ function EnglishShortcutsRenderer(props: {
           }}
         >
           {item.type.toUpperCase()}
-        </Button>
+        </button>
       ))}
     </div>
   );
@@ -184,13 +188,8 @@ function Comment(props: CommentProps) {
   const isHovering = useHover(ref);
 
   return (
-    <div ref={ref} className="comment-item">
-      {isHovering ? (
-        <CloseOutlined
-          className="icon-del"
-          onClick={() => onDeleteClick(comment)}
-        />
-      ) : null}
+    <div ref={ref} className="relative leading-5">
+      {isHovering ? <CloseIcon onClick={() => onDeleteClick(comment)} /> : null}
       <CommentRenderer text={comment.text} />
     </div>
   );
@@ -235,7 +234,7 @@ function CommentInfoBlock(props: {
   return (
     <div className="stk-block">
       <div>
-        <button className="block-fold-btn" onClick={onClick}>
+        <button className="btn btn-link block-fold-btn" onClick={onClick}>
           {props.label} {show ? "收起" : "展开"}
         </button>
       </div>
@@ -259,7 +258,7 @@ function loadComments(
           setComments(sortComments(comments));
         }
       } else {
-        message.error(resp.message);
+        console.log(resp.message);
       }
     });
 }
